@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\GraphicsAssignment\\Assignment\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B86B3602-875B-4C4B-AA48-3844B26F7CEC}|Assignment.vcxproj|C:\\Users\\User\\Desktop\\GraphicsAssignment\\Assignment\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{B86B3602-875B-4C4B-AA48-3844B26F7CEC}|Assignment.vcxproj|solutionrelative:Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{B86B3602-875B-4C4B-AA48-3844B26F7CEC}|Assignment.vcxproj|C:\\Users\\User\\Desktop\\GraphicsAssignment\\Assignment\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{B86B3602-875B-4C4B-AA48-3844B26F7CEC}|Assignment.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -44,7 +44,7 @@
               "RelativeDocumentMoniker": "main.cpp",
               "ToolTip": "C:\\Users\\User\\Desktop\\GraphicsAssignment\\Assignment\\main.cpp",
               "RelativeToolTip": "main.cpp",
-              "ViewState": "AQIAADQAAAAAAAAAAAAAAGEAAAAAAAAA",
+              "ViewState": "AQIAAJgCAAAAAAAAAAAkwLYCAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-07-20T05:09:30.2Z",
               "EditorCaption": ""
