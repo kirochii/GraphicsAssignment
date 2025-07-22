@@ -1,6 +1,7 @@
 
 #include <Windows.h>
 #include <gl/GL.h>
+#include <math.h>
 
 #pragma comment (lib, "OpenGL32.lib")
 
@@ -10,6 +11,7 @@ float cameraYaw = 0.0f;    // left/right rotation (around Y-axis)
 float cameraPitch = 0.0f;  // up/down rotation (around X-axis)
 float rotationSpeed = 5.0f; // degrees per key press
 
+#define PI 3.14159265359
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -94,56 +96,55 @@ bool initPixelFormat(HDC hdc)
 }
 //--------------------------------------------------------------------
 
+void guide() {
+    //guide measurement
+    glBegin(GL_LINES);
+    glVertex3f(-0.9, 0.8, 0);
+    glVertex3f(0.9, 0.8, 0);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(-0.9, 0.6, 0);
+    glVertex3f(0.9, 0.6, 0);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(-0.9, 0.4, 0);
+    glVertex3f(0.9, 0.4, 0);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(-0.9, 0.2, 0);
+    glVertex3f(0.9, 0.2, 0);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(-0.9, 0, 0);
+    glVertex3f(0.9, 0, 0);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(-0.9, -0.2, 0);
+    glVertex3f(0.9, -0.2, 0);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(-0.9, -0.4, 0);
+    glVertex3f(0.9, -0.4, 0);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(-0.9, -0.6, 0);
+    glVertex3f(0.9, -0.6, 0);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(-0.9, -0.8, 0);
+    glVertex3f(0.9, -0.8, 0);
+    glEnd();
+}
+
 void body() {
-	//guide measurement
-	glBegin(GL_LINES);
-	glVertex3f(-0.9, 0.8, 0);
-	glVertex3f(0.9, 0.8, 0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(-0.9, 0.6, 0);
-	glVertex3f(0.9, 0.6, 0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(-0.9, 0.4, 0);
-	glVertex3f(0.9, 0.4, 0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(-0.9, 0.2, 0);
-	glVertex3f(0.9, 0.2, 0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(-0.9, 0, 0);
-	glVertex3f(0.9, 0, 0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(-0.9, -0.2, 0);
-	glVertex3f(0.9, -0.2, 0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(-0.9, -0.4, 0);
-	glVertex3f(0.9, -0.4, 0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(-0.9, -0.6, 0);
-	glVertex3f(0.9, -0.6, 0);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3f(-0.9, -0.8, 0);
-	glVertex3f(0.9, -0.8, 0);
-	glEnd();
-
-
-
-
     //belt (code start bottom right, clockwise), physical rendering start middle to left
     glBegin(GL_POLYGON);
     glVertex3f(0, 0.19, 0.07);
@@ -791,8 +792,85 @@ void body() {
     glVertex3f(0.04, 0.56, -0.04);
     glVertex3f(0.04, 0.56, 0.01);
     glEnd();
+
+    //body
+    glBegin(GL_POLYGON);
+    glVertex3f(0, 0.53, 0.05);
+    glVertex3f(-0.04, 0.56, 0.01);
+    glVertex3f(-0.04, 0.56, -0.04);
+    glVertex3f(0, 0.56, -0.07);
+    glVertex3f(0.04, 0.56, -0.04);
+    glVertex3f(0.04, 0.56, 0.01);
+    glVertex3f(0, 0.53, 0.05);
+    glEnd();
+
+
 }
 
+void neck() {
+    float radius = 0.03;
+    float height = 0.15;
+    int slices = 6;
+    float zOffset = -0.02;
+    float yOffset = 0.50;
+
+    float angleStep = 2.0f * PI / slices;
+
+    // --- Side Surface ---
+    glBegin(GL_QUAD_STRIP);
+    for (int i = 0; i <= slices; ++i) {
+        float angle = i * angleStep;
+        float x = radius * cos(angle);
+        float z = radius * sin(angle) + zOffset;  // Apply Z offset
+
+        glNormal3f(cos(angle), 0.0f, sin(angle));
+        glVertex3f(x, yOffset, z);                  // Bottom vertex
+        glVertex3f(x, yOffset + height, z);         // Top vertex
+    }
+    glEnd();
+
+    // --- Top Cap ---
+    glBegin(GL_QUADS);
+    for (int i = 0; i < slices; ++i) {
+        float angle0 = i * angleStep;
+        float angle1 = (i + 1) * angleStep;
+
+        float x0 = radius * cos(angle0);
+        float z0 = radius * sin(angle0) + zOffset;
+        float x1 = radius * cos(angle1);
+        float z1 = radius * sin(angle1) + zOffset;
+
+        glNormal3f(0.0f, 1.0f, 0.0f);
+        glVertex3f(0.0f, yOffset + height, zOffset);
+        glVertex3f(x0, yOffset + height, z0);
+        glVertex3f(x1, yOffset + height, z1);
+        glVertex3f(0.0f, yOffset + height, zOffset);
+    }
+    glEnd();
+
+    // --- Bottom Cap ---
+    glBegin(GL_QUADS);
+    for (int i = 0; i < slices; ++i) {
+        float angle0 = i * angleStep;
+        float angle1 = (i + 1) * angleStep;
+
+        float x0 = radius * cos(angle0);
+        float z0 = radius * sin(angle0) + zOffset;
+        float x1 = radius * cos(angle1);
+        float z1 = radius * sin(angle1) + zOffset;
+
+        glNormal3f(0.0f, -1.0f, 0.0f);
+        glVertex3f(0.0f, yOffset, zOffset);
+        glVertex3f(x1, yOffset, z1);
+        glVertex3f(x0, yOffset, z0);
+        glVertex3f(0.0f, yOffset, zOffset);
+    }
+    glEnd();
+}
+
+void head() {
+
+}
 
 void display()
 {
@@ -805,9 +883,14 @@ void display()
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glColor3f(1.0f, 0.0f, 0.0f);
 
+    guide();
 	body();
+    neck();
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    head();
 
 	glFlush();
 }
