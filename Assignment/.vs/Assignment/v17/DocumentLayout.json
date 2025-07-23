@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\GraphicsAssignment\\Assignment\\",
+  "WorkspaceRootPath": "C:\\Users\\Kiro\\Desktop\\GraphicsAssignment\\Assignment\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B86B3602-875B-4C4B-AA48-3844B26F7CEC}|Assignment.vcxproj|C:\\Users\\User\\Desktop\\GraphicsAssignment\\Assignment\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{B86B3602-875B-4C4B-AA48-3844B26F7CEC}|Assignment.vcxproj|C:\\Users\\Kiro\\Desktop\\GraphicsAssignment\\Assignment\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{B86B3602-875B-4C4B-AA48-3844B26F7CEC}|Assignment.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -18,7 +18,7 @@
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Bookmark",
@@ -40,11 +40,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "main.cpp",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\GraphicsAssignment\\Assignment\\main.cpp",
+              "DocumentMoniker": "C:\\Users\\Kiro\\Desktop\\GraphicsAssignment\\Assignment\\main.cpp",
               "RelativeDocumentMoniker": "main.cpp",
-              "ToolTip": "C:\\Users\\User\\Desktop\\GraphicsAssignment\\Assignment\\main.cpp",
+              "ToolTip": "C:\\Users\\Kiro\\Desktop\\GraphicsAssignment\\Assignment\\main.cpp",
               "RelativeToolTip": "main.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAGcDAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAI0FAAANAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-07-20T05:09:30.2Z",
               "EditorCaption": ""
