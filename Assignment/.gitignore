@@ -1,0 +1,21 @@
+# Visual Studio cache/options directory
+.vs/
+
+# Build results
+Debug/
+Release/
+x64/
+x86/
+
+# Visual Studio files
+*.vcxproj.user
+*.suo
+*.sdf
+*.opensdf
+*.db
+*.opendb
+
+# Other common ignores
+*.tmp
+*.log
+Thumbs.db
