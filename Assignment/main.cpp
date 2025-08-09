@@ -989,562 +989,543 @@ void body() {
     glEnd();
 }
 
+void leg()
+{
+    //========= HIP FRONT ==========
+ //hip center 
+    glBegin(GL_QUADS);
+    glVertex3f(-0.04, 0.19, 0.07);
+    glVertex3f(0.04, 0.19, 0.07);
+    glVertex3f(0.02, 0.10, 0.07);
+    glVertex3f(-0.02, 0.10, 0.07);
+    glEnd();
 
-void leg() {
+    //hip left 
+    glBegin(GL_QUADS);
+    glVertex3f(-0.04, 0.19, 0.07);
+    glVertex3f(-0.09, 0.19, 0.07);
+    glVertex3f(-0.12, 0.10, 0.07);
+    glVertex3f(-0.02, 0.10, 0.07);
+    glEnd();
 
-    // below belt first layer
+    glBegin(GL_QUADS);
+    glVertex3f(-0.09, 0.19, 0.07);
+    glVertex3f(-0.12, 0.10, 0.07);
+    glVertex3f(-0.07, 0.05, 0.07);
+    glVertex3f(-0.05, 0.05, 0.07);
+    glEnd();
+
+    // hip right 
+    glBegin(GL_QUADS);
+    glVertex3f(0.04, 0.19, 0.07);
+    glVertex3f(0.09, 0.19, 0.07);
+    glVertex3f(0.12, 0.10, 0.07);
+    glVertex3f(0.02, 0.10, 0.07);
+    glEnd();
+
+    glBegin(GL_QUADS);
+    glVertex3f(0.09, 0.19, 0.07);
+    glVertex3f(0.12, 0.10, 0.07);
+    glVertex3f(0.07, 0.05, 0.07);
+    glVertex3f(0.05, 0.05, 0.07);
+    glEnd();
+
+    // Left front thigh
+    glBegin(GL_QUADS);
+    glVertex3f(-0.05, 0.05, 0.07);
+    glVertex3f(-0.07, 0.05, 0.07);
+    glVertex3f(-0.10, 0.00, 0.06);
+    glVertex3f(-0.01, 0.00, 0.06);
+    glEnd();
+
+    // Right front thigh
+    glBegin(GL_QUADS);
+    glVertex3f(0.05, 0.05, 0.07);
+    glVertex3f(0.07, 0.05, 0.07);
+    glVertex3f(0.10, 0.00, 0.06);
+    glVertex3f(0.01, 0.00, 0.06);
+    glEnd();
+
+    // Left inner line (from hip center to thigh inner)
+    glBegin(GL_LINES);
+    glVertex3f(-0.02, 0.10, 0.07);
+    glVertex3f(-0.01, 0.00, 0.06);
+    glEnd();
+
+    // Right inner line (from hip center to thigh inner)
+    glBegin(GL_LINES);
+    glVertex3f(0.02, 0.10, 0.07);
+    glVertex3f(0.01, 0.00, 0.06);
+    glEnd();
+
+    // Left outer line (from hip outer edge to thigh outer)
+    glBegin(GL_LINES);
+    glVertex3f(-0.12, 0.10, 0.07);
+    glVertex3f(-0.10, 0.00, 0.06);
+    glEnd();
+
+    // Right outer line (from hip outer edge to thigh outer)
+    glBegin(GL_LINES);
+    glVertex3f(0.12, 0.10, 0.07);
+    glVertex3f(0.10, 0.00, 0.06);
+    glEnd();
+
+    // Left intermediate line (from hip front vertex to thigh area)
+    glBegin(GL_LINES);
+    glVertex3f(-0.05, 0.05, 0.07);
+    glVertex3f(-0.055, 0.00, 0.06);
+    glEnd();
+
+    // Right intermediate line (from hip front vertex to thigh area)
+    glBegin(GL_LINES);
+    glVertex3f(0.05, 0.05, 0.07);
+    glVertex3f(0.055, 0.00, 0.06);
+    glEnd();
+
+    //========= HIP BACK ==========
+    // Hip center back
+    glBegin(GL_QUADS);
+    glVertex3f(-0.04, 0.19, -0.07);
+    glVertex3f(0.04, 0.19, -0.07);
+    glVertex3f(0.02, 0.10, -0.07);
+    glVertex3f(-0.02, 0.10, -0.07);
+    glEnd();
+
+    // Left glute - upper section (bending backward)
+    glBegin(GL_QUADS);
+    glVertex3f(-0.04, 0.19, -0.07);
+    glVertex3f(-0.09, 0.19, -0.07);
+    glVertex3f(-0.12, 0.10, -0.09);
+    glVertex3f(-0.02, 0.10, -0.07);
+    glEnd();
+
+    // Left glute - lower section (maximum backward curve)
+    glBegin(GL_QUADS);
+    glVertex3f(-0.09, 0.19, -0.07);
+    glVertex3f(-0.12, 0.10, -0.09);
+    glVertex3f(-0.07, 0.05, -0.11);
+    glVertex3f(-0.05, 0.05, -0.09);
+    glEnd();
+
+    // Right glute - upper section (bending backward)
+    glBegin(GL_QUADS);
+    glVertex3f(0.04, 0.19, -0.07);
+    glVertex3f(0.09, 0.19, -0.07);
+    glVertex3f(0.12, 0.10, -0.09);
+    glVertex3f(0.02, 0.10, -0.07);
+    glEnd();
+
+    // Right glute - lower section (maximum backward curve)
+    glBegin(GL_QUADS);
+    glVertex3f(0.09, 0.19, -0.07);
+    glVertex3f(0.12, 0.10, -0.09);
+    glVertex3f(0.07, 0.05, -0.11);
+    glVertex3f(0.05, 0.05, -0.09);
+    glEnd();
+
+    // Left back thigh connection
+    glBegin(GL_QUADS);
+    glVertex3f(-0.05, 0.05, -0.09);
+    glVertex3f(-0.07, 0.05, -0.11);
+    glVertex3f(-0.10, 0.00, -0.06);
+    glVertex3f(-0.01, 0.00, -0.06);
+    glEnd();
+
+    // Right back thigh connection
+    glBegin(GL_QUADS);
+    glVertex3f(0.05, 0.05, -0.09);
+    glVertex3f(0.07, 0.05, -0.11);
+    glVertex3f(0.10, 0.00, -0.06);
+    glVertex3f(0.01, 0.00, -0.06);
+    glEnd();
+
+    //=== BACK CONNECTION LINES ===
+    // Left inner line (from hip center to thigh inner)
+    glBegin(GL_LINES);
+    glVertex3f(-0.02, 0.10, -0.07);
+    glVertex3f(-0.01, 0.00, -0.06);
+    glEnd();
+
+    // Right inner line (from hip center to thigh inner)
+    glBegin(GL_LINES);
+    glVertex3f(0.02, 0.10, -0.07);
+    glVertex3f(0.01, 0.00, -0.06);
+    glEnd();
+
+    // Left outer line (from glute outer edge to thigh outer)
+    glBegin(GL_LINES);
+    glVertex3f(-0.12, 0.10, -0.09);
+    glVertex3f(-0.10, 0.00, -0.06);
+    glEnd();
+
+    // Right outer line (from glute outer edge to thigh outer)
+    glBegin(GL_LINES);
+    glVertex3f(0.12, 0.10, -0.09);
+    glVertex3f(0.10, 0.00, -0.06);
+    glEnd();
+
+    //========= SIDE FACES  ==========
+    // Hip center left side
     glBegin(GL_QUADS);
     glVertex3f(-0.04, 0.19, 0.07);
     glVertex3f(-0.04, 0.19, -0.07);
-    glVertex3f(-0.06, 0.12, -0.10);
-    glVertex3f(-0.06, 0.12, 0.10);
-    glEnd();
-
-
-    glBegin(GL_QUADS);
+    glVertex3f(-0.02, 0.10, -0.07);
+    glVertex3f(-0.02, 0.10, 0.07);
     glVertex3f(0.04, 0.19, 0.07);
-    glVertex3f(0.06, 0.12, 0.10);
-    glVertex3f(0.06, 0.12, -0.10);
     glVertex3f(0.04, 0.19, -0.07);
+    glVertex3f(0.02, 0.10, -0.07);
+    glVertex3f(0.02, 0.10, 0.07);
+    glVertex3f(-0.09, 0.19, 0.07);
+    glVertex3f(-0.09, 0.19, -0.07);
+    glVertex3f(-0.12, 0.10, -0.09);
+    glVertex3f(-0.12, 0.10, 0.07);
+    glVertex3f(-0.12, 0.10, 0.07);
+    glVertex3f(-0.12, 0.10, -0.09);
+    glVertex3f(-0.07, 0.05, -0.11);
+    glVertex3f(-0.07, 0.05, 0.07);
     glEnd();
 
+    // Right glute 
     glBegin(GL_QUADS);
-    glVertex3f(-0.02, 0.19, 0.07);
-    glVertex3f(0.0, 0.19, 0.07);
-    glVertex3f(0.0, 0.11, 0.10);
-    glVertex3f(-0.06, 0.12, 0.10);
+    glVertex3f(0.09, 0.19, 0.07);
+    glVertex3f(0.09, 0.19, -0.07);
+    glVertex3f(0.12, 0.10, -0.09);
+    glVertex3f(0.12, 0.10, 0.07);
+    glVertex3f(0.12, 0.10, 0.07);
+    glVertex3f(0.12, 0.10, -0.09);
+    glVertex3f(0.07, 0.05, -0.11);
+    glVertex3f(0.07, 0.05, 0.07);
     glEnd();
 
+    // Left thigh outer side
     glBegin(GL_QUADS);
-    glVertex3f(0.0, 0.19, 0.07);
-    glVertex3f(0.02, 0.19, 0.07);
-    glVertex3f(0.06, 0.12, 0.10);
-    glVertex3f(0.0, 0.11, 0.10);
+    glVertex3f(-0.10, 0.00, 0.06);
+    glVertex3f(-0.10, 0.00, -0.06);
+    glVertex3f(-0.07, 0.05, -0.11);
+    glVertex3f(-0.07, 0.05, 0.07);
     glEnd();
 
+    // Right thigh outer side
     glBegin(GL_QUADS);
-    glVertex3f(-0.02, 0.19, -0.07);
-    glVertex3f(-0.06, 0.12, -0.10);
-    glVertex3f(0.0, 0.11, -0.10);
-    glVertex3f(0.0, 0.19, -0.07);
+    glVertex3f(0.10, 0.00, 0.06);
+    glVertex3f(0.10, 0.00, -0.06);
+    glVertex3f(0.07, 0.05, -0.11);
+    glVertex3f(0.07, 0.05, 0.07);
     glEnd();
 
+    // Left thigh inner side
     glBegin(GL_QUADS);
-    glVertex3f(0.0, 0.19, -0.07);
-    glVertex3f(0.0, 0.11, -0.10);
-    glVertex3f(0.06, 0.12, -0.10);
-    glVertex3f(0.02, 0.19, -0.07);
+    glVertex3f(-0.01, 0.00, 0.06);
+    glVertex3f(-0.01, 0.00, -0.06);
+    glVertex3f(-0.02, 0.10, -0.07);
+    glVertex3f(-0.02, 0.10, 0.07);
+    glEnd();
+
+    // Right thigh inner side
+    glBegin(GL_QUADS);
+    glVertex3f(0.01, 0.00, 0.06);
+    glVertex3f(0.01, 0.00, -0.06);
+    glVertex3f(0.02, 0.10, -0.07);
+    glVertex3f(0.02, 0.10, 0.07);
+    glEnd();
+
+    // ========  THIGH AND KNEE FRONT VIEW
+    // Left upper thigh front
+    glBegin(GL_QUADS);
+    glVertex3f(-0.01, 0.00, 0.06);
+    glVertex3f(-0.10, 0.00, 0.06);
+    glVertex3f(-0.08, -0.18, 0.07);
+    glVertex3f(-0.05, -0.18, 0.07);
+    glEnd();
+
+    // Right upper thigh front
+    glBegin(GL_QUADS);
+    glVertex3f(0.01, 0.00, 0.06);
+    glVertex3f(0.03, -0.18, 0.07);
+    glVertex3f(0.06, -0.18, 0.07);
+    glVertex3f(0.10, 0.00, 0.06);
+    glEnd();
+
+    // Left knee cap (front view)
+    glBegin(GL_QUADS);
+    glVertex3f(-0.08, -0.18, 0.07);
+    glVertex3f(-0.05, -0.18, 0.07);
+    glVertex3f(-0.04, -0.25, 0.04);
+    glVertex3f(-0.07, -0.25, 0.04);
+    glEnd();
+
+    // Right knee cap (front view)
+    glBegin(GL_QUADS);
+    glVertex3f(0.03, -0.18, 0.07);
+    glVertex3f(0.06, -0.18, 0.07);
+    glVertex3f(0.07, -0.25, 0.04);
+    glVertex3f(0.04, -0.25, 0.04);
+    glEnd();
+
+    // connection lines for thigh and knee
+    glBegin(GL_LINES);
+    glVertex3f(-0.10, 0.00, 0.06);
+    glVertex3f(-0.11, -0.18, 0.07);
+    glVertex3f(-0.01, 0.00, 0.06);
+    glVertex3f(-0.02, -0.18, 0.07);
+    glVertex3f(-0.11, -0.18, 0.07);
+    glVertex3f(-0.07, -0.25, 0.04);
+    glVertex3f(-0.02, -0.18, 0.07);
+    glVertex3f(-0.04, -0.25, 0.04);
+    glVertex3f(0.10, 0.00, 0.06);
+    glVertex3f(0.11, -0.18, 0.07);
+    glVertex3f(0.01, 0.00, 0.06);
+    glVertex3f(0.02, -0.18, 0.07);
+    glVertex3f(0.11, -0.18, 0.07);
+    glVertex3f(0.07, -0.25, 0.04);
+    glVertex3f(0.02, -0.18, 0.07);
+    glVertex3f(0.04, -0.25, 0.04);
+    glEnd();
+
+    // Left upper thigh back
+    glBegin(GL_QUADS);
+    glVertex3f(-0.01, 0.00, -0.06);
+    glVertex3f(-0.10, 0.00, -0.06);
+    glVertex3f(-0.08, -0.18, -0.05);
+    glVertex3f(-0.05, -0.18, -0.05);
+    glVertex3f(0.01, 0.00, -0.06);
+    glVertex3f(0.03, -0.18, -0.05);
+    glVertex3f(0.06, -0.18, -0.05);
+    glVertex3f(0.10, 0.00, -0.06);
+    glVertex3f(-0.08, -0.18, -0.05);
+    glVertex3f(-0.05, -0.18, -0.05);
+    glVertex3f(-0.04, -0.25, -0.01);
+    glVertex3f(-0.07, -0.25, -0.01);
+    glVertex3f(0.03, -0.18, -0.05);
+    glVertex3f(0.06, -0.18, -0.05);
+    glVertex3f(0.07, -0.25, -0.01);
+    glVertex3f(0.04, -0.25, -0.01);
+    glEnd();
+
+    // ======== BACK VIEW OUTER & INNER LINES ========
+    // Left thigh outer edge line (back view)
+    glBegin(GL_LINES);
+    glVertex3f(-0.10, 0.00, -0.06);
+    glVertex3f(-0.11, -0.18, -0.05);
+    glVertex3f(-0.01, 0.00, -0.06);
+    glVertex3f(-0.02, -0.18, -0.05);
+    glVertex3f(-0.11, -0.18, -0.05);
+    glVertex3f(-0.07, -0.25, -0.01);
+    glVertex3f(-0.02, -0.18, -0.05);
+    glVertex3f(-0.04, -0.25, -0.01);
+    glVertex3f(0.10, 0.00, -0.06);
+    glVertex3f(0.11, -0.18, -0.05);
+    glVertex3f(0.01, 0.00, -0.06);
+    glVertex3f(0.02, -0.18, -0.05);
+    glVertex3f(0.11, -0.18, -0.05);
+    glVertex3f(0.07, -0.25, -0.01);
+    glVertex3f(0.02, -0.18, -0.05);
+    glVertex3f(0.04, -0.25, -0.01);
+    glEnd();
+
+    // ======== SIDE VIEW - THIGH AND KNEE ========
+    // === LEFT SIDE VIEW ===
+    // Left thigh outer side (connecting front to back)
+    glBegin(GL_QUADS);
+    glVertex3f(-0.10, 0.00, 0.06);
+    glVertex3f(-0.10, 0.00, -0.06);
+    glVertex3f(-0.08, -0.18, -0.05);
+    glVertex3f(-0.08, -0.18, 0.07);
+    glEnd();
+
+    // Left thigh inner side (connecting front to back)
+    glBegin(GL_QUADS);
+    glVertex3f(-0.01, 0.00, 0.06);
+    glVertex3f(-0.05, -0.18, 0.07);
+    glVertex3f(-0.05, -0.18, -0.05);
+    glVertex3f(-0.01, 0.00, -0.06);
+    glEnd();
+
+    // Left knee outer side (connecting front to back)
+    glBegin(GL_QUADS);
+    glVertex3f(-0.08, -0.18, 0.07);
+    glVertex3f(-0.08, -0.18, -0.05);
+    glVertex3f(-0.07, -0.25, -0.01);
+    glVertex3f(-0.07, -0.25, 0.04);
+    glEnd();
+
+    // Left knee inner side (connecting front to back)
+    glBegin(GL_QUADS);
+    glVertex3f(-0.05, -0.18, 0.07);
+    glVertex3f(-0.04, -0.25, 0.04);
+    glVertex3f(-0.04, -0.25, -0.01);
+    glVertex3f(-0.05, -0.18, -0.05);
+    glEnd();
+
+    // === RIGHT SIDE VIEW ===
+    // Right thigh outer side (connecting front to back)
+    glBegin(GL_QUADS);
+    glVertex3f(0.10, 0.00, 0.06);
+    glVertex3f(0.06, -0.18, 0.07);
+    glVertex3f(0.06, -0.18, -0.05);
+    glVertex3f(0.10, 0.00, -0.06);
+    glEnd();
+
+    // Right thigh inner side (connecting front to back)
+    glBegin(GL_QUADS);
+    glVertex3f(0.01, 0.00, 0.06);
+    glVertex3f(0.01, 0.00, -0.06);
+    glVertex3f(0.03, -0.18, -0.05);
+    glVertex3f(0.03, -0.18, 0.07);
+    glEnd();
+
+    // Right knee outer side (connecting front to back)
+    glBegin(GL_QUADS);
+    glVertex3f(0.06, -0.18, 0.07);
+    glVertex3f(0.07, -0.25, 0.04);
+    glVertex3f(0.07, -0.25, -0.01);
+    glVertex3f(0.06, -0.18, -0.05);
+    glEnd();
+
+    // Right knee inner side (connecting front to back)
+    glBegin(GL_QUADS);
+    glVertex3f(0.03, -0.18, 0.07);
+    glVertex3f(0.03, -0.18, -0.05);
+    glVertex3f(0.04, -0.25, -0.01);
+    glVertex3f(0.04, -0.25, 0.04);
+    glEnd();
+
+    //=== Calf ===
+
+    glBegin(GL_LINES);
+    glVertex3f(-0.05, -0.35, 0.03);
+    glVertex3f(-0.05, -0.50, 0.02);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(0.05, -0.35, 0.03);
+    glVertex3f(0.05, -0.50, 0.02);
+    glEnd();
+
+
+    // === BACK VIEW  ===
+    glBegin(GL_LINES);
+    glVertex3f(-0.05, -0.35, -0.05);
+    glVertex3f(-0.05, -0.50, -0.02);
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(0.05, -0.35, -0.05);
+    glVertex3f(0.05, -0.50, -0.02);
+    glEnd();
+
+    // === SIDE FACES  ===
+    glBegin(GL_TRIANGLES);
+    glVertex3f(-0.07, -0.25, 0.04);
+    glVertex3f(-0.07, -0.25, -0.01);
+    glVertex3f(-0.05, -0.35, 0.03);
     glEnd();
 
     glBegin(GL_TRIANGLES);
-    glVertex3f(-0.04, 0.19, 0.07);
-    glVertex3f(-0.02, 0.19, 0.07);
-    glVertex3f(-0.06, 0.12, 0.10);
+    glVertex3f(-0.07, -0.25, -0.01);
+    glVertex3f(-0.05, -0.35, -0.05);
+    glVertex3f(-0.05, -0.35, 0.03);
     glEnd();
 
     glBegin(GL_TRIANGLES);
-    glVertex3f(0.02, 0.19, 0.07);
-    glVertex3f(0.04, 0.19, 0.07);
-    glVertex3f(0.06, 0.12, 0.10);
+    glVertex3f(-0.04, -0.25, 0.04);
+    glVertex3f(-0.05, -0.35, 0.03);
+    glVertex3f(-0.04, -0.25, -0.01);
     glEnd();
 
     glBegin(GL_TRIANGLES);
-    glVertex3f(-0.04, 0.19, -0.07);
-    glVertex3f(-0.02, 0.19, -0.07);
-    glVertex3f(-0.06, 0.12, -0.10);
+    glVertex3f(-0.04, -0.25, -0.01);
+    glVertex3f(-0.05, -0.35, 0.03);
+    glVertex3f(-0.05, -0.35, -0.05);
     glEnd();
 
     glBegin(GL_TRIANGLES);
-    glVertex3f(0.02, 0.19, -0.07);
-    glVertex3f(0.04, 0.19, -0.07);
-    glVertex3f(0.06, 0.12, -0.10);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.09, 0.19, 0.03);
-    glVertex3f(-0.04, 0.19, 0.07);
-    glVertex3f(-0.06, 0.12, 0.10);
-    glVertex3f(-0.11, 0.13, 0.03);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.04, 0.19, -0.07);
-    glVertex3f(-0.09, 0.19, -0.03);
-    glVertex3f(-0.11, 0.13, -0.03);
-    glVertex3f(-0.06, 0.12, -0.10);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.04, 0.19, 0.07);
-    glVertex3f(0.09, 0.19, 0.03);
-    glVertex3f(0.11, 0.13, 0.03);
-    glVertex3f(0.06, 0.12, 0.10);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.09, 0.19, -0.03);
-    glVertex3f(0.04, 0.19, -0.07);
-    glVertex3f(0.06, 0.12, -0.10);
-    glVertex3f(0.11, 0.13, -0.03);
-    glEnd();
-
-    // below belt second layer
-    glBegin(GL_TRIANGLES);
-    glVertex3f(-0.06, 0.12, 0.10);
-    glVertex3f(-0.11, 0.13, 0.03);
-    glVertex3f(-0.12, 0.02, 0.08);
+    glVertex3f(0.07, -0.25, 0.04);
+    glVertex3f(0.05, -0.35, 0.03);
+    glVertex3f(0.07, -0.25, -0.01);
     glEnd();
 
     glBegin(GL_TRIANGLES);
-    glVertex3f(-0.11, 0.13, -0.03);
-    glVertex3f(-0.06, 0.12, -0.10);
-    glVertex3f(-0.12, 0.02, -0.08);
+    glVertex3f(0.07, -0.25, -0.01);
+    glVertex3f(0.05, -0.35, 0.03);
+    glVertex3f(0.05, -0.35, -0.05);
     glEnd();
 
     glBegin(GL_TRIANGLES);
-    glVertex3f(0.11, 0.13, 0.03);
-    glVertex3f(0.06, 0.12, 0.10);
-    glVertex3f(0.12, 0.02, 0.08);
+    glVertex3f(0.04, -0.25, 0.04);
+    glVertex3f(0.04, -0.25, -0.01);
+    glVertex3f(0.05, -0.35, 0.03);
     glEnd();
 
     glBegin(GL_TRIANGLES);
-    glVertex3f(0.06, 0.12, -0.10);
-    glVertex3f(0.11, 0.13, -0.03);
-    glVertex3f(0.12, 0.02, -0.08);
+    glVertex3f(0.04, -0.25, -0.01);
+    glVertex3f(0.05, -0.35, -0.05);
+    glVertex3f(0.05, -0.35, 0.03);
     glEnd();
 
-    glBegin(GL_TRIANGLES);
-    glVertex3f(-0.06, 0.12, 0.10);
-    glVertex3f(0.06, 0.12, 0.10);
-    glVertex3f(0.0, 0.01, 0.14);
+    // === CALF EXTENSIONS  ===
+    glBegin(GL_LINES);
+    glVertex3f(-0.07, -0.25, 0.04);
+    glVertex3f(-0.09, -0.40, 0.02);
+    glVertex3f(-0.07, -0.25, -0.01);
+    glVertex3f(-0.09, -0.40, -0.06);
+    glVertex3f(-0.04, -0.25, 0.04);
+    glVertex3f(-0.02, -0.40, 0.02);
+    glVertex3f(-0.04, -0.25, -0.01);
+    glVertex3f(-0.02, -0.40, -0.06);
     glEnd();
 
-    glBegin(GL_TRIANGLES);
-    glVertex3f(0.06, 0.12, -0.10);
-    glVertex3f(-0.06, 0.12, -0.10);
-    glVertex3f(0.0, 0.01, -0.14);
+    glBegin(GL_LINES);
+    glVertex3f(0.07, -0.25, 0.04);
+    glVertex3f(0.09, -0.40, 0.02);
+    glVertex3f(0.07, -0.25, -0.01);
+    glVertex3f(0.09, -0.40, -0.06);
+    glVertex3f(0.04, -0.25, 0.04);
+    glVertex3f(0.02, -0.40, 0.02);
+    glVertex3f(0.04, -0.25, -0.01);
+    glVertex3f(0.02, -0.40, -0.06);
     glEnd();
 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.06, 0.12, 0.10);
-    glVertex3f(-0.12, 0.02, 0.08);
-    glVertex3f(-0.12, 0.02, -0.08);
-    glVertex3f(-0.06, 0.12, -0.10);
+    // === CONNECTION LINES (Enhanced taper to ankle) ===
+    glBegin(GL_LINES);
+    glVertex3f(-0.09, -0.40, 0.02);
+    glVertex3f(-0.05, -0.50, 0.02);
+    glVertex3f(-0.09, -0.40, -0.06);
+    glVertex3f(-0.05, -0.50, -0.02);
+    glVertex3f(-0.02, -0.40, 0.02);
+    glVertex3f(-0.05, -0.50, 0.02);
+    glVertex3f(-0.02, -0.40, -0.06);
+    glVertex3f(-0.05, -0.50, -0.02);
+    glVertex3f(0.09, -0.40, 0.02);
+    glVertex3f(0.05, -0.50, 0.02);
+    glVertex3f(0.09, -0.40, -0.06);
+    glVertex3f(0.05, -0.50, -0.02);
+    glVertex3f(0.02, -0.40, 0.02);
+    glVertex3f(0.05, -0.50, 0.02);
+    glVertex3f(0.02, -0.40, -0.06);
+    glVertex3f(0.05, -0.50, -0.02);
     glEnd();
 
-    glBegin(GL_QUADS);
-    glVertex3f(0.06, 0.12, 0.10);
-    glVertex3f(0.06, 0.12, -0.10);
-    glVertex3f(0.12, 0.02, -0.08);
-    glVertex3f(0.12, 0.02, 0.08);
+    // === SIDE CONNECTIONS (Enhanced muscle definition) ===
+    glBegin(GL_LINES);
+    glVertex3f(-0.09, -0.40, 0.02);
+    glVertex3f(-0.09, -0.40, -0.06);
+    glVertex3f(-0.02, -0.40, 0.02);
+    glVertex3f(-0.02, -0.40, -0.06);
+    glVertex3f(0.09, -0.40, 0.02);
+    glVertex3f(0.09, -0.40, -0.06);
+    glVertex3f(0.02, -0.40, 0.02);
+    glVertex3f(0.02, -0.40, -0.06);
+    glVertex3f(-0.05, -0.50, 0.02);
+    glVertex3f(-0.05, -0.50, -0.02);
+    glVertex3f(0.05, -0.50, 0.02);
+    glVertex3f(0.05, -0.50, -0.02);
     glEnd();
 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.06, 0.12, 0.10);
-    glVertex3f(0.0, 0.01, 0.14);
-    glVertex3f(-0.08, 0.01, 0.12);
-    glVertex3f(-0.12, 0.02, 0.08);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.06, 0.12, 0.10);
-    glVertex3f(0.12, 0.02, 0.08);
-    glVertex3f(0.08, 0.01, 0.12);
-    glVertex3f(0.0, 0.01, 0.14);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.06, 0.12, -0.10);
-    glVertex3f(-0.12, 0.02, -0.08);
-    glVertex3f(-0.08, 0.01, -0.12);
-    glVertex3f(0.0, 0.01, -0.14);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.06, 0.12, -0.10);
-    glVertex3f(0.0, 0.01, -0.14);
-    glVertex3f(0.08, 0.01, -0.12);
-    glVertex3f(0.12, 0.02, -0.08);
-    glEnd();
-
-    // LEFT THIGH 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.08, 0.12, 0.05);      
-    glVertex3f(-0.02, 0.12, 0.04);      
-    glVertex3f(-0.015, 0.02, 0.04);     
-    glVertex3f(-0.085, 0.02, 0.06);     
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.085, 0.02, 0.06);     
-    glVertex3f(-0.015, 0.02, 0.04);     
-    glVertex3f(-0.02, -0.08, 0.03);     
-    glVertex3f(-0.07, -0.08, 0.05);     
-    glEnd();
-
-    // Thigh back face 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.02, 0.12, -0.04);     
-    glVertex3f(-0.08, 0.12, -0.05);     
-    glVertex3f(-0.075, 0.02, -0.055);   
-    glVertex3f(-0.015, 0.02, -0.045);   
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.015, 0.02, -0.045);   
-    glVertex3f(-0.075, 0.02, -0.055);   
-    glVertex3f(-0.07, -0.08, -0.05);    
-    glVertex3f(-0.02, -0.08, -0.03);    
-    glEnd();
-
-    // Thigh outer side 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.08, 0.12, 0.05);      
-    glVertex3f(-0.08, 0.12, -0.05);     
-    glVertex3f(-0.075, 0.02, -0.055);   
-    glVertex3f(-0.085, 0.02, 0.06);     
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.085, 0.02, 0.06);     
-    glVertex3f(-0.075, 0.02, -0.055);   
-    glVertex3f(-0.07, -0.08, -0.05);   
-    glVertex3f(-0.07, -0.08, 0.05);     
-    glEnd();
-
-    // Thigh inner side 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.02, 0.12, -0.04);   
-    glVertex3f(-0.02, 0.12, 0.04);     
-    glVertex3f(-0.015, 0.02, 0.04);     
-    glVertex3f(-0.015, 0.02, -0.045);   
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.015, 0.02, -0.045);  
-    glVertex3f(-0.015, 0.02, 0.04);     
-    glVertex3f(-0.02, -0.08, 0.03);     
-    glVertex3f(-0.02, -0.08, -0.03);   
-    glEnd();
-
-    // LEFT KNEE 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.07, -0.08, 0.05);
-    glVertex3f(-0.02, -0.08, 0.03);
-    glVertex3f(-0.02, -0.12, 0.025);
-    glVertex3f(-0.065, -0.12, 0.042);   
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.02, -0.08, -0.03);
-    glVertex3f(-0.07, -0.08, -0.05);
-    glVertex3f(-0.065, -0.12, -0.042);  
-    glVertex3f(-0.02, -0.12, -0.025);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.07, -0.08, 0.05);
-    glVertex3f(-0.07, -0.08, -0.05);
-    glVertex3f(-0.065, -0.12, -0.042);
-    glVertex3f(-0.065, -0.12, 0.042);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.02, -0.08, -0.03);
-    glVertex3f(-0.02, -0.08, 0.03);
-    glVertex3f(-0.02, -0.12, 0.025);
-    glVertex3f(-0.02, -0.12, -0.025);
-    glEnd();
-
+    // Ankle and Foot
     
 
-    // left Shin front 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.065, -0.12, 0.042);
-    glVertex3f(-0.02, -0.12, 0.025);
-    glVertex3f(-0.02, -0.25, 0.022);    
-    glVertex3f(-0.055, -0.25, 0.035);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.055, -0.25, 0.035);
-    glVertex3f(-0.02, -0.25, 0.022);
-    glVertex3f(-0.02, -0.35, 0.02);     // Ankle
-    glVertex3f(-0.05, -0.35, 0.03);
-    glEnd();
-
-    // Shin back 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.02, -0.12, -0.025);
-    glVertex3f(-0.065, -0.12, -0.042);
-    glVertex3f(-0.07, -0.25, -0.055);   
-    glVertex3f(-0.02, -0.25, -0.03);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.02, -0.25, -0.03);
-    glVertex3f(-0.07, -0.25, -0.055);   
-    glVertex3f(-0.05, -0.35, -0.03);    
-    glVertex3f(-0.02, -0.35, -0.02);
-    glEnd();
-
-    // Shin outer side 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.065, -0.12, 0.042);
-    glVertex3f(-0.065, -0.12, -0.042);
-    glVertex3f(-0.07, -0.25, -0.055);   // Calf bulge
-    glVertex3f(-0.055, -0.25, 0.035);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.055, -0.25, 0.035);
-    glVertex3f(-0.07, -0.25, -0.055);
-    glVertex3f(-0.05, -0.35, -0.03);
-    glVertex3f(-0.05, -0.35, 0.03);
-    glEnd();
-
-    // Shin inner side 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.02, -0.12, -0.025);
-    glVertex3f(-0.02, -0.12, 0.025);
-    glVertex3f(-0.02, -0.25, 0.022);
-    glVertex3f(-0.02, -0.25, -0.03);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.02, -0.25, -0.03);
-    glVertex3f(-0.02, -0.25, 0.022);
-    glVertex3f(-0.02, -0.35, 0.02);
-    glVertex3f(-0.02, -0.35, -0.02);
-    glEnd();
-
-    // LEFT FOOT 
-    glBegin(GL_QUADS);
-    glVertex3f(-0.05, -0.35, 0.03);
-    glVertex3f(-0.02, -0.35, 0.02);
-    glVertex3f(-0.02, -0.38, 0.06);
-    glVertex3f(-0.05, -0.38, 0.08);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.02, -0.35, -0.02);
-    glVertex3f(-0.05, -0.35, -0.03);
-    glVertex3f(-0.05, -0.40, -0.01);
-    glVertex3f(-0.02, -0.40, 0.0);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.05, -0.35, 0.03);
-    glVertex3f(-0.05, -0.35, -0.03);
-    glVertex3f(-0.05, -0.40, -0.01);
-    glVertex3f(-0.05, -0.38, 0.08);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.02, -0.35, -0.02);
-    glVertex3f(-0.02, -0.35, 0.02);
-    glVertex3f(-0.02, -0.38, 0.06);
-    glVertex3f(-0.02, -0.40, 0.0);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(-0.05, -0.38, 0.08);
-    glVertex3f(-0.02, -0.38, 0.06);
-    glVertex3f(-0.02, -0.40, 0.0);
-    glVertex3f(-0.05, -0.39, 0.04);
-    glEnd();
-
-    // RIGHT THIGH
-    glBegin(GL_QUADS);
-    glVertex3f(0.08, 0.12, 0.05);     
-    glVertex3f(0.02, 0.12, 0.04);      
-    glVertex3f(0.015, 0.02, 0.04);      
-    glVertex3f(0.085, 0.02, 0.06);      
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.085, 0.02, 0.06);     
-    glVertex3f(0.015, 0.02, 0.04);      
-    glVertex3f(0.02, -0.08, 0.03);      
-    glVertex3f(0.07, -0.08, 0.05);     
-    glEnd();
-
-    // Thigh back face 
-    glBegin(GL_QUADS);
-    glVertex3f(0.02, 0.12, -0.04);      
-    glVertex3f(0.08, 0.12, -0.05);      
-    glVertex3f(0.075, 0.02, -0.055);    
-    glVertex3f(0.015, 0.02, -0.045);    
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.015, 0.02, -0.045);    
-    glVertex3f(0.075, 0.02, -0.055);  
-    glVertex3f(0.07, -0.08, -0.05);     
-    glVertex3f(0.02, -0.08, -0.03);     
-    glEnd();
-
-    // Thigh outer side 
-    glBegin(GL_QUADS);
-    glVertex3f(0.08, 0.12, 0.05);      
-    glVertex3f(0.08, 0.12, -0.05);     
-    glVertex3f(0.075, 0.02, -0.055);    
-    glVertex3f(0.085, 0.02, 0.06);      
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.085, 0.02, 0.06);      
-    glVertex3f(0.075, 0.02, -0.055);    
-    glVertex3f(0.07, -0.08, -0.05);     
-    glVertex3f(0.07, -0.08, 0.05);      
-    glEnd();
-
-    // Thigh inner side 
-    glBegin(GL_QUADS);
-    glVertex3f(0.02, 0.12, -0.04);      
-    glVertex3f(0.02, 0.12, 0.04);      
-    glVertex3f(0.015, 0.02, 0.04);     
-    glVertex3f(0.015, 0.02, -0.045);    
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.015, 0.02, -0.045);   
-    glVertex3f(0.015, 0.02, 0.04);    
-    glVertex3f(0.02, -0.08, 0.03);      
-    glVertex3f(0.02, -0.08, -0.03);     
-    glEnd();
-
-    // RIGHT KNEE 
-    glBegin(GL_QUADS);
-    glVertex3f(0.07, -0.08, 0.05);
-    glVertex3f(0.02, -0.08, 0.03);
-    glVertex3f(0.02, -0.12, 0.025);
-    glVertex3f(0.065, -0.12, 0.042);    
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.02, -0.08, -0.03);
-    glVertex3f(0.07, -0.08, -0.05);
-    glVertex3f(0.065, -0.12, -0.042);  
-    glVertex3f(0.02, -0.12, -0.025);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.07, -0.08, 0.05);
-    glVertex3f(0.07, -0.08, -0.05);
-    glVertex3f(0.065, -0.12, -0.042);
-    glVertex3f(0.065, -0.12, 0.042);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.02, -0.08, -0.03);
-    glVertex3f(0.02, -0.08, 0.03);
-    glVertex3f(0.02, -0.12, 0.025);
-    glVertex3f(0.02, -0.12, -0.025);
-    glEnd();
-
-    // right shin front
-    glBegin(GL_QUADS);
-    glVertex3f(0.065, -0.12, 0.042);
-    glVertex3f(0.02, -0.12, 0.025);
-    glVertex3f(0.02, -0.25, 0.022);     
-    glVertex3f(0.055, -0.25, 0.035);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.055, -0.25, 0.035);
-    glVertex3f(0.02, -0.25, 0.022);
-    glVertex3f(0.02, -0.35, 0.02);    
-    glVertex3f(0.05, -0.35, 0.03);
-    glEnd();
-
-    // Shin back
-    glBegin(GL_QUADS);
-    glVertex3f(0.02, -0.12, -0.025);
-    glVertex3f(0.065, -0.12, -0.042);
-    glVertex3f(0.07, -0.25, -0.055);    
-    glVertex3f(0.02, -0.25, -0.03);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.02, -0.25, -0.03);
-    glVertex3f(0.07, -0.25, -0.055);    
-    glVertex3f(0.05, -0.35, -0.03);     
-    glVertex3f(0.02, -0.35, -0.02);
-    glEnd();
-
-    // Shin outer side
-    glBegin(GL_QUADS);
-    glVertex3f(0.065, -0.12, 0.042);
-    glVertex3f(0.065, -0.12, -0.042);
-    glVertex3f(0.07, -0.25, -0.055);    
-    glVertex3f(0.055, -0.25, 0.035);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.055, -0.25, 0.035);
-    glVertex3f(0.07, -0.25, -0.055);
-    glVertex3f(0.05, -0.35, -0.03);
-    glVertex3f(0.05, -0.35, 0.03);
-    glEnd();
-
-    // Shin inner side
-    glBegin(GL_QUADS);
-    glVertex3f(0.02, -0.12, -0.025);
-    glVertex3f(0.02, -0.12, 0.025);
-    glVertex3f(0.02, -0.25, 0.022);
-    glVertex3f(0.02, -0.25, -0.03);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex3f(0.02, -0.25, -0.03);
-    glVertex3f(0.02, -0.25, 0.022);
-    glVertex3f(0.02, -0.35, 0.02);
-    glVertex3f(0.02, -0.35, -0.02);
-    glEnd();
-
-    // right foot
-    glBegin(GL_QUADS);
-    glVertex3f(0.05, -0.35, 0.03);
-    glVertex3f(0.02, -0.35, 0.02);
-    glVertex3f(0.02, -0.38, 0.06);
-    glVertex3f(0.05, -0.38, 0.08);
-    glEnd();
-
-    // Foot bottom
-    glBegin(GL_QUADS);
-    glVertex3f(0.02, -0.35, -0.02);
-    glVertex3f(0.05, -0.35, -0.03);
-    glVertex3f(0.05, -0.40, -0.01);
-    glVertex3f(0.02, -0.40, 0.0);
-    glEnd();
-
-    // Foot outer side
-    glBegin(GL_QUADS);
-    glVertex3f(0.05, -0.35, 0.03);
-    glVertex3f(0.05, -0.35, -0.03);
-    glVertex3f(0.05, -0.40, -0.01);
-    glVertex3f(0.05, -0.38, 0.08);
-    glEnd();
-
-    // Foot inner side
-    glBegin(GL_QUADS);
-    glVertex3f(0.02, -0.35, -0.02);
-    glVertex3f(0.02, -0.35, 0.02);
-    glVertex3f(0.02, -0.38, 0.06);
-    glVertex3f(0.02, -0.40, 0.0);
-    glEnd();
-
-    // Foot front (toe area)
-    glBegin(GL_QUADS);
-    glVertex3f(0.05, -0.38, 0.08);
-    glVertex3f(0.02, -0.38, 0.06);
-    glVertex3f(0.02, -0.40, 0.0);
-    glVertex3f(0.05, -0.39, 0.04);
-    glEnd();
-
 }
-
 
 void display()
 {
