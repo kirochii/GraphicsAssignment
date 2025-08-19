@@ -943,6 +943,10 @@ void body() {
     glEnd();
 
 
+    //hand
+    glBegin(GL_QUAD_STRIP);
+    glEnd();
+
 
     // Right Arm
 
