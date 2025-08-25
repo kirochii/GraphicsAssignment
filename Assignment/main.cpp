@@ -147,59 +147,6 @@ void guide() {
 }
 
 void body() {
-
-    //guide measurement
-    /*
-    glBegin(GL_LINES);
-    glVertex3f(-0.9, 0.8, 0);
-    glVertex3f(0.9, 0.8, 0);
-    glEnd();
-
-    glBegin(GL_LINES);
-    glVertex3f(-0.9, 0.6, 0);
-    glVertex3f(0.9, 0.6, 0);
-    glEnd();
-
-    glBegin(GL_LINES);
-    glVertex3f(-0.9, 0.4, 0);
-    glVertex3f(0.9, 0.4, 0);
-    glEnd();
-
-    glBegin(GL_LINES);
-    glVertex3f(-0.9, 0.2, 0);
-    glVertex3f(0.9, 0.2, 0);
-    glEnd();
-
-    glBegin(GL_LINES);
-    glVertex3f(-0.9, 0, 0);
-    glVertex3f(0.9, 0, 0);
-    glEnd();
-
-    glBegin(GL_LINES);
-    glVertex3f(-0.9, -0.2, 0);
-    glVertex3f(0.9, -0.2, 0);
-    glEnd();
-
-    glBegin(GL_LINES);
-    glVertex3f(-0.9, -0.4, 0);
-    glVertex3f(0.9, -0.4, 0);
-    glEnd();
-
-    glBegin(GL_LINES);
-    glVertex3f(-0.9, -0.6, 0);
-    glVertex3f(0.9, -0.6, 0);
-    glEnd();
-
-    glBegin(GL_LINES);
-    glVertex3f(-0.9, -0.8, 0);
-    glVertex3f(0.9, -0.8, 0);
-    glEnd();
-    */
-
-
-
-
-
     //belt (code start bottom right, clockwise), physical rendering start middle to left
     glBegin(GL_POLYGON);
     glVertex3f(0, 0.19, 0.07);
@@ -853,556 +800,198 @@ void body() {
 
 
 
+}
+
+void upperArm() {
     // Shoulder
-    glBegin(GL_QUADS);
+    glBegin(GL_QUAD_STRIP);
     glVertex3f(-0.16, 0.52, 0.03);
+    glVertex3f(-0.18, 0.48, -0.01);
     glVertex3f(-0.13, 0.52, -0.07);
     glVertex3f(-0.16, 0.48, -0.08);
-    glVertex3f(-0.18, 0.48, 0.04);
+    glVertex3f(-0.13, 0.52, -0.07);
+    glVertex3f(-0.13, 0.48, -0.07);
+    glVertex3f(-0.16, 0.52, 0.03);
+    glVertex3f(-0.14, 0.48, 0.03);
+    glVertex3f(-0.16, 0.52, 0.03);
+    glVertex3f(-0.18, 0.48, -0.01);
     glEnd();
 
     // Upper Arm
     glBegin(GL_QUAD_STRIP);
     // First side
     glVertex3f(-0.16, 0.48, -0.08); // top outer
-    glVertex3f(-0.16, 0.44, -0.08); // bottom outer
-
+    glVertex3f(-0.17, 0.44, -0.08); // bottom outer
     // Second side
-    glVertex3f(-0.18, 0.48, 0.04);  // top inner
-    glVertex3f(-0.18, 0.44, 0.04);  // bottom inner
-
+    glVertex3f(-0.18, 0.48, -0.01);  // top inner
+    glVertex3f(-0.19, 0.44, -0.02);  // bottom inner
     // Third side
-    glVertex3f(-0.12, 0.48, 0.04);  // top front
-    glVertex3f(-0.12, 0.44, 0.04);  // bottom front
-
+    glVertex3f(-0.14, 0.48, 0.03);  // top front
+    glVertex3f(-0.13, 0.44, 0.01);  // bottom front
     // Fourth side
-    glVertex3f(-0.12, 0.48, -0.08); // top back
-    glVertex3f(-0.12, 0.44, -0.08); // bottom back
-
+    glVertex3f(-0.13, 0.48, -0.07); // top back
+    glVertex3f(-0.13, 0.44, -0.08); // bottom back
     // Close loop back to first vertices
     glVertex3f(-0.16, 0.48, -0.08); // top outer again
-    glVertex3f(-0.16, 0.44, -0.08); // bottom outer again
+    glVertex3f(-0.17, 0.44, -0.08); // bottom outer again
     glEnd();
 
     glBegin(GL_QUAD_STRIP);
     // Side 1: Outer
-    glVertex3f(-0.16, 0.44, -0.08);
-    glVertex3f(-0.155, 0.40, -0.08);
-
+    glVertex3f(-0.17, 0.44, -0.08);
+    glVertex3f(-0.18, 0.40, -0.085);
     // Side 2: Front
-    glVertex3f(-0.18, 0.44, 0.04);
-    glVertex3f(-0.175, 0.40, 0.04);
-
+    glVertex3f(-0.19, 0.44, -0.02);
+    glVertex3f(-0.195, 0.40, -0.03);
     // Side 3: Inner
-    glVertex3f(-0.12, 0.44, 0.04);
-    glVertex3f(-0.12, 0.40, 0.04);
-
+    glVertex3f(-0.13, 0.44, 0.01);
+    glVertex3f(-0.12, 0.40, 0);
     // Side 4: Back
-    glVertex3f(-0.12, 0.44, -0.08);
-    glVertex3f(-0.12, 0.40, -0.08);
-
+    glVertex3f(-0.13, 0.44, -0.08);
+    glVertex3f(-0.14, 0.40, -0.09);
     // Close loop
-    glVertex3f(-0.16, 0.44, -0.08);
-    glVertex3f(-0.155, 0.40, -0.08);
+    glVertex3f(-0.17, 0.44, -0.08);
+    glVertex3f(-0.18, 0.40, -0.085);
+    glEnd();
+    
+    glBegin(GL_QUAD_STRIP);
+    // Side 1: Outer
+    glVertex3f(-0.18, 0.40, -0.085);
+    glVertex3f(-0.18, 0.37, -0.08);
+    // Side 2: Front
+    glVertex3f(-0.195, 0.40, -0.03);
+    glVertex3f(-0.2, 0.37, -0.03);
+    // Side 3: Inner
+    glVertex3f(-0.12, 0.40, 0);
+    glVertex3f(-0.13, 0.35, -0.01);
+    // Side 4: Back
+    glVertex3f(-0.14, 0.40, -0.09);
+    glVertex3f(-0.14, 0.35, -0.09);
+    // Close loop
+    glVertex3f(-0.18, 0.40, -0.085);
+    glVertex3f(-0.18, 0.37, -0.08);
+    glEnd();
+
+    //close bottom
+    glBegin(GL_QUADS);
+    glVertex3f(-0.18, 0.37, -0.08);
+    glVertex3f(-0.2, 0.37, -0.03);
+    glVertex3f(-0.13, 0.35, -0.01);
+    glVertex3f(-0.14, 0.35, -0.09);
+    glEnd();
+}
+
+void lowerArm() {
+    //close top
+    glBegin(GL_QUADS);
+    glVertex3f(-0.18, 0.37, -0.08);
+    glVertex3f(-0.2, 0.37, -0.03);
+    glVertex3f(-0.13, 0.35, -0.01);
+    glVertex3f(-0.14, 0.35, -0.09);
     glEnd();
 
     glBegin(GL_QUAD_STRIP);
     // Side 1: Outer
-    glVertex3f(-0.155, 0.40, -0.08);
-    glVertex3f(-0.20, 0.30, -0.08);
-
+    glVertex3f(-0.18, 0.37, -0.08);
+    glVertex3f(-0.21, 0.30, -0.1);
     // Side 2: Front
-    glVertex3f(-0.175, 0.40, 0.04);
-    glVertex3f(-0.20, 0.30, 0.04);
-
-    // Side 3: Inner (keep 0.12 for smooth join)
-    glVertex3f(-0.12, 0.40, 0.04);
-    glVertex3f(-0.11, 0.30, 0.04);
-
-    // Side 4: Back (keep 0.12 for smooth join)
-    glVertex3f(-0.12, 0.40, -0.08);
-    glVertex3f(-0.11, 0.30, -0.08);
-
+    glVertex3f(-0.2, 0.37, -0.03);
+    glVertex3f(-0.23, 0.30, -0.01);
+    // Side 3: Inner
+    glVertex3f(-0.13, 0.35, -0.01);
+    glVertex3f(-0.15, 0.27, 0.02);
+    // Side 4: Back
+    glVertex3f(-0.14, 0.35, -0.09);
+    glVertex3f(-0.12, 0.27, -0.09);
     // Close loop
-    glVertex3f(-0.155, 0.40, -0.08);
-    glVertex3f(-0.20, 0.30, -0.08);
+    glVertex3f(-0.18, 0.37, -0.08);
+    glVertex3f(-0.21, 0.30, -0.1);
     glEnd();
 
-    // Patch to close gap on inner side
-    glBegin(GL_QUADS);
-    glVertex3f(-0.12, 0.40, 0.04);
-    glVertex3f(-0.11, 0.30, 0.04);
-    glVertex3f(-0.135, 0.25, 0.025);
-    glVertex3f(-0.15, 0.23, 0.03);
-    glEnd();
-
-    // Patch to close gap on back side
-    glBegin(GL_QUADS);
-    glVertex3f(-0.12, 0.40, -0.08);
-    glVertex3f(-0.11, 0.30, -0.08);
-    glVertex3f(-0.135, 0.27, -0.08);
-    glVertex3f(-0.15, 0.23, -0.03);
-    glEnd();
-
-    // Elbow
     glBegin(GL_QUAD_STRIP);
-    // Outer
-    glVertex3f(-0.20, 0.30, -0.08);
-    glVertex3f(-0.20, 0.30, 0.04);
-    glVertex3f(-0.19, 0.25, -0.05);
-    glVertex3f(-0.19, 0.25, 0.025);
-
-    // Back
-    glVertex3f(-0.20, 0.30, 0.04);
-    glVertex3f(-0.135, 0.25, 0.025);
-    glVertex3f(-0.19, 0.25, 0.03);
-    glVertex3f(-0.15, 0.23, 0.03);
-
-    // Front
-    glVertex3f(-0.20, 0.30, -0.08);
-    glVertex3f(-0.135, 0.27, -0.08);
-    glVertex3f(-0.19, 0.25, -0.03);
-    glVertex3f(-0.15, 0.23, -0.03);
-
-    // Inner to waist
-    glVertex3f(-0.135, 0.25, 0.025);
-    glVertex3f(-0.135, 0.27, -0.08);
-    glVertex3f(-0.15, 0.23, 0.03);
-    glVertex3f(-0.15, 0.23, -0.03);
+    // Side 1: Outer
+    glVertex3f(-0.21, 0.3, -0.1);
+    glVertex3f(-0.19, 0.25, -0.08);
+    // Side 2: Front
+    glVertex3f(-0.23, 0.3, -0.01);
+    glVertex3f(-0.21, 0.25, -0.03);
+    // Side 3: Inner
+    glVertex3f(-0.15, 0.27, 0.02);
+    glVertex3f(-0.17, 0.24, 0);
+    // Side 4: Back
+    glVertex3f(-0.12, 0.27, -0.09);
+    glVertex3f(-0.14, 0.24, -0.07);
+    // Close loop
+    glVertex3f(-0.21, 0.3, -0.1);
+    glVertex3f(-0.19, 0.25, -0.08);
     glEnd();
 
     // Forearm
     glBegin(GL_QUAD_STRIP);
-    // Outer side
-    glVertex3f(-0.19, 0.25, -0.05);
-    glVertex3f(-0.19, 0.25, 0.025);
-    glVertex3f(-0.20, 0.07, -0.04);
-    glVertex3f(-0.20, 0.07, 0.02);
-
-    // Back
-    glVertex3f(-0.19, 0.25, 0.03);
-    glVertex3f(-0.15, 0.23, 0.03);
-    glVertex3f(-0.20, 0.07, 0.02);
-    glVertex3f(-0.17, 0.07, 0.02);
-
-    // Inner side
-    glVertex3f(-0.15, 0.23, 0.03);
-    glVertex3f(-0.17, 0.07, 0.02);
-    glVertex3f(-0.15, 0.23, -0.03);
-    glVertex3f(-0.17, 0.07, -0.02);
-
-    // Front
-    glVertex3f(-0.19, 0.25, -0.03);
-    glVertex3f(-0.15, 0.23, -0.03);
-    glVertex3f(-0.20, 0.07, -0.02);
-    glVertex3f(-0.17, 0.07, -0.02);
+    glVertex3f(-0.19, 0.25, -0.08);
+    glVertex3f(-0.2, 0.07, -0.04);
+    glVertex3f(-0.21, 0.25, -0.03);
+    glVertex3f(-0.22, 0.07, -0.00);
+    glVertex3f(-0.17, 0.24, 0);
+    glVertex3f(-0.19, 0.07, 0);
+    glVertex3f(-0.14, 0.24, -0.07);
+    glVertex3f(-0.17, 0.07, -0.03);
+    glVertex3f(-0.19, 0.25, -0.08);
+    glVertex3f(-0.2, 0.07, -0.04);
     glEnd();
 
-
+    //close bottom
     glBegin(GL_QUADS);
-
-    // === PALM ===
-    // Front face
-    glVertex3f(-0.20, 0.07, -0.02);
-    glVertex3f(-0.17, 0.07, -0.02);
-    glVertex3f(-0.18, 0.02, -0.03);
-    glVertex3f(-0.21, 0.02, -0.03);
-
-    // Back face
-    glVertex3f(-0.20, 0.07, 0.02);
-    glVertex3f(-0.17, 0.07, 0.02);
-    glVertex3f(-0.18, 0.02, 0.03);
-    glVertex3f(-0.21, 0.02, 0.03);
-
-    // Left side
-    glVertex3f(-0.20, 0.07, -0.02);
-    glVertex3f(-0.20, 0.07, 0.02);
-    glVertex3f(-0.21, 0.02, 0.03);
-    glVertex3f(-0.21, 0.02, -0.03);
-
-    // Right side
-    glVertex3f(-0.17, 0.07, -0.02);
-    glVertex3f(-0.17, 0.07, 0.02);
-    glVertex3f(-0.18, 0.02, 0.03);
-    glVertex3f(-0.18, 0.02, -0.03);
-
-    // Top (wrist side)
-    glVertex3f(-0.20, 0.07, -0.02);
-    glVertex3f(-0.17, 0.07, -0.02);
-    glVertex3f(-0.17, 0.07, 0.02);
-    glVertex3f(-0.20, 0.07, 0.02);
-
-    // Bottom (fingertip side)
-    glVertex3f(-0.21, 0.02, -0.03);
-    glVertex3f(-0.18, 0.02, -0.03);
-    glVertex3f(-0.18, 0.02, 0.03);
-    glVertex3f(-0.21, 0.02, 0.03);
-
+    glVertex3f(-0.2, 0.07, -0.04);
+    glVertex3f(-0.22, 0.07, -0.00);
+    glVertex3f(-0.19, 0.07, 0);
+    glVertex3f(-0.17, 0.07, -0.03);
     glEnd();
+}
 
-
+void palm() {
+    //close top
     glBegin(GL_QUADS);
-
-    // === PROXIMAL PHALANGES (less tapered) ===
-    // Front face
-    glVertex3f(-0.21, 0.02, -0.03);
-    glVertex3f(-0.18, 0.02, -0.03);
-    glVertex3f(-0.185, -0.015, -0.028);  // less narrow, lower
-    glVertex3f(-0.205, -0.015, -0.028);
-
-    // Back face
-    glVertex3f(-0.21, 0.02, 0.03);
-    glVertex3f(-0.18, 0.02, 0.03);
-    glVertex3f(-0.185, -0.015, 0.028);
-    glVertex3f(-0.205, -0.015, 0.028);
-
-    // Left side
-    glVertex3f(-0.21, 0.02, -0.03);
-    glVertex3f(-0.21, 0.02, 0.03);
-    glVertex3f(-0.205, -0.015, 0.028);
-    glVertex3f(-0.205, -0.015, -0.028);
-
-    // Right side
-    glVertex3f(-0.18, 0.02, -0.03);
-    glVertex3f(-0.18, 0.02, 0.03);
-    glVertex3f(-0.185, -0.015, 0.028);
-    glVertex3f(-0.185, -0.015, -0.028);
-
-    // Top (joins palm)
-    glVertex3f(-0.21, 0.02, -0.03);
-    glVertex3f(-0.18, 0.02, -0.03);
-    glVertex3f(-0.18, 0.02, 0.03);
-    glVertex3f(-0.21, 0.02, 0.03);
-
-    // Bottom (joins distal phalanges)
-    glVertex3f(-0.205, -0.015, -0.028);
-    glVertex3f(-0.185, -0.015, -0.028);
-    glVertex3f(-0.185, -0.015, 0.028);
-    glVertex3f(-0.205, -0.015, 0.028);
-
-    glEnd();
-
-
-    glBegin(GL_QUADS);
-
-    // === DISTAL PHALANGES (fingertips, shifted right) ===
-    // Front face
-    glVertex3f(-0.205, -0.015, -0.028);
-    glVertex3f(-0.185, -0.015, -0.028);
-    glVertex3f(-0.182, -0.04, -0.02);   // shifted right
-    glVertex3f(-0.198, -0.04, -0.02);
-
-    // Back face
-    glVertex3f(-0.205, -0.015, 0.028);
-    glVertex3f(-0.185, -0.015, 0.028);
-    glVertex3f(-0.182, -0.04, 0.02);
-    glVertex3f(-0.198, -0.04, 0.02);
-
-    // Left side
-    glVertex3f(-0.205, -0.015, -0.028);
-    glVertex3f(-0.205, -0.015, 0.028);
-    glVertex3f(-0.198, -0.04, 0.02);
-    glVertex3f(-0.198, -0.04, -0.02);
-
-    // Right side
-    glVertex3f(-0.185, -0.015, -0.028);
-    glVertex3f(-0.185, -0.015, 0.028);
-    glVertex3f(-0.182, -0.04, 0.02);
-    glVertex3f(-0.182, -0.04, -0.02);
-
-    // Top (joins proximal phalanges)
-    glVertex3f(-0.205, -0.015, -0.028);
-    glVertex3f(-0.185, -0.015, -0.028);
-    glVertex3f(-0.185, -0.015, 0.028);
-    glVertex3f(-0.205, -0.015, 0.028);
-
-    // Bottom (tip end, rounded effect)
-    glVertex3f(-0.198, -0.04, -0.02);
-    glVertex3f(-0.182, -0.04, -0.02);
-    glVertex3f(-0.182, -0.04, 0.02);
-    glVertex3f(-0.198, -0.04, 0.02);
-
-    glEnd();
-
-
-    // Right Arm
-
-    // Shoulder
-    glBegin(GL_QUADS);
-    glVertex3f(0.16, 0.52, 0.03);
-    glVertex3f(0.13, 0.52, -0.07);
-    glVertex3f(0.16, 0.48, -0.08);
-    glVertex3f(0.18, 0.48, 0.04);
-    glEnd();
-
-    // Upper Arm
-    glBegin(GL_QUAD_STRIP);
-    // First side
-    glVertex3f(0.16, 0.48, -0.08); // top outer
-    glVertex3f(0.16, 0.44, -0.08); // bottom outer
-
-    // Second side
-    glVertex3f(0.18, 0.48, 0.04);  // top inner
-    glVertex3f(0.18, 0.44, 0.04);  // bottom inner
-
-    // Third side
-    glVertex3f(0.12, 0.48, 0.04);  // top front
-    glVertex3f(0.12, 0.44, 0.04);  // bottom front
-
-    // Fourth side
-    glVertex3f(0.12, 0.48, -0.08); // top back
-    glVertex3f(0.12, 0.44, -0.08); // bottom back
-
-    // Close loop back to first vertices
-    glVertex3f(0.16, 0.48, -0.08); // top outer again
-    glVertex3f(0.16, 0.44, -0.08); // bottom outer again
+    glVertex3f(-0.2, 0.07, -0.04);
+    glVertex3f(-0.22, 0.07, -0.00);
+    glVertex3f(-0.19, 0.07, 0);
+    glVertex3f(-0.17, 0.07, -0.03);
     glEnd();
 
     glBegin(GL_QUAD_STRIP);
-    // Side 1: Outer
-    glVertex3f(0.16, 0.44, -0.08);  // top outer
-    glVertex3f(0.155, 0.40, -0.08); // bottom outer
-
-    // Side 2: Front
-    glVertex3f(0.18, 0.44, 0.04);   // top front
-    glVertex3f(0.175, 0.40, 0.04);  // bottom front
-
-    // Side 3: Inner
-    glVertex3f(0.12, 0.44, 0.04);   // top inner
-    glVertex3f(0.12, 0.40, 0.04);   // bottom inner
-
-    // Side 4: Back
-    glVertex3f(0.12, 0.44, -0.08);  // top back
-    glVertex3f(0.12, 0.40, -0.08);  // bottom back
-
-    // Close loop back to start
-    glVertex3f(0.16, 0.44, -0.08);  // top outer again
-    glVertex3f(0.155, 0.40, -0.08); // bottom outer again
+    glVertex3f(-0.2, 0.07, -0.04);
+    glVertex3f(-0.22, 0.0, -0.045);
+    glVertex3f(-0.22, 0.07, -0.00);
+    glVertex3f(-0.23, 0.02, 0.02);
+    glVertex3f(-0.19, 0.07, 0);
+    glVertex3f(-0.2, 0.02, 0.02);
+    glVertex3f(-0.17, 0.07, -0.03);
+    glVertex3f(-0.2, 0.0, -0.035);
+    glVertex3f(-0.2, 0.07, -0.04);
+    glVertex3f(-0.22, 0.0, -0.045);
     glEnd();
 
     glBegin(GL_QUAD_STRIP);
-    // Side 1: Outer
-    glVertex3f(0.155, 0.40, -0.08); // top outer
-    glVertex3f(0.20, 0.30, -0.08); // bottom outer
-
-    // Side 2: Front
-    glVertex3f(0.175, 0.40, 0.04);  // top front
-    glVertex3f(0.20, 0.30, 0.04);  // bottom front
-
-    // Side 3: Inner
-    glVertex3f(0.12, 0.40, 0.04);  // top inner (kept 0.12 for smooth join)
-    glVertex3f(0.11, 0.30, 0.04);  // bottom inner (tapered to 0.11)
-
-    // Side 4: Back
-    glVertex3f(0.12, 0.40, -0.08); // top back (kept 0.12 for smooth join)
-    glVertex3f(0.11, 0.30, -0.08); // bottom back (tapered to 0.11)
-
-    // Close loop
-    glVertex3f(0.155, 0.40, -0.08); // top outer again
-    glVertex3f(0.20, 0.30, -0.08); // bottom outer again
+    glVertex3f(-0.22, 0.0, -0.045);
+    glVertex3f(-0.2, -0.03, -0.02);
+    glVertex3f(-0.23, 0.02, 0.02);
+    glVertex3f(-0.21, -0.01, 0.02);
+    glVertex3f(-0.2, 0.02, 0.02);
+    glVertex3f(-0.19, -0.01, 0.02);
+    glVertex3f(-0.2, 0.0, -0.035);
+    glVertex3f(-0.19, -0.03, -0.02);
+    glVertex3f(-0.22, 0.0, -0.045);
+    glVertex3f(-0.2, -0.03, -0.02);
     glEnd();
 
+
+    //bottom cover
     glBegin(GL_QUADS);
-    glVertex3f(0.12, 0.40, 0.04); // top inner from arm
-    glVertex3f(0.11, 0.30, 0.04); // bottom inner to elbow
-    glVertex3f(0.135, 0.25, 0.025); // elbow top inner
-    glVertex3f(0.15, 0.23, 0.03); // elbow bottom inner
+    glVertex3f(-0.2, -0.03, -0.02);
+    glVertex3f(-0.21, -0.01, 0.02);
+    glVertex3f(-0.19, -0.01, 0.02);
+    glVertex3f(-0.19, -0.03, -0.02);
     glEnd();
-
-    // Patch to close gap on back side
-    glBegin(GL_QUADS);
-    glVertex3f(0.12, 0.40, -0.08); // top back from arm
-    glVertex3f(0.11, 0.30, -0.08); // bottom back to elbow
-    glVertex3f(0.135, 0.27, -0.08); // elbow top back
-    glVertex3f(0.15, 0.23, -0.03);  // elbow bottom back (angled)
-    glEnd();
-
-    // Elbow
-    glBegin(GL_QUAD_STRIP);
-    // Outer
-    glVertex3f(0.20, 0.30, -0.08);
-    glVertex3f(0.20, 0.30, 0.04);
-    glVertex3f(0.19, 0.25, -0.05);
-    glVertex3f(0.19, 0.25, 0.025);
-
-    // Back
-    glVertex3f(0.20, 0.30, 0.04);
-    glVertex3f(0.135, 0.25, 0.025);
-    glVertex3f(0.19, 0.25, 0.03);
-    glVertex3f(0.15, 0.23, 0.03);
-
-    // Front
-    glVertex3f(0.20, 0.30, -0.08);
-    glVertex3f(0.135, 0.27, -0.08);
-    glVertex3f(0.19, 0.25, -0.03);
-    glVertex3f(0.15, 0.23, -0.03);
-
-    // Inner to the waist
-    glVertex3f(0.135, 0.25, 0.025);
-    glVertex3f(0.135, 0.27, -0.08);
-    glVertex3f(0.15, 0.23, 0.03);
-    glVertex3f(0.15, 0.23, -0.03);
-    glEnd();
-
-    // Forearm
-    glBegin(GL_QUAD_STRIP);
-    // Outer side
-    glVertex3f(0.19, 0.25, -0.05);
-    glVertex3f(0.19, 0.25, 0.025);
-    glVertex3f(0.20, 0.07, -0.04);
-    glVertex3f(0.20, 0.07, 0.02);
-
-    // Back
-    glVertex3f(0.19, 0.25, 0.03);
-    glVertex3f(0.15, 0.23, 0.03);
-    glVertex3f(0.20, 0.07, 0.02);
-    glVertex3f(0.17, 0.07, 0.02);
-
-    // Inner side
-    glVertex3f(0.15, 0.23, 0.03);
-    glVertex3f(0.17, 0.07, 0.02);
-    glVertex3f(0.15, 0.23, -0.03);
-    glVertex3f(0.17, 0.07, -0.02);
-
-    // Front
-    glVertex3f(0.19, 0.25, -0.03);
-    glVertex3f(0.15, 0.23, -0.03);
-    glVertex3f(0.20, 0.07, -0.02);
-    glVertex3f(0.17, 0.07, -0.02);
-    glEnd();
-
-
-    // === RIGHT PALM ===
-    glBegin(GL_QUADS);
-    // Front face
-    glVertex3f(0.20, 0.07, -0.02);
-    glVertex3f(0.17, 0.07, -0.02);
-    glVertex3f(0.18, 0.02, -0.03);
-    glVertex3f(0.21, 0.02, -0.03);
-
-    // Back face
-    glVertex3f(0.20, 0.07, 0.02);
-    glVertex3f(0.17, 0.07, 0.02);
-    glVertex3f(0.18, 0.02, 0.03);
-    glVertex3f(0.21, 0.02, 0.03);
-
-    // Left side
-    glVertex3f(0.20, 0.07, -0.02);
-    glVertex3f(0.20, 0.07, 0.02);
-    glVertex3f(0.21, 0.02, 0.03);
-    glVertex3f(0.21, 0.02, -0.03);
-
-    // Right side
-    glVertex3f(0.17, 0.07, -0.02);
-    glVertex3f(0.17, 0.07, 0.02);
-    glVertex3f(0.18, 0.02, 0.03);
-    glVertex3f(0.18, 0.02, -0.03);
-
-    // Top (wrist side)
-    glVertex3f(0.20, 0.07, -0.02);
-    glVertex3f(0.17, 0.07, -0.02);
-    glVertex3f(0.17, 0.07, 0.02);
-    glVertex3f(0.20, 0.07, 0.02);
-
-    // Bottom (fingertip side)
-    glVertex3f(0.21, 0.02, -0.03);
-    glVertex3f(0.18, 0.02, -0.03);
-    glVertex3f(0.18, 0.02, 0.03);
-    glVertex3f(0.21, 0.02, 0.03);
-    glEnd();
-
-
-    // === RIGHT PROXIMAL PHALANGES ===
-    glBegin(GL_QUADS);
-    // Front face
-    glVertex3f(0.21, 0.02, -0.03);
-    glVertex3f(0.18, 0.02, -0.03);
-    glVertex3f(0.185, -0.015, -0.028);
-    glVertex3f(0.205, -0.015, -0.028);
-
-    // Back face
-    glVertex3f(0.21, 0.02, 0.03);
-    glVertex3f(0.18, 0.02, 0.03);
-    glVertex3f(0.185, -0.015, 0.028);
-    glVertex3f(0.205, -0.015, 0.028);
-
-    // Left side
-    glVertex3f(0.21, 0.02, -0.03);
-    glVertex3f(0.21, 0.02, 0.03);
-    glVertex3f(0.205, -0.015, 0.028);
-    glVertex3f(0.205, -0.015, -0.028);
-
-    // Right side
-    glVertex3f(0.18, 0.02, -0.03);
-    glVertex3f(0.18, 0.02, 0.03);
-    glVertex3f(0.185, -0.015, 0.028);
-    glVertex3f(0.185, -0.015, -0.028);
-
-    // Top (joins palm)
-    glVertex3f(0.21, 0.02, -0.03);
-    glVertex3f(0.18, 0.02, -0.03);
-    glVertex3f(0.18, 0.02, 0.03);
-    glVertex3f(0.21, 0.02, 0.03);
-
-    // Bottom (joins distal phalanges)
-    glVertex3f(0.205, -0.015, -0.028);
-    glVertex3f(0.185, -0.015, -0.028);
-    glVertex3f(0.185, -0.015, 0.028);
-    glVertex3f(0.205, -0.015, 0.028);
-    glEnd();
-
-
-    // === RIGHT DISTAL PHALANGES ===
-    glBegin(GL_QUADS);
-    // Front face
-    glVertex3f(0.205, -0.015, -0.028);
-    glVertex3f(0.185, -0.015, -0.028);
-    glVertex3f(0.182, -0.04, -0.02);
-    glVertex3f(0.198, -0.04, -0.02);
-
-    // Back face
-    glVertex3f(0.205, -0.015, 0.028);
-    glVertex3f(0.185, -0.015, 0.028);
-    glVertex3f(0.182, -0.04, 0.02);
-    glVertex3f(0.198, -0.04, 0.02);
-
-    // Left side
-    glVertex3f(0.205, -0.015, -0.028);
-    glVertex3f(0.205, -0.015, 0.028);
-    glVertex3f(0.198, -0.04, 0.02);
-    glVertex3f(0.198, -0.04, -0.02);
-
-    // Right side
-    glVertex3f(0.185, -0.015, -0.028);
-    glVertex3f(0.185, -0.015, 0.028);
-    glVertex3f(0.182, -0.04, 0.02);
-    glVertex3f(0.182, -0.04, -0.02);
-
-    // Top (joins proximal phalanges)
-    glVertex3f(0.205, -0.015, -0.028);
-    glVertex3f(0.185, -0.015, -0.028);
-    glVertex3f(0.185, -0.015, 0.028);
-    glVertex3f(0.205, -0.015, 0.028);
-
-    // Bottom (tip end)
-    glVertex3f(0.198, -0.04, -0.02);
-    glVertex3f(0.182, -0.04, -0.02);
-    glVertex3f(0.182, -0.04, 0.02);
-    glVertex3f(0.198, -0.04, 0.02);
-    glEnd();
-
-    //body
-    glBegin(GL_POLYGON);
-    glVertex3f(0, 0.53, 0.05);
-    glVertex3f(-0.04, 0.56, 0.01);
-    glVertex3f(-0.04, 0.56, -0.04);
-    glVertex3f(0, 0.56, -0.07);
-    glVertex3f(0.04, 0.56, -0.04);
-    glVertex3f(0.04, 0.56, 0.01);
-    glVertex3f(0, 0.53, 0.05);
-    glEnd();
-
-
 }
 
 void neck() {
@@ -2819,9 +2408,22 @@ void display()
     glColor3f(1.0f, 0.0f, 0.0f);
 
     guide();
+
+
+    glColor3f(1, 1, 1);
     neck();
     body();
     head();
+
+    upperArm();
+    lowerArm();
+    palm();
+    glPushMatrix();
+    glScalef(-1.0f, 1.0f, 1.0f);
+    upperArm();
+    lowerArm();
+    palm();
+    glPopMatrix();
 
     hair();
     glPushMatrix();
