@@ -17,84 +17,84 @@ float rotationSpeed = 5.0f; // degrees per key press
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	switch (msg)
-	{
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
+    switch (msg)
+    {
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
 
-	case WM_KEYDOWN:
-		switch (wParam) {
-		case VK_ESCAPE:
-			PostQuitMessage(0);
-			break;
+    case WM_KEYDOWN:
+        switch (wParam) {
+        case VK_ESCAPE:
+            PostQuitMessage(0);
+            break;
 
-			// Arrow Keys
-		case VK_UP:
-			cameraPitch -= rotationSpeed;
-			break;
-		case VK_DOWN:
-			cameraPitch += rotationSpeed;
-			break;
-		case VK_LEFT:
-			cameraYaw -= rotationSpeed;
-			break;
-		case VK_RIGHT:
-			cameraYaw += rotationSpeed;
-			break;
+            // Arrow Keys
+        case VK_UP:
+            cameraPitch -= rotationSpeed;
+            break;
+        case VK_DOWN:
+            cameraPitch += rotationSpeed;
+            break;
+        case VK_LEFT:
+            cameraYaw -= rotationSpeed;
+            break;
+        case VK_RIGHT:
+            cameraYaw += rotationSpeed;
+            break;
 
-			// WASD keys
-		case 'W':
-			cameraPitch -= rotationSpeed;
-			break;
-		case 'S':
-			cameraPitch += rotationSpeed;
-			break;
-		case 'A':
-			cameraYaw -= rotationSpeed;
-			break;
-		case 'D':
-			cameraYaw += rotationSpeed;
-			break;
-		}
-		break;
-	default:
-		break;
-	}
+            // WASD keys
+        case 'W':
+            cameraPitch -= rotationSpeed;
+            break;
+        case 'S':
+            cameraPitch += rotationSpeed;
+            break;
+        case 'A':
+            cameraYaw -= rotationSpeed;
+            break;
+        case 'D':
+            cameraYaw += rotationSpeed;
+            break;
+        }
+        break;
+    default:
+        break;
+    }
 
-	return DefWindowProc(hWnd, msg, wParam, lParam);
+    return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 //--------------------------------------------------------------------
 
 bool initPixelFormat(HDC hdc)
 {
-	PIXELFORMATDESCRIPTOR pfd;
-	ZeroMemory(&pfd, sizeof(PIXELFORMATDESCRIPTOR));
+    PIXELFORMATDESCRIPTOR pfd;
+    ZeroMemory(&pfd, sizeof(PIXELFORMATDESCRIPTOR));
 
-	pfd.cAlphaBits = 8;
-	pfd.cColorBits = 32;
-	pfd.cDepthBits = 24;
-	pfd.cStencilBits = 0;
+    pfd.cAlphaBits = 8;
+    pfd.cColorBits = 32;
+    pfd.cDepthBits = 24;
+    pfd.cStencilBits = 0;
 
-	pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
+    pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
 
-	pfd.iLayerType = PFD_MAIN_PLANE;
-	pfd.iPixelType = PFD_TYPE_RGBA;
-	pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-	pfd.nVersion = 1;
+    pfd.iLayerType = PFD_MAIN_PLANE;
+    pfd.iPixelType = PFD_TYPE_RGBA;
+    pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+    pfd.nVersion = 1;
 
-	// choose pixel format returns the number most similar pixel format available
-	int n = ChoosePixelFormat(hdc, &pfd);
+    // choose pixel format returns the number most similar pixel format available
+    int n = ChoosePixelFormat(hdc, &pfd);
 
-	// set pixel format returns whether it sucessfully set the pixel format
-	if (SetPixelFormat(hdc, n, &pfd))
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+    // set pixel format returns whether it sucessfully set the pixel format
+    if (SetPixelFormat(hdc, n, &pfd))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 //--------------------------------------------------------------------
 
@@ -165,6 +165,7 @@ void body() {
     glVertex3f(0.04, 0.19, 0.07);
     glVertex3f(0, 0.19, 0.07);
     glEnd();
+
 
     glBegin(GL_QUADS);
     glVertex3f(0, 0.19, 0.07);
@@ -795,18 +796,202 @@ void body() {
     glVertex3f(0.04, 0.56, 0.01);
     glEnd();
 
-    //body
-    glBegin(GL_POLYGON);
-    glVertex3f(0, 0.53, 0.05);
-    glVertex3f(-0.04, 0.56, 0.01);
-    glVertex3f(-0.04, 0.56, -0.04);
-    glVertex3f(0, 0.56, -0.07);
-    glVertex3f(0.04, 0.56, -0.04);
-    glVertex3f(0.04, 0.56, 0.01);
-    glVertex3f(0, 0.53, 0.05);
+
+
+
+
+}
+
+void upperArm() {
+    // Shoulder
+    glBegin(GL_QUAD_STRIP);
+    glVertex3f(-0.16, 0.52, 0.03);
+    glVertex3f(-0.18, 0.48, -0.01);
+    glVertex3f(-0.13, 0.52, -0.07);
+    glVertex3f(-0.16, 0.48, -0.08);
+    glVertex3f(-0.13, 0.52, -0.07);
+    glVertex3f(-0.13, 0.48, -0.07);
+    glVertex3f(-0.16, 0.52, 0.03);
+    glVertex3f(-0.14, 0.48, 0.03);
+    glVertex3f(-0.16, 0.52, 0.03);
+    glVertex3f(-0.18, 0.48, -0.01);
+    glEnd();
+
+    // Upper Arm
+    glBegin(GL_QUAD_STRIP);
+    // First side
+    glVertex3f(-0.16, 0.48, -0.08); // top outer
+    glVertex3f(-0.17, 0.44, -0.08); // bottom outer
+    // Second side
+    glVertex3f(-0.18, 0.48, -0.01);  // top inner
+    glVertex3f(-0.19, 0.44, -0.02);  // bottom inner
+    // Third side
+    glVertex3f(-0.14, 0.48, 0.03);  // top front
+    glVertex3f(-0.13, 0.44, 0.01);  // bottom front
+    // Fourth side
+    glVertex3f(-0.13, 0.48, -0.07); // top back
+    glVertex3f(-0.13, 0.44, -0.08); // bottom back
+    // Close loop back to first vertices
+    glVertex3f(-0.16, 0.48, -0.08); // top outer again
+    glVertex3f(-0.17, 0.44, -0.08); // bottom outer again
+    glEnd();
+
+    glBegin(GL_QUAD_STRIP);
+    // Side 1: Outer
+    glVertex3f(-0.17, 0.44, -0.08);
+    glVertex3f(-0.18, 0.40, -0.085);
+    // Side 2: Front
+    glVertex3f(-0.19, 0.44, -0.02);
+    glVertex3f(-0.195, 0.40, -0.03);
+    // Side 3: Inner
+    glVertex3f(-0.13, 0.44, 0.01);
+    glVertex3f(-0.12, 0.40, 0);
+    // Side 4: Back
+    glVertex3f(-0.13, 0.44, -0.08);
+    glVertex3f(-0.14, 0.40, -0.09);
+    // Close loop
+    glVertex3f(-0.17, 0.44, -0.08);
+    glVertex3f(-0.18, 0.40, -0.085);
+    glEnd();
+    
+    glBegin(GL_QUAD_STRIP);
+    // Side 1: Outer
+    glVertex3f(-0.18, 0.40, -0.085);
+    glVertex3f(-0.18, 0.37, -0.08);
+    // Side 2: Front
+    glVertex3f(-0.195, 0.40, -0.03);
+    glVertex3f(-0.2, 0.37, -0.03);
+    // Side 3: Inner
+    glVertex3f(-0.12, 0.40, 0);
+    glVertex3f(-0.13, 0.35, -0.01);
+    // Side 4: Back
+    glVertex3f(-0.14, 0.40, -0.09);
+    glVertex3f(-0.14, 0.35, -0.09);
+    // Close loop
+    glVertex3f(-0.18, 0.40, -0.085);
+    glVertex3f(-0.18, 0.37, -0.08);
+    glEnd();
+
+    //close bottom
+    glBegin(GL_QUADS);
+    glVertex3f(-0.18, 0.37, -0.08);
+    glVertex3f(-0.2, 0.37, -0.03);
+    glVertex3f(-0.13, 0.35, -0.01);
+    glVertex3f(-0.14, 0.35, -0.09);
+    glEnd();
+}
+
+void lowerArm() {
+    //close top
+    glBegin(GL_QUADS);
+    glVertex3f(-0.18, 0.37, -0.08);
+    glVertex3f(-0.2, 0.37, -0.03);
+    glVertex3f(-0.13, 0.35, -0.01);
+    glVertex3f(-0.14, 0.35, -0.09);
+    glEnd();
+
+    glBegin(GL_QUAD_STRIP);
+    // Side 1: Outer
+    glVertex3f(-0.18, 0.37, -0.08);
+    glVertex3f(-0.21, 0.30, -0.1);
+    // Side 2: Front
+    glVertex3f(-0.2, 0.37, -0.03);
+    glVertex3f(-0.23, 0.30, -0.01);
+    // Side 3: Inner
+    glVertex3f(-0.13, 0.35, -0.01);
+    glVertex3f(-0.15, 0.27, 0.02);
+    // Side 4: Back
+    glVertex3f(-0.14, 0.35, -0.09);
+    glVertex3f(-0.12, 0.27, -0.09);
+    // Close loop
+    glVertex3f(-0.18, 0.37, -0.08);
+    glVertex3f(-0.21, 0.30, -0.1);
+    glEnd();
+
+    glBegin(GL_QUAD_STRIP);
+    // Side 1: Outer
+    glVertex3f(-0.21, 0.3, -0.1);
+    glVertex3f(-0.19, 0.25, -0.08);
+    // Side 2: Front
+    glVertex3f(-0.23, 0.3, -0.01);
+    glVertex3f(-0.21, 0.25, -0.03);
+    // Side 3: Inner
+    glVertex3f(-0.15, 0.27, 0.02);
+    glVertex3f(-0.17, 0.24, 0);
+    // Side 4: Back
+    glVertex3f(-0.12, 0.27, -0.09);
+    glVertex3f(-0.14, 0.24, -0.07);
+    // Close loop
+    glVertex3f(-0.21, 0.3, -0.1);
+    glVertex3f(-0.19, 0.25, -0.08);
+    glEnd();
+
+    // Forearm
+    glBegin(GL_QUAD_STRIP);
+    glVertex3f(-0.19, 0.25, -0.08);
+    glVertex3f(-0.2, 0.07, -0.04);
+    glVertex3f(-0.21, 0.25, -0.03);
+    glVertex3f(-0.22, 0.07, -0.00);
+    glVertex3f(-0.17, 0.24, 0);
+    glVertex3f(-0.19, 0.07, 0);
+    glVertex3f(-0.14, 0.24, -0.07);
+    glVertex3f(-0.17, 0.07, -0.03);
+    glVertex3f(-0.19, 0.25, -0.08);
+    glVertex3f(-0.2, 0.07, -0.04);
+    glEnd();
+
+    //close bottom
+    glBegin(GL_QUADS);
+    glVertex3f(-0.2, 0.07, -0.04);
+    glVertex3f(-0.22, 0.07, -0.00);
+    glVertex3f(-0.19, 0.07, 0);
+    glVertex3f(-0.17, 0.07, -0.03);
+    glEnd();
+}
+
+void palm() {
+    //close top
+    glBegin(GL_QUADS);
+    glVertex3f(-0.2, 0.07, -0.04);
+    glVertex3f(-0.22, 0.07, -0.00);
+    glVertex3f(-0.19, 0.07, 0);
+    glVertex3f(-0.17, 0.07, -0.03);
+    glEnd();
+
+    glBegin(GL_QUAD_STRIP);
+    glVertex3f(-0.2, 0.07, -0.04);
+    glVertex3f(-0.22, 0.0, -0.045);
+    glVertex3f(-0.22, 0.07, -0.00);
+    glVertex3f(-0.23, 0.02, 0.02);
+    glVertex3f(-0.19, 0.07, 0);
+    glVertex3f(-0.2, 0.02, 0.02);
+    glVertex3f(-0.17, 0.07, -0.03);
+    glVertex3f(-0.2, 0.0, -0.035);
+    glVertex3f(-0.2, 0.07, -0.04);
+    glVertex3f(-0.22, 0.0, -0.045);
+    glEnd();
+
+    glBegin(GL_QUAD_STRIP);
+    glVertex3f(-0.22, 0.0, -0.045);
+    glVertex3f(-0.2, -0.03, -0.02);
+    glVertex3f(-0.23, 0.02, 0.02);
+    glVertex3f(-0.21, -0.01, 0.02);
+    glVertex3f(-0.2, 0.02, 0.02);
+    glVertex3f(-0.19, -0.01, 0.02);
+    glVertex3f(-0.2, 0.0, -0.035);
+    glVertex3f(-0.19, -0.03, -0.02);
+    glVertex3f(-0.22, 0.0, -0.045);
+    glVertex3f(-0.2, -0.03, -0.02);
     glEnd();
 
 
+    //bottom cover
+    glBegin(GL_QUADS);
+    glVertex3f(-0.2, -0.03, -0.02);
+    glVertex3f(-0.21, -0.01, 0.02);
+    glVertex3f(-0.19, -0.01, 0.02);
+    glVertex3f(-0.19, -0.03, -0.02);
+    glEnd();
 }
 
 void neck() {
@@ -1048,7 +1233,7 @@ void head() {
     glVertex3f(0, 0.7, -0.1);
     glVertex3f(0, 0.72, -0.1);
     glEnd();
-    
+
 
     //6th layer
     glBegin(GL_QUAD_STRIP);
@@ -1456,7 +1641,7 @@ void hair() {
     glVertex3f(-0.02, 0.83, -0.02);
     glVertex3f(-0.02, 0.83, -0.05);
     glEnd();
-    
+
 
     glBegin(GL_QUAD_STRIP);
     glVertex3f(0, 0.8, 0.025);
@@ -2213,19 +2398,32 @@ void outerCloth() {
 void display()
 {
     //glEnable(GL_DEPTH_TEST);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
 
-	glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
-	glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
+    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor3f(1.0f, 0.0f, 0.0f);
 
     guide();
+
+
+    glColor3f(1, 1, 1);
     neck();
-	body();
+    body();
     head();
+
+    upperArm();
+    lowerArm();
+    palm();
+    glPushMatrix();
+    glScalef(-1.0f, 1.0f, 1.0f);
+    upperArm();
+    lowerArm();
+    palm();
+    glPopMatrix();
 
     hair();
     glPushMatrix();
@@ -2261,70 +2459,70 @@ void display()
     outerCloth();
 
 
-	glFlush();
+    glFlush();
 }
 //--------------------------------------------------------------------
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 {
-	WNDCLASSEX wc;
-	ZeroMemory(&wc, sizeof(WNDCLASSEX));
+    WNDCLASSEX wc;
+    ZeroMemory(&wc, sizeof(WNDCLASSEX));
 
-	wc.cbSize = sizeof(WNDCLASSEX);
-	wc.hInstance = GetModuleHandle(NULL);
-	wc.lpfnWndProc = WindowProcedure;
-	wc.lpszClassName = WINDOW_TITLE;
-	wc.style = CS_HREDRAW | CS_VREDRAW;
+    wc.cbSize = sizeof(WNDCLASSEX);
+    wc.hInstance = GetModuleHandle(NULL);
+    wc.lpfnWndProc = WindowProcedure;
+    wc.lpszClassName = WINDOW_TITLE;
+    wc.style = CS_HREDRAW | CS_VREDRAW;
 
-	if (!RegisterClassEx(&wc)) return false;
+    if (!RegisterClassEx(&wc)) return false;
 
-	HWND hWnd = CreateWindow(WINDOW_TITLE, WINDOW_TITLE, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, 1000, 1000,
-		NULL, NULL, wc.hInstance, NULL);
+    HWND hWnd = CreateWindow(WINDOW_TITLE, WINDOW_TITLE, WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, 1000, 1000,
+        NULL, NULL, wc.hInstance, NULL);
 
-	//--------------------------------
-	//	Initialize window for OpenGL
-	//--------------------------------
+    //--------------------------------
+    //	Initialize window for OpenGL
+    //--------------------------------
 
-	HDC hdc = GetDC(hWnd);
+    HDC hdc = GetDC(hWnd);
 
-	//	initialize pixel format for the window
-	initPixelFormat(hdc);
+    //	initialize pixel format for the window
+    initPixelFormat(hdc);
 
-	//	get an openGL context
-	HGLRC hglrc = wglCreateContext(hdc);
+    //	get an openGL context
+    HGLRC hglrc = wglCreateContext(hdc);
 
-	//	make context current
-	if (!wglMakeCurrent(hdc, hglrc)) return false;
+    //	make context current
+    if (!wglMakeCurrent(hdc, hglrc)) return false;
 
-	//--------------------------------
-	//	End initialization
-	//--------------------------------
+    //--------------------------------
+    //	End initialization
+    //--------------------------------
 
-	ShowWindow(hWnd, nCmdShow);
+    ShowWindow(hWnd, nCmdShow);
 
-	MSG msg;
-	ZeroMemory(&msg, sizeof(msg));
+    MSG msg;
+    ZeroMemory(&msg, sizeof(msg));
 
 
 
-	while (true)
-	{
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{
-			if (msg.message == WM_QUIT) break;
+    while (true)
+    {
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+            if (msg.message == WM_QUIT) break;
 
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
 
-		display();
+        display();
 
-		SwapBuffers(hdc);
-	}
+        SwapBuffers(hdc);
+    }
 
-	UnregisterClass(WINDOW_TITLE, wc.hInstance);
+    UnregisterClass(WINDOW_TITLE, wc.hInstance);
 
-	return true;
+    return true;
 }
 //--------------------------------------------------------------------
