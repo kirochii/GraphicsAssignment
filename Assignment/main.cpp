@@ -4,6 +4,7 @@
 #include <gl/GLU.h>
 #include <math.h>
 #include <chrono>
+#include <vector>
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment(lib, "glu32.lib")
@@ -17,8 +18,30 @@ struct Phase {
     // Create an object and loop through the steps for animation
 
     double duration;   // seconds
-    int type;          // 1 = rotateX, 2 = rotateY, 3 = rotateZ
+    int axis;          // 1 = rotateX, 2 = rotateY, 3 = rotateZ
     float value;       // angle or rotation
+};
+
+struct BodyPart {
+    // A class used for keeping track of the transformations for each body part
+
+    float rotX = 0, rotY = 0, rotZ = 0;
+    float startVal = 0, endVal = 0;
+    double phaseStartTime = 0;
+    int currentPhase = 0;
+    Phase* phases; // Points to the phases of animation for this body part
+    int numPhases; // The total number of phases for the animation
+
+    static std::vector<BodyPart*>& getAllParts() {
+        static std::vector<BodyPart*> parts; // one global list
+        return parts;
+    }
+
+    // Constructor
+    BodyPart(Phase* p = nullptr, int n = 0)
+        : phases(p), numPhases(n) {
+        getAllParts().push_back(this);
+    }
 };
 
 float cameraYaw = 0.0f;    // left/right rotation (around Y-axis)
@@ -48,21 +71,15 @@ float RFLegX = 0, RFLegY = 0, RFLegZ = 0; //Right Feet
 
 
 //Key 4: Basic Attack
-Phase phases[] = {
+Phase body4Phases[] = {
     {2.0, 1, 30.0f},   // rotate +30° X over 2s
-    {2.0, 2, 50.0f},   // rotate +50° Y over 2s
-    {2.0, 3, 40.0f},   // rotate +40° Z over 2s
-    {2.0, 3, -40.0f},   // rotate +40° Z over 2s
-    {2.0, 2, -50.0f},   // rotate +50° Y over 2s
-    {2.0, 1, -30.0f},   // rotate +30° X over 2s
 };
-const int numPhases = sizeof(phases) / sizeof(phases[0]);
-int currentPhase = 0;
-double phaseStartTime = 0.0;
-float rotX = 0.0f, rotY = 0.0f, rotZ = 0.0f;
-float startVal = 0.0f;
-float endVal = 0.0f;
+BodyPart body4(body4Phases, sizeof(body4Phases) / sizeof(body4Phases[0]));
 
+Phase RLeg4Phases[] = {
+    {2.0, 1, 30.0f},   // rotate +30° X over 2s
+};
+BodyPart RLeg4(RLeg4Phases, sizeof(RLeg4Phases) / sizeof(RLeg4Phases[0]));
 
 
 
@@ -504,54 +521,60 @@ double getTime() {
     return elapsed.count(); // seconds
 }
 
-void startPhase(int idx, Phase phases) {
-    Phase& p = phases[idx];
+void startPhase(BodyPart& part) {
+    Phase& p = part.phases[part.currentPhase];
 
-    if (p.type == 1) { startVal = rotX; endVal = rotX + p.value; }
-    if (p.type == 2) { startVal = rotY; endVal = rotY + p.value; }
-    if (p.type == 3) { startVal = rotZ; endVal = rotZ + p.value; }
+    if (p.axis == 1) { part.startVal = part.rotX; part.endVal = part.rotX + p.value; }
+    if (p.axis == 2) { part.startVal = part.rotY; part.endVal = part.rotY + p.value; }
+    if (p.axis == 3) { part.startVal = part.rotZ; part.endVal = part.rotZ + p.value; }
 
-    phaseStartTime = getTime();
+    part.phaseStartTime = getTime();
 }
 
-void applyAnimation() {
+void applyAnimation(BodyPart& part) {
     double now = getTime();
-    double elapsed = now - phaseStartTime;
+    double elapsed = now - part.phaseStartTime;
 
-    Phase& p = phases[currentPhase];
+    Phase& p = part.phases[part.currentPhase];
 
     // progress 0..1
     double t = elapsed / p.duration;
     if (t > 1.0) t = 1.0;
 
-    float currentVal = startVal + (endVal - startVal) * (float)t;
+    float currentVal = part.startVal + (part.endVal - part.startVal) * (float)t;
 
     // 🔹 Always apply the base accumulated rotations
-    glRotatef(rotX, 1, 0, 0);
-    glRotatef(rotY, 0, 1, 0);
-    glRotatef(rotZ, 0, 0, 1);
+    glRotatef(part.rotX, 1, 0, 0);
+    glRotatef(part.rotY, 0, 1, 0);
+    glRotatef(part.rotZ, 0, 0, 1);
 
     // 🔹 Add only the "extra" interpolation for the current phase
-    if (p.type == 1) glRotatef(currentVal - rotX, 1, 0, 0);
-    if (p.type == 2) glRotatef(currentVal - rotY, 0, 1, 0);
-    if (p.type == 3) glRotatef(currentVal - rotZ, 0, 0, 1);
+    if (p.axis == 1) glRotatef(currentVal - part.rotX, 1, 0, 0);
+    if (p.axis == 2) glRotatef(currentVal - part.rotY, 0, 1, 0);
+    if (p.axis == 3) glRotatef(currentVal - part.rotZ, 0, 0, 1);
 
-    // update rotation state so next phase continues smoothly
+    // 🔹 Update rotation state so next phase continues smoothly
     if (t >= 1.0) {
-        if (p.type == 1) rotX = endVal;
-        if (p.type == 2) rotY = endVal;
-        if (p.type == 3) rotZ = endVal;
+        if (p.axis == 1) part.rotX = part.endVal;
+        if (p.axis == 2) part.rotY = part.endVal;
+        if (p.axis == 3) part.rotZ = part.endVal;
 
         // advance phase
-        currentPhase++;
-        if (currentPhase >= numPhases) {
-            currentPhase = 0;  // restart from phase 0
-            // 🔸 but don't reset rotX,rotY,rotZ unless you want looping back to origin
+        part.currentPhase++;
+        if (part.currentPhase >= part.numPhases) {
+            part.currentPhase = 0;  // restart from phase 0
+            // ❌ don’t reset rotX/rotY/rotZ unless you want looping back to origin
         }
-        startPhase(currentPhase);
+        startPhase(part);  // start next phase
     }
 }
 
+void startAnimation() {
+    for (BodyPart* part : BodyPart::getAllParts()) {
+        part->currentPhase = 0;
+        startPhase(*part);
+    }
+}
 
 void guide() {
     //guide measurement
@@ -3240,11 +3263,184 @@ void key4() {
 
     glColor3f(1, 1, 1);
 
+    //upper body
+    {
+        glPushMatrix();
+        glTranslatef(0, 0.24, 0);
+        glRotatef(-5, 1, 0, 0);
+        
+        glTranslatef(0, -0.24, 0);
 
-    glPushMatrix();
-    applyAnimation();
-    head();            // draw your object
-    glPopMatrix();
+        //Head
+        {
+            glPushMatrix();
+            glTranslatef(0, 0.6, -0.015);
+            glRotatef(10, 1, 0, 0);
+
+            glTranslatef(0, -0.6, 0.015);
+
+            hair();
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            hair();
+            glPopMatrix();
+            head();
+            glPopMatrix();
+            neck();
+        }
+
+        //Upper Arm (Right Arm)
+        {
+            glPushMatrix();
+            glTranslatef(-0.13, 0.52, -0.02);
+            glRotatef(-40, 1, 0, 0);
+            glRotatef(-10, 0, 0, 1);
+
+            glTranslatef(0.13, -0.52, 0.02);
+            upperArm();
+
+            //Lower Arm
+            glPushMatrix();
+            glTranslatef(-0.16, 0.36, -0.05);
+            glRotatef(-100, 1, 0, 0);
+            glRotatef(20, 0, 0, 1);
+
+            glTranslatef(0.16, -0.36, 0.05);
+            lowerArm();
+
+            //Palm
+            glPushMatrix();
+            glTranslatef(-0.20, 0.07, -0.02);
+            glRotatef(-50, 1, 0, 0);
+            glRotatef(10, 0, 1, 0);
+
+            glTranslatef(0.20, -0.07, 0.02);
+
+            glPushMatrix();
+            glTranslatef(-0.2, 0.02, 0.6);
+            glRotatef(-90, 0, 1, 0);
+            glRotatef(90, 0, 0, 1);
+            sword();
+            glPopMatrix();
+            palm();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        //Upper Arm (Left Arm)
+        {
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            glPushMatrix();
+            glTranslatef(-0.13, 0.52, -0.02);
+            glRotatef(-75, 1, 0, 0);
+            glRotatef(30, 0, 0, 1);
+
+            glTranslatef(0.13, -0.52, 0.02);
+            upperArm();
+
+            //Lower Arm
+            glPushMatrix();
+            glTranslatef(-0.16, 0.36, -0.05);
+            glRotatef(-40, 1, 0, 0);
+            glRotatef(20, 0, 0, 1);
+
+            glTranslatef(0.16, -0.36, 0.05);
+            lowerArm();
+
+            //Palm
+            glPushMatrix();
+            glTranslatef(-0.20, 0.07, -0.02);
+            glRotatef(-50, 1, 0, 0);
+            glRotatef(30, 0, 1, 0);
+
+            glTranslatef(0.20, -0.07, 0.02);
+            palm();
+
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        body();
+
+        glPopMatrix();
+
+    }
+
+    //lower body
+    {
+        //Upper leg (Right leg)
+        {
+            glPushMatrix();
+            glTranslatef(-0.05, 0.19, 0);
+            glRotatef(-5, 1, 0, 1);
+
+            glTranslatef(0.05, -0.19, 0);
+            thigh();
+
+            //Lower leg
+            glPushMatrix();
+            glTranslatef(-0.07, -0.32, 0);
+            glRotatef(10, 1, 0, 0);
+
+            glTranslatef(0.07, 0.32, 0);
+            calf();
+
+            //Feet
+            glPushMatrix();
+            glTranslatef(-0.05, -0.62, 0);
+            glRotatef(-5, 1, 0, 0);
+
+            glTranslatef(0.05, 0.62, 0);
+            feet();
+
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        //Upper leg (Left leg)
+        {
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+
+            //Upper leg
+            glPushMatrix();
+            glTranslatef(-0.05, 0.19, 0);
+            glRotatef(-5, 1, 0, 1);
+
+            glTranslatef(0.05, -0.19, 0);
+            thigh();
+
+            //Lower leg
+            glPushMatrix();
+            glTranslatef(-0.07, -0.32, 0);
+            glRotatef(10, 1, 0, 0);
+
+            glTranslatef(0.07, 0.32, 0);
+            calf();
+
+            //Feet
+            glPushMatrix();
+            glTranslatef(-0.05, -0.62, 0);
+            glRotatef(-5, 1, 0, 0);
+
+            glTranslatef(0.05, 0.62, 0);
+            feet();
+
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        //innerCloth();
+        //outerCloth();
+
+    }
 }
 
 void display()
@@ -3307,7 +3503,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
     MSG msg;
     ZeroMemory(&msg, sizeof(msg));
 
-    startPhase(0);
+    startAnimation();
 
     while (true)
     {
