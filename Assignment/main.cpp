@@ -5,6 +5,8 @@
 #include <math.h>
 #include <chrono>
 #include <vector>
+#include <sstream>
+#include <string>
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment(lib, "glu32.lib")
@@ -18,26 +20,29 @@ struct Phase {
     // Create an object and loop through the steps for animation
 
     double duration;   // seconds
-    int axis;          // 1 = rotateX, 2 = rotateY, 3 = rotateZ
-    float value;       // angle or rotation
+    float rotX;          // ΔX rotation over duration
+    float rotY;          // ΔY rotation
+    float rotZ;          // ΔZ rotation
 };
 
 struct BodyPart {
-    // A class used for keeping track of the transformations for each body part
+    // Keeps track of transformation for this body part
+    float rotX = 0, rotY = 0, rotZ = 0;   // accumulated rotation
 
-    float rotX = 0, rotY = 0, rotZ = 0;
-    float startVal = 0, endVal = 0;
+    float startValX = 0, startValY = 0, startValZ = 0;
+    float endValX = 0, endValY = 0, endValZ = 0;
+
     double phaseStartTime = 0;
     int currentPhase = 0;
-    Phase* phases; // Points to the phases of animation for this body part
-    int numPhases; // The total number of phases for the animation
+
+    Phase* phases;
+    int numPhases;
 
     static std::vector<BodyPart*>& getAllParts() {
-        static std::vector<BodyPart*> parts; // one global list
+        static std::vector<BodyPart*> parts;
         return parts;
     }
 
-    // Constructor
     BodyPart(Phase* p = nullptr, int n = 0)
         : phases(p), numPhases(n) {
         getAllParts().push_back(this);
@@ -48,41 +53,192 @@ float cameraYaw = 0.0f;    // left/right rotation (around Y-axis)
 float cameraPitch = 0.0f;  // up/down rotation (around X-axis)
 float rotationSpeed = 5.0f; // degrees per key press
 
-int qNo = 4;
+int qNo = 2;
 bool opposite = false; //toggle clockwise & counter clockwise rotations
 bool toggleRight = false; //toggle left and right limbs
 float RotationSpeed = 10; //set degree for each key press
 
 //Key 2: Rotation
-float headX = 0, headY = 0, headZ = 0; //Head
-float LUArmX = 0, LUArmY = 0, LUArmZ = 0; //Left Upper Arm
-float LLArmX = 0, LLArmY = 0, LLArmZ = 0; //Left Lower Arm
-float LPArmX = 0, LPArmY = 0, LPArmZ = 0; //Left Palm
-float RUArmX = 0, RUArmY = 0, RUArmZ = 0; //Right Upper Arm
-float RLArmX = 0, RLArmY = 0, RLArmZ = 0; //Right Lower Arm
-float RPArmX = 0, RPArmY = 0, RPArmZ = 0; //Right Palm
-float bodyX = 0, bodyY = 0, bodyZ = 0; //Body
-float LULegX = 0, LULegY = 0, LULegZ = 0; //Left Upper Leg
-float LLLegX = 0, LLLegY = 0, LLLegZ = 0; //Left Lower Leg
-float LFLegX = 0, LFLegY = 0, LFLegZ = 0; //Left Feet
-float RULegX = 0, RULegY = 0, RULegZ = 0; //Right Upper Leg
-float RLLegX = 0, RLLegY = 0, RLLegZ = 0; //Right Lower Leg
-float RFLegX = 0, RFLegY = 0, RFLegZ = 0; //Right Feet
+float speed2 = 1;
+float headX = 0, headY = 0, headZ = 0;
+float LUArmX = 0, LUArmY = 0, LUArmZ = 0;
+float LLArmX = 0, LLArmY = 0, LLArmZ = 0;
+float LPArmX = 0, LPArmY = 0, LPArmZ = 0;
+float RUArmX = 0, RUArmY = 0, RUArmZ = 0;
+float RLArmX = 0, RLArmY = 0, RLArmZ = 0;
+float RPArmX = 0, RPArmY = 0, RPArmZ = 0;
+float bodyX = 0, bodyY = 0, bodyZ = 0;
+float LULegX = 0, LULegY = 0, LULegZ = 0;
+float LLLegX = 0, LLLegY = 0, LLLegZ = 0;
+float LFLegX = 0, LFLegY = 0, LFLegZ = 0;
+float RULegX = 0, RULegY = 0, RULegZ = 0;
+float RLLegX = 0, RLLegY = 0, RLLegZ = 0;
+float RFLegX = 0, RFLegY = 0, RFLegZ = 0;
 
-
-//Key 4: Basic Attack
+//Key 4: Rotation
+Phase head4Phases[] = {
+    {0, 10, 0, 0},
+    {0.5, 10, 0, 0},
+    {1, -15, 40, 25},
+    {1, -20, 40, 35},
+    {0.25, -45, -15, 0},
+    {0.5, 5, -5, 0},
+    {1, -5, -5, 0},
+};
+Phase LUArm4Phases[] = {
+    {0, -45, -5, -25},
+    {0.5, -45, -5, -25},
+    {1, -45, -75, -50},
+    {1, -45, -75, -50},
+    {0.25, -35, -50, -80},
+    {0.5, 160, -65, -115},
+    {1, 160, -65, -115},
+};
+Phase LLArm4Phases[] = {
+    {0, -85, -25, 25},
+    {0.5, -85, -25, 25},
+    {1, 30, -90, 35},
+    {1, 30, -90, 35},
+    {0.25, 40, -95, 15},
+    {0.5, 25, -225, 35},
+    {1, 25, -225, 35},
+};
+Phase LPArm4Phases[] = {
+    {0, -55, 25, 5},
+    {0.5, -55, 25, 5},
+    {1, 65, 5, -10},
+    {1, 65, 5, -10},
+    {0.25, 50, -25, -10},
+    {0.5, 0, -45, -10},
+    {1, 10, -45, -10},
+};
+Phase RUArm4Phases[] = {
+    {0, -90, 0, 40},
+    {0.5, -90, 0, 40},
+    {1, -50, 35, 20},
+    {1, -50, 35, 20},
+    {0.25, -30, -20, -25},
+    {0.5, -65, -20, 10},
+    {1, -65, -20, 10},
+};
+Phase RLArm4Phases[] = {
+    {0, -20, 40, 5},
+    {0.5, -20, 40, 5},
+    {1, -10, 20, 55},
+    {1, -10, 20, 55},
+    {0.25, 5, 60, 0},
+    {0.5, 10, 60, 5},
+    {1, 10, 60, 5},
+};
+Phase RPArm4Phases[] = {
+    {0, -35, 10, 0},
+    {0.5, -35, 10, 0},
+    {1, 30, -5, 30},
+    {1, 30, -5, 30},
+    {0.25, 5, -25, 30},
+    {0.5, -15, -25, 30},
+    {1, 0, -25, 55},
+};
 Phase body4Phases[] = {
-    {2.0, 1, 30.0f},   // rotate +30° X over 2s
+    {0, -5, 0, 0},
+    {0.5, -5, 0, 0},
+    {1, 25, -105, -5},
+    {1, 30, -100, -5},
+    {0.25, 65, -20, 0},
+    {0.5, 65, -10, 0},
+    {1, 65, -10, 0},
 };
+Phase LULeg4Phases[] = {
+    {0, -5, 0, -5},
+    {0.5, -5, 0, -5},
+    {1, -35, -10, -25},
+    {1, -40, -10, -25},
+    {0.25, -25, -15, -20},
+    {0.5, -60, -15, -20},
+    {1, -55, -15, -20},
+};
+Phase LLLeg4Phases[] = {
+    {0, 10, 0, 0},
+    {0.5, 10, 0, 0},
+    {1, 50, 5, 5},
+    {1, 55, 5, 5},
+    {0.25, 115, 5, 5},
+    {0.5, 120, 5, -30},
+    {1, 120, 5, -30},
+};
+Phase LFLeg4Phases[] = {
+    {0, -5, 0, 0},
+    {0.5, -5, 0, 0},
+    {1, -10, -15, 0},
+    {1, -10, -15, 0},
+    {0.25, -10, -15, 0},
+    {0.5, -60, -15, 0},
+    {1, -65, -15, 0},
+};
+Phase RULeg4Phases[] = {
+    {0, -5, 0, -5},
+    {0.5, -5, 0, -5},
+    {1, 15, 15, -15},
+    {1, 20, 15, -15},
+    {0.25, 5, 15, -5},
+    {0.5, 55, -10, -10},
+    {1, 60, -10, -10},
+};
+Phase RLLeg4Phases[] = {
+    {0, 10, 0, 0},
+    {0.5, 10, 0, 0},
+    {1, 35, 5, -15},
+    {1, 40, 5, -15},
+    {0.25, 40, 5, -15},
+    {0.5, 5, 5, -15},
+    {1, 0, 5, -15},
+};
+Phase RFLeg4Phases[] = {
+    {0, -5, 0, 0},
+    {0.5, -5, 0, 0},
+    {1, -25, 5, 10},
+    {1, -25, 5, 10},
+    {0.25, -25, 5, 10},
+    {0.5, -5, 5, 10},
+    {1, -15, 5, 10},
+};
+BodyPart head4(head4Phases, sizeof(head4Phases) / sizeof(head4Phases[0]));
+BodyPart LUArm4(LUArm4Phases, sizeof(LUArm4Phases) / sizeof(LUArm4Phases[0]));
+BodyPart LLArm4(LLArm4Phases, sizeof(LLArm4Phases) / sizeof(LLArm4Phases[0]));
+BodyPart LPArm4(LPArm4Phases, sizeof(LPArm4Phases) / sizeof(LPArm4Phases[0]));
+BodyPart RUArm4(RUArm4Phases, sizeof(RUArm4Phases) / sizeof(RUArm4Phases[0]));
+BodyPart RLArm4(RLArm4Phases, sizeof(RLArm4Phases) / sizeof(RLArm4Phases[0]));
+BodyPart RPArm4(RPArm4Phases, sizeof(RPArm4Phases) / sizeof(RPArm4Phases[0]));
 BodyPart body4(body4Phases, sizeof(body4Phases) / sizeof(body4Phases[0]));
+BodyPart LULeg4(LULeg4Phases, sizeof(LULeg4Phases) / sizeof(LULeg4Phases[0]));
+BodyPart LLLeg4(LLLeg4Phases, sizeof(LLLeg4Phases) / sizeof(LLLeg4Phases[0]));
+BodyPart LFLeg4(LFLeg4Phases, sizeof(LFLeg4Phases) / sizeof(LFLeg4Phases[0]));
+BodyPart RULeg4(RULeg4Phases, sizeof(RULeg4Phases) / sizeof(RULeg4Phases[0]));
+BodyPart RLLeg4(RLLeg4Phases, sizeof(RLLeg4Phases) / sizeof(RLLeg4Phases[0]));
+BodyPart RFLeg4(RFLeg4Phases, sizeof(RFLeg4Phases) / sizeof(RFLeg4Phases[0]));
 
-Phase RLeg4Phases[] = {
-    {2.0, 1, 30.0f},   // rotate +30° X over 2s
-};
-BodyPart RLeg4(RLeg4Phases, sizeof(RLeg4Phases) / sizeof(RLeg4Phases[0]));
 
+void printRotations() {
+    std::ostringstream oss;
 
+    oss << "Head: (" << headX << ", " << headY << ", " << headZ << ")\n";
+    oss << "Left Upper Arm: (" << LUArmX << ", " << LUArmY << ", " << LUArmZ << ")\n";
+    oss << "Left Lower Arm: (" << LLArmX << ", " << LLArmY << ", " << LLArmZ << ")\n";
+    oss << "Left Palm: (" << LPArmX << ", " << LPArmY << ", " << LPArmZ << ")\n";
+    oss << "Right Upper Arm: (" << RUArmX << ", " << RUArmY << ", " << RUArmZ << ")\n";
+    oss << "Right Lower Arm: (" << RLArmX << ", " << RLArmY << ", " << RLArmZ << ")\n";
+    oss << "Right Palm: (" << RPArmX << ", " << RPArmY << ", " << RPArmZ << ")\n";
+    oss << "Body: (" << bodyX << ", " << bodyY << ", " << bodyZ << ")\n";
+    oss << "Left Upper Leg: (" << LULegX << ", " << LULegY << ", " << LULegZ << ")\n";
+    oss << "Left Lower Leg: (" << LLLegX << ", " << LLLegY << ", " << LLLegZ << ")\n";
+    oss << "Left Foot: (" << LFLegX << ", " << LFLegY << ", " << LFLegZ << ")\n";
+    oss << "Right Upper Leg: (" << RULegX << ", " << RULegY << ", " << RULegZ << ")\n";
+    oss << "Right Lower Leg: (" << RLLegX << ", " << RLLegY << ", " << RLLegZ << ")\n";
+    oss << "Right Foot: (" << RFLegX << ", " << RFLegY << ", " << RFLegZ << ")\n";
 
+    std::string message = oss.str();
+    MessageBox(NULL, message.c_str(), "Body Coordinates", MB_OK);
+}
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -94,7 +250,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
     case WM_KEYDOWN:
         switch (wParam) {
-        //Camera keys
+            //Camera keys
         case 'W':
             cameraPitch -= rotationSpeed;
             break;
@@ -108,7 +264,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             cameraYaw += rotationSpeed;
             break;
 
-        //Question controls
+            //Question controls
         case '1':
             qNo = 1;
             break;
@@ -121,357 +277,347 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         case '4':
             qNo = 4;
             break;
-
-        //Q2 Controls
-        if (qNo ==2) {
+        case '5':
+            qNo = 5;
+            break;
+            
+        case VK_SPACE:
+            printRotations();
+            break;
             //Toggle keys
-            case VK_OEM_MINUS:
+        case VK_OEM_MINUS:
+            if (qNo == 2)
                 opposite = !opposite;
-                break;
-            case VK_OEM_PLUS:
+            if (qNo == 4) 
+                if (speed2 > 0.5)
+                        speed2 -= 0.5;
+            break;
+        case VK_OEM_PLUS:
+            if (qNo == 2)
                 toggleRight = !toggleRight;
-                break;
+            if (qNo == 4)
+                    speed2 += 0.5;
+            break;
 
+        if (qNo == 2) {
             //Head
-            case 'Q':
-                if (!opposite)
-                    headX += rotationSpeed;
-                else
-                    headX -= rotationSpeed;
-                break;
-            case 'E':
-                if (!opposite)
-                    headY += rotationSpeed;
-                else
-                    headY -= rotationSpeed;
-                break;
-            case 'R':
-                if (!opposite)
-                    headZ += rotationSpeed;
-                else
-                    headZ -= rotationSpeed;
-                break;
+        case 'Q':
+            if (!opposite)
+                headX += rotationSpeed;
+            else
+                headX -= rotationSpeed;
+            break;
+        case 'E':
+            if (!opposite)
+                headY += rotationSpeed;
+            else
+                headY -= rotationSpeed;
+            break;
+        case 'R':
+            if (!opposite)
+                headZ += rotationSpeed;
+            else
+                headZ -= rotationSpeed;
+            break;
 
             //Upper Arm
-            case 'T':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LUArmX += rotationSpeed;
-                    else
-                        LUArmX -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RUArmX += rotationSpeed;
-                    else
-                        RUArmX -= rotationSpeed;
-                }
-                break;
+        case 'T':
+            if (!toggleRight) {
+                if (!opposite)
+                    LUArmX += rotationSpeed;
+                else
+                    LUArmX -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RUArmX += rotationSpeed;
+                else
+                    RUArmX -= rotationSpeed;
+            }
+            break;
 
-            case 'Y':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LUArmY += rotationSpeed;
-                    else
-                        LUArmY -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RUArmY += rotationSpeed;
-                    else
-                        RUArmY -= rotationSpeed;
-                }
-                break;
+        case 'Y':
+            if (!toggleRight) {
+                if (!opposite)
+                    LUArmY += rotationSpeed;
+                else
+                    LUArmY -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RUArmY += rotationSpeed;
+                else
+                    RUArmY -= rotationSpeed;
+            }
+            break;
 
-            case 'U':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LUArmZ += rotationSpeed;
-                    else
-                        LUArmZ -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RUArmZ += rotationSpeed;
-                    else
-                        RUArmZ -= rotationSpeed;
-                }
-                break;
+        case 'U':
+            if (!toggleRight) {
+                if (!opposite)
+                    LUArmZ += rotationSpeed;
+                else
+                    LUArmZ -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RUArmZ += rotationSpeed;
+                else
+                    RUArmZ -= rotationSpeed;
+            }
+            break;
 
-                // Lower Arm
-            case 'I':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LLArmX += rotationSpeed;
-                    else
-                        LLArmX -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RLArmX += rotationSpeed;
-                    else
-                        RLArmX -= rotationSpeed;
-                }
-                break;
+            // Lower Arm
+        case 'I':
+            if (!toggleRight) {
+                if (!opposite)
+                    LLArmX += rotationSpeed;
+                else
+                    LLArmX -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RLArmX += rotationSpeed;
+                else
+                    RLArmX -= rotationSpeed;
+            }
+            break;
 
-            case 'O':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LLArmY += rotationSpeed;
-                    else
-                        LLArmY -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RLArmY += rotationSpeed;
-                    else
-                        RLArmY -= rotationSpeed;
-                }
-                break;
+        case 'O':
+            if (!toggleRight) {
+                if (!opposite)
+                    LLArmY += rotationSpeed;
+                else
+                    LLArmY -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RLArmY += rotationSpeed;
+                else
+                    RLArmY -= rotationSpeed;
+            }
+            break;
 
-            case 'P':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LLArmZ += rotationSpeed;
-                    else
-                        LLArmZ -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RLArmZ += rotationSpeed;
-                    else
-                        RLArmZ -= rotationSpeed;
-                }
-                break;
+        case 'P':
+            if (!toggleRight) {
+                if (!opposite)
+                    LLArmZ += rotationSpeed;
+                else
+                    LLArmZ -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RLArmZ += rotationSpeed;
+                else
+                    RLArmZ -= rotationSpeed;
+            }
+            break;
 
-                // Palm
-            case 'F':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LPArmX += rotationSpeed;
-                    else
-                        LPArmX -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RPArmX += rotationSpeed;
-                    else
-                        RPArmX -= rotationSpeed;
-                }
-                break;
+            // Palm
+        case 'F':
+            if (!toggleRight) {
+                if (!opposite)
+                    LPArmX += rotationSpeed;
+                else
+                    LPArmX -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RPArmX += rotationSpeed;
+                else
+                    RPArmX -= rotationSpeed;
+            }
+            break;
 
-            case 'G':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LPArmY += rotationSpeed;
-                    else
-                        LPArmY -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RPArmY += rotationSpeed;
-                    else
-                        RPArmY -= rotationSpeed;
-                }
-                break;
+        case 'G':
+            if (!toggleRight) {
+                if (!opposite)
+                    LPArmY += rotationSpeed;
+                else
+                    LPArmY -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RPArmY += rotationSpeed;
+                else
+                    RPArmY -= rotationSpeed;
+            }
+            break;
 
-            case 'H':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LPArmZ += rotationSpeed;
-                    else
-                        LPArmZ -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RPArmZ += rotationSpeed;
-                    else
-                        RPArmZ -= rotationSpeed;
-                }
-                break;
+        case 'H':
+            if (!toggleRight) {
+                if (!opposite)
+                    LPArmZ += rotationSpeed;
+                else
+                    LPArmZ -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RPArmZ += rotationSpeed;
+                else
+                    RPArmZ -= rotationSpeed;
+            }
+            break;
 
             //Body
-            case 'J':
-                if (!opposite)
-                    bodyX += rotationSpeed;
-                else
-                    bodyX -= rotationSpeed;
-                break;
-            case 'K':
-                if (!opposite)
-                    bodyY += rotationSpeed;
-                else
-                    bodyY -= rotationSpeed;
-                break;
-            case 'L':
-                if (!opposite)
-                    bodyZ += rotationSpeed;
-                else
-                    bodyZ -= rotationSpeed;
-                break;
+        case 'J':
+            if (!opposite)
+                bodyX += rotationSpeed;
+            else
+                bodyX -= rotationSpeed;
+            break;
+        case 'K':
+            if (!opposite)
+                bodyY += rotationSpeed;
+            else
+                bodyY -= rotationSpeed;
+            break;
+        case 'L':
+            if (!opposite)
+                bodyZ += rotationSpeed;
+            else
+                bodyZ -= rotationSpeed;
+            break;
 
             // Upper Leg
-            case 'Z':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LULegX += rotationSpeed;
-                    else
-                        LULegX -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RULegX += rotationSpeed;
-                    else
-                        RULegX -= rotationSpeed;
-                }
-                break;
+        case 'Z':
+            if (!toggleRight) {
+                if (!opposite)
+                    LULegX += rotationSpeed;
+                else
+                    LULegX -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RULegX += rotationSpeed;
+                else
+                    RULegX -= rotationSpeed;
+            }
+            break;
 
-            case 'X':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LULegY += rotationSpeed;
-                    else
-                        LULegY -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RULegY += rotationSpeed;
-                    else
-                        RULegY -= rotationSpeed;
-                }
-                break;
+        case 'X':
+            if (!toggleRight) {
+                if (!opposite)
+                    LULegY += rotationSpeed;
+                else
+                    LULegY -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RULegY += rotationSpeed;
+                else
+                    RULegY -= rotationSpeed;
+            }
+            break;
 
-            case 'C':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LULegZ += rotationSpeed;
-                    else
-                        LULegZ -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RULegZ += rotationSpeed;
-                    else
-                        RULegZ -= rotationSpeed;
-                }
-                break;
+        case 'C':
+            if (!toggleRight) {
+                if (!opposite)
+                    LULegZ += rotationSpeed;
+                else
+                    LULegZ -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RULegZ += rotationSpeed;
+                else
+                    RULegZ -= rotationSpeed;
+            }
+            break;
 
             // Lower Leg
-            case 'V':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LLLegX += rotationSpeed;
-                    else
-                        LLLegX -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RLLegX += rotationSpeed;
-                    else
-                        RLLegX -= rotationSpeed;
-                }
-                break;
+        case 'V':
+            if (!toggleRight) {
+                if (!opposite)
+                    LLLegX += rotationSpeed;
+                else
+                    LLLegX -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RLLegX += rotationSpeed;
+                else
+                    RLLegX -= rotationSpeed;
+            }
+            break;
 
-            case 'B':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LLLegY += rotationSpeed;
-                    else
-                        LLLegY -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RLLegY += rotationSpeed;
-                    else
-                        RLLegY -= rotationSpeed;
-                }
-                break;
+        case 'B':
+            if (!toggleRight) {
+                if (!opposite)
+                    LLLegY += rotationSpeed;
+                else
+                    LLLegY -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RLLegY += rotationSpeed;
+                else
+                    RLLegY -= rotationSpeed;
+            }
+            break;
 
-            case 'N':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LLLegZ += rotationSpeed;
-                    else
-                        LLLegZ -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RLLegZ += rotationSpeed;
-                    else
-                        RLLegZ -= rotationSpeed;
-                }
-                break;
+        case 'N':
+            if (!toggleRight) {
+                if (!opposite)
+                    LLLegZ += rotationSpeed;
+                else
+                    LLLegZ -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RLLegZ += rotationSpeed;
+                else
+                    RLLegZ -= rotationSpeed;
+            }
+            break;
 
             // Feet
-            case 'M':
-                if (!toggleRight) {
-                    if (!opposite)
-                        LFLegX += rotationSpeed;
-                    else
-                        LFLegX -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RFLegX += rotationSpeed;
-                    else
-                        RFLegX -= rotationSpeed;
-                }
-                break;
-
-            case VK_OEM_COMMA:
-                if (!toggleRight) {
-                    if (!opposite)
-                        LFLegY += rotationSpeed;
-                    else
-                        LFLegY -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RFLegY += rotationSpeed;
-                    else
-                        RFLegY -= rotationSpeed;
-                }
-                break;
-
-            case VK_OEM_PERIOD:
-                if (!toggleRight) {
-                    if (!opposite)
-                        LFLegZ += rotationSpeed;
-                    else
-                        LFLegZ -= rotationSpeed;
-                }
-                else {
-                    if (!opposite)
-                        RFLegZ += rotationSpeed;
-                    else
-                        RFLegZ -= rotationSpeed;
-                }
-                break;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        case 'M':
+            if (!toggleRight) {
+                if (!opposite)
+                    LFLegX += rotationSpeed;
+                else
+                    LFLegX -= rotationSpeed;
             }
-             
+            else {
+                if (!opposite)
+                    RFLegX += rotationSpeed;
+                else
+                    RFLegX -= rotationSpeed;
+            }
+            break;
+
+        case VK_OEM_COMMA:
+            if (!toggleRight) {
+                if (!opposite)
+                    LFLegY += rotationSpeed;
+                else
+                    LFLegY -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RFLegY += rotationSpeed;
+                else
+                    RFLegY -= rotationSpeed;
+            }
+            break;
+
+        case VK_OEM_PERIOD:
+            if (!toggleRight) {
+                if (!opposite)
+                    LFLegZ += rotationSpeed;
+                else
+                    LFLegZ -= rotationSpeed;
+            }
+            else {
+                if (!opposite)
+                    RFLegZ += rotationSpeed;
+                else
+                    RFLegZ -= rotationSpeed;
+            }
+            break;
+            }
         }
+
         break;
     default:
         break;
@@ -479,7 +625,6 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
-//--------------------------------------------------------------------
 
 bool initPixelFormat(HDC hdc)
 {
@@ -511,9 +656,7 @@ bool initPixelFormat(HDC hdc)
         return false;
     }
 }
-//--------------------------------------------------------------------
 
-//Returns the elapsed time since program started
 double getTime() {
     static auto start = std::chrono::high_resolution_clock::now();
     auto now = std::chrono::high_resolution_clock::now();
@@ -524,48 +667,62 @@ double getTime() {
 void startPhase(BodyPart& part) {
     Phase& p = part.phases[part.currentPhase];
 
-    if (p.axis == 1) { part.startVal = part.rotX; part.endVal = part.rotX + p.value; }
-    if (p.axis == 2) { part.startVal = part.rotY; part.endVal = part.rotY + p.value; }
-    if (p.axis == 3) { part.startVal = part.rotZ; part.endVal = part.rotZ + p.value; }
+    part.startValX = part.rotX;
+    part.startValY = part.rotY;
+    part.startValZ = part.rotZ;
+
+    // Instead of adding p.rotX, deduct the previous rotation
+    if (part.currentPhase == 0) {
+        // First phase is relative to zero
+        part.endValX = part.startValX + p.rotX;
+        part.endValY = part.startValY + p.rotY;
+        part.endValZ = part.startValZ + p.rotZ;
+    }
+    else {
+        Phase& prev = part.phases[part.currentPhase - 1];
+        part.endValX = part.startValX + (p.rotX - prev.rotX);
+        part.endValY = part.startValY + (p.rotY - prev.rotY);
+        part.endValZ = part.startValZ + (p.rotZ - prev.rotZ);
+    }
 
     part.phaseStartTime = getTime();
 }
 
+//might have speed error, lemme know if it happens
 void applyAnimation(BodyPart& part) {
     double now = getTime();
     double elapsed = now - part.phaseStartTime;
-
+    double t;
     Phase& p = part.phases[part.currentPhase];
+    
+    if (qNo == 4) {
+        t = (elapsed * speed2) / p.duration;
+    }
+    else {
+        t = elapsed / p.duration;
+    }
 
-    // progress 0..1
-    double t = elapsed / p.duration;
     if (t > 1.0) t = 1.0;
+    float curX = part.startValX + (part.endValX - part.startValX) * (float)t;
+    float curY = part.startValY + (part.endValY - part.startValY) * (float)t;
+    float curZ = part.startValZ + (part.endValZ - part.startValZ) * (float)t;
 
-    float currentVal = part.startVal + (part.endVal - part.startVal) * (float)t;
+    // Apply interpolated transforms
+    glRotatef(curX, 1, 0, 0);
+    glRotatef(curY, 0, 1, 0);
+    glRotatef(curZ, 0, 0, 1);
 
-    // 🔹 Always apply the base accumulated rotations
-    glRotatef(part.rotX, 1, 0, 0);
-    glRotatef(part.rotY, 0, 1, 0);
-    glRotatef(part.rotZ, 0, 0, 1);
-
-    // 🔹 Add only the "extra" interpolation for the current phase
-    if (p.axis == 1) glRotatef(currentVal - part.rotX, 1, 0, 0);
-    if (p.axis == 2) glRotatef(currentVal - part.rotY, 0, 1, 0);
-    if (p.axis == 3) glRotatef(currentVal - part.rotZ, 0, 0, 1);
-
-    // 🔹 Update rotation state so next phase continues smoothly
     if (t >= 1.0) {
-        if (p.axis == 1) part.rotX = part.endVal;
-        if (p.axis == 2) part.rotY = part.endVal;
-        if (p.axis == 3) part.rotZ = part.endVal;
+        part.rotX = part.endValX;
+        part.rotY = part.endValY;
+        part.rotZ = part.endValZ;
 
-        // advance phase
         part.currentPhase++;
         if (part.currentPhase >= part.numPhases) {
-            part.currentPhase = 0;  // restart from phase 0
-            // ❌ don’t reset rotX/rotY/rotZ unless you want looping back to origin
+            part.currentPhase = 0; // loop
+            part.rotX = part.rotY = part.rotZ = 0;
         }
-        startPhase(part);  // start next phase
+        startPhase(part);
     }
 }
 
@@ -3063,7 +3220,7 @@ void key2() {
             glTranslatef(0.20, -0.07, 0.02);
 
             glPushMatrix();
-            glTranslatef(-0.2, 0.02, 0.65);
+            glTranslatef(-0.2, 0.02, 0.6);
             glRotatef(-90, 0, 1, 0);
             glRotatef(90, 0, 0, 1);
             sword();
@@ -3132,6 +3289,8 @@ void key2() {
         }
 
         body();
+        //innerCloth();
+        //outerCloth();
 
         glPopMatrix();
 
@@ -3247,11 +3406,10 @@ void key2() {
             glPopMatrix();
             glPopMatrix();
         }
-
-        innerCloth();
-        outerCloth();
     }
 }
+
+void key3(){}
 
 void key4() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -3267,16 +3425,14 @@ void key4() {
     {
         glPushMatrix();
         glTranslatef(0, 0.24, 0);
-        glRotatef(-5, 1, 0, 0);
-        
+        applyAnimation(body4);
         glTranslatef(0, -0.24, 0);
 
         //Head
         {
             glPushMatrix();
             glTranslatef(0, 0.6, -0.015);
-            glRotatef(10, 1, 0, 0);
-
+            applyAnimation(head4);
             glTranslatef(0, -0.6, 0.015);
 
             hair();
@@ -3293,27 +3449,21 @@ void key4() {
         {
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            glRotatef(-40, 1, 0, 0);
-            glRotatef(-10, 0, 0, 1);
-
+            applyAnimation(LUArm4);
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
 
             //Lower Arm
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
-            glRotatef(-100, 1, 0, 0);
-            glRotatef(20, 0, 0, 1);
-
+            applyAnimation(LLArm4);
             glTranslatef(0.16, -0.36, 0.05);
             lowerArm();
 
             //Palm
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            glRotatef(-50, 1, 0, 0);
-            glRotatef(10, 0, 1, 0);
-
+            applyAnimation(LPArm4);
             glTranslatef(0.20, -0.07, 0.02);
 
             glPushMatrix();
@@ -3334,27 +3484,21 @@ void key4() {
             glScalef(-1.0f, 1.0f, 1.0f);
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            glRotatef(-75, 1, 0, 0);
-            glRotatef(30, 0, 0, 1);
-
+            applyAnimation(RUArm4);
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
 
             //Lower Arm
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
-            glRotatef(-40, 1, 0, 0);
-            glRotatef(20, 0, 0, 1);
-
+            applyAnimation(RLArm4);
             glTranslatef(0.16, -0.36, 0.05);
             lowerArm();
 
             //Palm
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            glRotatef(-50, 1, 0, 0);
-            glRotatef(30, 0, 1, 0);
-
+            applyAnimation(RPArm4);
             glTranslatef(0.20, -0.07, 0.02);
             palm();
 
@@ -3365,6 +3509,9 @@ void key4() {
         }
 
         body();
+        innerCloth();
+        outerCloth();
+
 
         glPopMatrix();
 
@@ -3376,24 +3523,21 @@ void key4() {
         {
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
-            glRotatef(-5, 1, 0, 1);
-
+            applyAnimation(LULeg4);
             glTranslatef(0.05, -0.19, 0);
             thigh();
 
             //Lower leg
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
-            glRotatef(10, 1, 0, 0);
-
+            applyAnimation(LLLeg4);
             glTranslatef(0.07, 0.32, 0);
             calf();
 
             //Feet
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
-            glRotatef(-5, 1, 0, 0);
-
+            applyAnimation(LFLeg4);
             glTranslatef(0.05, 0.62, 0);
             feet();
 
@@ -3410,24 +3554,21 @@ void key4() {
             //Upper leg
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
-            glRotatef(-5, 1, 0, 1);
-
+            applyAnimation(RULeg4);
             glTranslatef(0.05, -0.19, 0);
             thigh();
 
             //Lower leg
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
-            glRotatef(10, 1, 0, 0);
-
+            applyAnimation(RLLeg4);
             glTranslatef(0.07, 0.32, 0);
             calf();
 
             //Feet
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
-            glRotatef(-5, 1, 0, 0);
-
+            applyAnimation(RFLeg4);
             glTranslatef(0.05, 0.62, 0);
             feet();
 
@@ -3437,10 +3578,12 @@ void key4() {
             glPopMatrix();
         }
 
-        //innerCloth();
-        //outerCloth();
-
+  
     }
+}
+
+void key5() {
+
 }
 
 void display()
@@ -3452,15 +3595,20 @@ void display()
     case 2:
         key2();
         break;
+    case 3:
+        key3();
+        break;
     case 4:
         key4();
+        break;
+    case 5:
+        key5();
         break;
     default:
         key1();
         break;
    }
 }
-//--------------------------------------------------------------------
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 {
@@ -3517,6 +3665,11 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
         display();
 
+        if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
+            printRotations();
+            Sleep(200);
+        }
+
         SwapBuffers(hdc);
     }
 
@@ -3524,4 +3677,3 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 
     return true;
 }
-//--------------------------------------------------------------------
