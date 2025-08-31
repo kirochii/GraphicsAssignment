@@ -1,19 +1,31 @@
-
+﻿
 #include <Windows.h>
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include <math.h>
+#include <chrono>
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment(lib, "glu32.lib")
 
 #define WINDOW_TITLE "OpenGL Window"
+#define PI 3.14159265359
+
+struct Phase {
+    // A class used for different "steps" to animation
+    // Example: Each step has different rotations, duration, angle of rotation
+    // Create an object and loop through the steps for animation
+
+    double duration;   // seconds
+    int type;          // 1 = rotateX, 2 = rotateY, 3 = rotateZ
+    float value;       // angle or rotation
+};
 
 float cameraYaw = 0.0f;    // left/right rotation (around Y-axis)
 float cameraPitch = 0.0f;  // up/down rotation (around X-axis)
 float rotationSpeed = 5.0f; // degrees per key press
 
-int qNo = 2;
+int qNo = 4;
 bool opposite = false; //toggle clockwise & counter clockwise rotations
 bool toggleRight = false; //toggle left and right limbs
 float RotationSpeed = 10; //set degree for each key press
@@ -34,7 +46,26 @@ float RULegX = 0, RULegY = 0, RULegZ = 0; //Right Upper Leg
 float RLLegX = 0, RLLegY = 0, RLLegZ = 0; //Right Lower Leg
 float RFLegX = 0, RFLegY = 0, RFLegZ = 0; //Right Feet
 
-#define PI 3.14159265359
+
+//Key 4: Basic Attack
+Phase phases[] = {
+    {2.0, 1, 30.0f},   // rotate +30° X over 2s
+    {2.0, 2, 50.0f},   // rotate +50° Y over 2s
+    {2.0, 3, 40.0f},   // rotate +40° Z over 2s
+    {2.0, 3, -40.0f},   // rotate +40° Z over 2s
+    {2.0, 2, -50.0f},   // rotate +50° Y over 2s
+    {2.0, 1, -30.0f},   // rotate +30° X over 2s
+};
+const int numPhases = sizeof(phases) / sizeof(phases[0]);
+int currentPhase = 0;
+double phaseStartTime = 0.0;
+float rotX = 0.0f, rotY = 0.0f, rotZ = 0.0f;
+float startVal = 0.0f;
+float endVal = 0.0f;
+
+
+
+
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -66,6 +97,12 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             break;
         case '2':
             qNo = 2;
+            break;
+        case '3':
+            qNo = 3;
+            break;
+        case '4':
+            qNo = 4;
             break;
 
         //Q2 Controls
@@ -458,6 +495,63 @@ bool initPixelFormat(HDC hdc)
     }
 }
 //--------------------------------------------------------------------
+
+//Returns the elapsed time since program started
+double getTime() {
+    static auto start = std::chrono::high_resolution_clock::now();
+    auto now = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = now - start;
+    return elapsed.count(); // seconds
+}
+
+void startPhase(int idx, Phase phases) {
+    Phase& p = phases[idx];
+
+    if (p.type == 1) { startVal = rotX; endVal = rotX + p.value; }
+    if (p.type == 2) { startVal = rotY; endVal = rotY + p.value; }
+    if (p.type == 3) { startVal = rotZ; endVal = rotZ + p.value; }
+
+    phaseStartTime = getTime();
+}
+
+void applyAnimation() {
+    double now = getTime();
+    double elapsed = now - phaseStartTime;
+
+    Phase& p = phases[currentPhase];
+
+    // progress 0..1
+    double t = elapsed / p.duration;
+    if (t > 1.0) t = 1.0;
+
+    float currentVal = startVal + (endVal - startVal) * (float)t;
+
+    // 🔹 Always apply the base accumulated rotations
+    glRotatef(rotX, 1, 0, 0);
+    glRotatef(rotY, 0, 1, 0);
+    glRotatef(rotZ, 0, 0, 1);
+
+    // 🔹 Add only the "extra" interpolation for the current phase
+    if (p.type == 1) glRotatef(currentVal - rotX, 1, 0, 0);
+    if (p.type == 2) glRotatef(currentVal - rotY, 0, 1, 0);
+    if (p.type == 3) glRotatef(currentVal - rotZ, 0, 0, 1);
+
+    // update rotation state so next phase continues smoothly
+    if (t >= 1.0) {
+        if (p.type == 1) rotX = endVal;
+        if (p.type == 2) rotY = endVal;
+        if (p.type == 3) rotZ = endVal;
+
+        // advance phase
+        currentPhase++;
+        if (currentPhase >= numPhases) {
+            currentPhase = 0;  // restart from phase 0
+            // 🔸 but don't reset rotX,rotY,rotZ unless you want looping back to origin
+        }
+        startPhase(currentPhase);
+    }
+}
+
 
 void guide() {
     //guide measurement
@@ -3136,6 +3230,23 @@ void key2() {
     }
 }
 
+void key4() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+
+    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
+    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    glColor3f(1, 1, 1);
+
+
+    glPushMatrix();
+    applyAnimation();
+    head();            // draw your object
+    glPopMatrix();
+}
+
 void display()
 {
     switch (qNo) {
@@ -3144,6 +3255,9 @@ void display()
         break;
     case 2:
         key2();
+        break;
+    case 4:
+        key4();
         break;
     default:
         key1();
@@ -3193,7 +3307,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
     MSG msg;
     ZeroMemory(&msg, sizeof(msg));
 
-
+    startPhase(0);
 
     while (true)
     {
