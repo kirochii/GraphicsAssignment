@@ -1,5 +1,4 @@
-﻿
-#include <Windows.h>
+﻿#include <Windows.h>
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include <math.h>
@@ -7,6 +6,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+ 
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment(lib, "glu32.lib")
@@ -74,6 +74,282 @@ float LFLegX = 0, LFLegY = 0, LFLegZ = 0;
 float RULegX = 0, RULegY = 0, RULegZ = 0;
 float RLLegX = 0, RLLegY = 0, RLLegZ = 0;
 float RFLegX = 0, RFLegY = 0, RFLegZ = 0;
+
+//Key 3: Walk
+Phase LUArm3Phases[] = {
+    {0, 15, 0, 0},
+    {0.8, 10, 0, 0},
+    {0.8, 5, 0, 0},
+    {0.8, -10, 0, 0},
+    {0.8, -13, 0, 0},
+    {0.8, -15, 0, 0},
+
+    {0.8, -10, 0, 0},
+    {0.8, 0, 0, 0},
+    {0.8, 5, 0, 0},
+    {0.8, 10, 0, 0},
+    {0.8, 15, 0, 0}
+
+};
+Phase RUArm3Phases[] = {
+    {0,-15, 0, 0},
+    {0.8,-10, 0, 0},
+    {0.8, 0, 0, 0},
+    {0.8, 5, 0, 0},
+    {0.8, 10, 0, 0},
+    {0.8, 15, 0, 0},
+
+    {0.8, 10, 0, 0},
+    {0.8, 5, 0, 0},
+    {0.8, -10, 0, 0},
+    {0.8, -13, 0, 0},
+    {0.8, -15, 0, 0},
+};
+
+BodyPart LUArm3(LUArm3Phases, sizeof(LUArm3Phases) / sizeof(LUArm3Phases[0]));
+BodyPart RUArm3(RUArm3Phases, sizeof(RUArm3Phases) / sizeof(RUArm3Phases[0]));
+
+Phase body3Phases[] = {
+    {0, 5, 0, 0}
+};
+BodyPart body3(body3Phases, sizeof(body3Phases) / sizeof(body3Phases[0]));
+
+Phase LULeg3Phases[] = {
+    {0,-15, 0, 0},
+    {0.8,-10, 0, 0},
+    {0.8, 0, 0, 0},
+    {0.8, 5, 0, 0},
+    {0.8, 10, 0, 0},
+    {0.8, 15, 0, 0},
+
+    {0.8, 10, 0, 0},
+    {0.8, 5, 0, 0},
+    {0.8, -10, 0, 0},
+    {0.8, -13, 0, 0},
+    {0.8, -15, 0, 0},
+
+};
+Phase LLLeg3Phases[] = {
+    {0, 5, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+
+    {0.8, 15, 0, 0},
+    {0.8, 25, 0, 0},
+    {0.8, 40, 0, 0},
+    {0.8, 25, 0, 0},
+    {0.8, 5, 0, 0},
+};
+Phase LFLeg3Phases[] = {
+    {0, -5, 0, 0},
+    {0.8, -5, 0, 0},
+    {0.8, 0, 0, 0 },
+    {0.8, 5, 0, 0 },
+    {0.8, 10, 0, 0 },
+    {0.8, 15, 0, 0 },
+
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+};
+
+Phase RULeg3Phases[] = {
+    {0, 15, 0, 0},
+    {0.8, 10, 0, 0},
+    {0.8, 5, 0, 0},
+    {0.8, -10, 0, 0},
+    {0.8, -13, 0, 0},
+    {0.8, -15, 0, 0},
+
+    {0.8, -10, 0, 0},
+    {0.8, 0, 0, 0},
+    {0.8, 5, 0, 0},
+    {0.8, 10, 0, 0},
+    {0.8, 15, 0, 0},
+};
+Phase RLLeg3Phases[] = {
+    {0, 0, 0, 0},
+    {0.8, 15, 0, 0},
+    {0.8, 25, 0, 0},
+    {0.8, 40, 0, 0},
+    {0.8, 25, 0, 0},
+    {0.8, 5, 0, 0},
+
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+};
+Phase RFLeg3Phases[] = {
+    {0, -5, 0, 0},
+    {0.8, -5, 0, 0},
+    {0.8, 0, 0, 0 },
+    {0.8, 5, 0, 0 },
+    {0.8, 10, 0, 0 },
+    {0.8, 15, 0, 0 },
+
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+    {0.8, 0, 0, 0 },
+};
+
+BodyPart LULeg3(LULeg3Phases, sizeof(LULeg3Phases) / sizeof(LULeg3Phases[0]));
+BodyPart LLLeg3(LLLeg3Phases, sizeof(LLLeg3Phases) / sizeof(LLLeg3Phases[0]));
+BodyPart LFLeg3(LFLeg3Phases, sizeof(LFLeg3Phases) / sizeof(LFLeg3Phases[0]));
+
+BodyPart RULeg3(RULeg3Phases, sizeof(RULeg3Phases) / sizeof(RULeg3Phases[0]));
+BodyPart RLLeg3(RLLeg3Phases, sizeof(RLLeg3Phases) / sizeof(RLLeg3Phases[0]));
+BodyPart RFLeg3(RFLeg3Phases, sizeof(RFLeg3Phases) / sizeof(RFLeg3Phases[0]));
+
+
+//Key 6: Run
+Phase head6Phases[] = {
+    {0, -5, 0, 0},
+};
+Phase LUArm6Phases[] = {
+    {0, 30, 0, 0},
+};
+Phase LLArm6Phases[] = {
+    {0, -35, 0, 0},
+};
+Phase LPArm6Phases[] = {
+    {0, 0, 0, 0},
+};
+Phase RUArm6Phases[] = {
+    {0, -35, 0, 0},
+};
+Phase RLArm6Phases[] = {
+    {0, -25, 0, 0},
+};
+Phase RPArm6Phases[] = {
+    {0, 0, 0, 0},
+};
+
+Phase body6Phases[] = {
+    {0, 20, 0, 0},
+};
+
+Phase LULeg6Phases[] = {
+    {0, -30, 0, 0},
+    {0.1, -40, 0, 0},
+    {0.1, -50, 0, 0},
+
+    {0.1, -40, 0, 0},
+    {0.1, -30, 0, 0},
+    {0.1, -15, 0, 0},
+
+    {0.15, 5, 0, 0},
+
+    {0.1, 30, 0, 0},
+    {0.1, 40, 0, 0},
+    {0.1, 50, 0, 0},
+
+    {0.1, 40, 0, 0},
+    {0.1, 20, 0, 0},
+    {0.1, 0, 0, 0},
+
+    {0.15, -15, 0, 0},
+    {0.15, -30, 0, 0},
+
+};
+Phase LLLeg6Phases[] = {
+    {0, 40, 0, 0},
+    {0.1, 60, 0, 0},
+    {0.1, 80, 0, 0},
+
+    {0.1, 60, 0, 0},
+    {0.1, 30, 0, 0},
+    {0.1, 0, 0, 0},
+
+    {0.15, 0, 0, 0},
+
+    {0.1, 0, 0, 0},
+    {0.1, 0, 0, 0},
+    {0.1, 0, 0, 0},
+
+    {0.1, 0, 0, 0},
+    {0.1, 50, 0, 0},
+    {0.1, 105, 0, 0},
+
+    {0.15, 50, 0, 0},
+    {0.15, 40, 0, 0},
+};
+Phase LFLeg6Phases[] = {
+    {0, 0, 0, 0},
+};
+
+Phase RULeg6Phases[] = {
+    {0, 30, 0, 0},
+    {0.1, 40, 0, 0},
+    {0.1, 50, 0, 0},
+
+    {0.1, 40, 0, 0},
+    {0.1, 20, 0, 0},
+    {0.1, 0, 0, 0},
+
+    {0.15, -20, 0, 0},
+
+    {0.1, -30, 0, 0},
+    {0.1, -40, 0, 0},
+    {0.1, -50, 0, 0},
+
+    {0.1, -40, 0, 0},
+    {0.1, -30, 0, 0},
+    {0.1, -15, 0, 0},
+
+    {0.15, 0, 0, 0},
+    {0.15, 30, 0, 0},
+};
+Phase RLLeg6Phases[] = {
+    {0, 0, 0, 0},
+    {0.1, 0, 0, 0},
+    {0.1, 0, 0, 0},
+
+    {0.1, 0, 0, 0},
+    {0.1, 50, 0, 0},
+    {0.1, 105, 0, 0},
+
+    {0.15, 50, 0, 0},
+
+    {0.1, 40, 0, 0},
+    {0.1, 60, 0, 0},
+    {0.1, 80, 0, 0},
+
+    {0.1, 60, 0, 0},
+    {0.1, 30, 0, 0},
+    {0.1, 0, 0, 0},
+
+    {0.15, 0, 0, 0},
+    {0.15, 0, 0, 0},
+};
+Phase RFLeg6Phases[] = {
+    {0, 0, 0, 0},
+};
+
+BodyPart head6(head6Phases, sizeof(head6Phases) / sizeof(head6Phases[0]));
+BodyPart LUArm6(LUArm6Phases, sizeof(LUArm6Phases) / sizeof(LUArm6Phases[0]));
+BodyPart LLArm6(LLArm6Phases, sizeof(LLArm6Phases) / sizeof(LLArm6Phases[0]));
+BodyPart LPArm6(LPArm6Phases, sizeof(LPArm6Phases) / sizeof(LPArm6Phases[0]));
+BodyPart RUArm6(RUArm6Phases, sizeof(RUArm6Phases) / sizeof(RUArm6Phases[0]));
+BodyPart RLArm6(RLArm6Phases, sizeof(RLArm6Phases) / sizeof(RLArm6Phases[0]));
+BodyPart RPArm6(RPArm6Phases, sizeof(RPArm6Phases) / sizeof(RPArm6Phases[0]));
+BodyPart body6(body6Phases, sizeof(body6Phases) / sizeof(body6Phases[0]));
+BodyPart LULeg6(LULeg6Phases, sizeof(LULeg6Phases) / sizeof(LULeg6Phases[0]));
+BodyPart LLLeg6(LLLeg6Phases, sizeof(LLLeg6Phases) / sizeof(LLLeg6Phases[0]));
+BodyPart LFLeg6(LFLeg6Phases, sizeof(LFLeg6Phases) / sizeof(LFLeg6Phases[0]));
+BodyPart RULeg6(RULeg6Phases, sizeof(RULeg6Phases) / sizeof(RULeg6Phases[0]));
+BodyPart RLLeg6(RLLeg6Phases, sizeof(RLLeg6Phases) / sizeof(RLLeg6Phases[0]));
+BodyPart RFLeg6(RFLeg6Phases, sizeof(RFLeg6Phases) / sizeof(RFLeg6Phases[0]));
+
+
 
 //Key 4: Rotation
 Phase head4Phases[] = {
@@ -279,6 +555,10 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             break;
         case '5':
             qNo = 5;
+            break;
+
+        case '6':
+            qNo = 6;
             break;
 
         case VK_SPACE:
@@ -733,6 +1013,22 @@ void startAnimation() {
     }
 }
 
+void lighting() {
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
+
+    GLfloat lightPos[] = { 0.0f, 1.0f, 1.0f, 0.0f };
+    GLfloat lightAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat lightDiffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+    GLfloat lightSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+}
+
 void guide() {
     //guide measurement
     glBegin(GL_LINES);
@@ -782,147 +1078,27 @@ void guide() {
 }
 
 void body() {
+    glColor3f(0.25, 0.44, 0.21);
+
     //belt (code start bottom right, clockwise), physical rendering start middle to left
     glBegin(GL_POLYGON);
-        glVertex3f(0, 0.19, 0.07);
-        glVertex3f(-0.04, 0.19, 0.07);
-        glVertex3f(-0.07, 0.19, 0.05);
-        glVertex3f(-0.09, 0.19, 0.03);
-        glVertex3f(-0.09, 0.19, -0.03);
-        glVertex3f(-0.07, 0.19, -0.05);
-        glVertex3f(-0.04, 0.19, -0.07);
-        glVertex3f(0, 0.19, -0.07);
-        glVertex3f(0.04, 0.19, -0.07);
-        glVertex3f(0.07, 0.19, -0.05);
-        glVertex3f(0.09, 0.19, -0.03);
-        glVertex3f(0.09, 0.19, 0.03);
-        glVertex3f(0.07, 0.19, 0.05);
-        glVertex3f(0.04, 0.19, 0.07);
-        glVertex3f(0, 0.19, 0.07);
+    glVertex3f(0, 0.19, 0.07);
+    glVertex3f(-0.04, 0.19, 0.07);
+    glVertex3f(-0.07, 0.19, 0.05);
+    glVertex3f(-0.09, 0.19, 0.03);
+    glVertex3f(-0.09, 0.19, -0.03);
+    glVertex3f(-0.07, 0.19, -0.05);
+    glVertex3f(-0.04, 0.19, -0.07);
+    glVertex3f(0, 0.19, -0.07);
+    glVertex3f(0.04, 0.19, -0.07);
+    glVertex3f(0.07, 0.19, -0.05);
+    glVertex3f(0.09, 0.19, -0.03);
+    glVertex3f(0.09, 0.19, 0.03);
+    glVertex3f(0.07, 0.19, 0.05);
+    glVertex3f(0.04, 0.19, 0.07);
+    glVertex3f(0, 0.19, 0.07);
     glEnd();
 
-    GLfloat beltDiffuse[] = { 0.55f, 0.27f, 0.07f, 1.0f };  // brown diffuse
-    GLfloat beltAmbient[] = { 0.25f, 0.13f, 0.03f, 1.0f };  // darker brown ambient
-    GLfloat beltSpecular[] = { 0.2f,  0.2f,  0.2f,  1.0f };  // subtle shine
-    GLfloat beltShininess = 20.0f;                          // not too shiny
-
-    glMaterialfv(GL_FRONT, GL_AMBIENT, beltAmbient);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, beltDiffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, beltSpecular);
-    glMaterialf(GL_FRONT, GL_SHININESS, beltShininess);
-
-
-    glBegin(GL_QUADS);
-        glVertex3f(0, 0.19, 0.07);
-        glVertex3f(-0.04, 0.19, 0.07);
-        glVertex3f(-0.04, 0.24, 0.07);
-        glVertex3f(0, 0.24, 0.07);
-        glVertex3f(0, 0.19, 0.07);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(-0.04, 0.19, 0.07);
-        glVertex3f(-0.07, 0.19, 0.05);
-        glVertex3f(-0.07, 0.24, 0.05);
-        glVertex3f(-0.04, 0.24, 0.07);
-        glVertex3f(-0.04, 0.19, 0.07);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(-0.07, 0.19, 0.05);
-        glVertex3f(-0.09, 0.19, 0.03);
-        glVertex3f(-0.09, 0.24, 0.03);
-        glVertex3f(-0.07, 0.24, 0.05);
-        glVertex3f(-0.07, 0.19, 0.05);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(-0.09, 0.19, 0.03);
-        glVertex3f(-0.09, 0.19, -0.03);
-        glVertex3f(-0.09, 0.24, -0.03);
-        glVertex3f(-0.09, 0.24, 0.03);
-        glVertex3f(-0.09, 0.19, 0.03);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(0, 0.19, -0.07);
-        glVertex3f(-0.04, 0.19, -0.07);
-        glVertex3f(-0.04, 0.24, -0.07);
-        glVertex3f(0, 0.24, -0.07);
-        glVertex3f(0, 0.19, -0.07);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(-0.04, 0.19, -0.07);
-        glVertex3f(-0.07, 0.19, -0.05);
-        glVertex3f(-0.07, 0.24, -0.05);
-        glVertex3f(-0.04, 0.24, -0.07);
-        glVertex3f(-0.04, 0.19, -0.07);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(-0.07, 0.19, -0.05);
-        glVertex3f(-0.09, 0.19, -0.03);
-        glVertex3f(-0.09, 0.24, -0.03);
-        glVertex3f(-0.07, 0.24, -0.05);
-        glVertex3f(-0.07, 0.19, -0.05);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(0, 0.19, 0.07);
-        glVertex3f(0.04, 0.19, 0.07);
-        glVertex3f(0.04, 0.24, 0.07);
-        glVertex3f(0, 0.24, 0.07);
-        glVertex3f(0, 0.19, 0.07);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(0.04, 0.19, 0.07);
-        glVertex3f(0.07, 0.19, 0.05);
-        glVertex3f(0.07, 0.24, 0.05);
-        glVertex3f(0.04, 0.24, 0.07);
-        glVertex3f(0.04, 0.19, 0.07);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(0.07, 0.19, 0.05);
-        glVertex3f(0.09, 0.19, 0.03);
-        glVertex3f(0.09, 0.24, 0.03);
-        glVertex3f(0.07, 0.24, 0.05);
-        glVertex3f(0.07, 0.19, 0.05);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(0.09, 0.19, 0.03);
-        glVertex3f(0.09, 0.19, -0.03);
-        glVertex3f(0.09, 0.24, -0.03);
-        glVertex3f(0.09, 0.24, 0.03);
-        glVertex3f(0.09, 0.19, 0.03);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(0, 0.19, -0.07);
-        glVertex3f(0.04, 0.19, -0.07);
-        glVertex3f(0.04, 0.24, -0.07);
-        glVertex3f(0, 0.24, -0.07);
-        glVertex3f(0, 0.19, -0.07);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(0.04, 0.19, -0.07);
-        glVertex3f(0.07, 0.19, -0.05);
-        glVertex3f(0.07, 0.24, -0.05);
-        glVertex3f(0.04, 0.24, -0.07);
-        glVertex3f(0.04, 0.19, -0.07);
-    glEnd();
-
-    glBegin(GL_QUADS);
-        glVertex3f(0.07, 0.19, -0.05);
-        glVertex3f(0.09, 0.19, -0.03);
-        glVertex3f(0.09, 0.24, -0.03);
-        glVertex3f(0.07, 0.24, -0.05);
-        glVertex3f(0.07, 0.19, -0.05);
-    glEnd();
 
     //body 1st layer (code start bottom right, clockwise), physical rendering start middle to left
     glBegin(GL_QUADS);
@@ -1447,7 +1623,138 @@ void body() {
 
 }
 
+void belt() {
+    glColor3f(0.28, 0.22, 0.05);
+    // --- Front center ---
+    glBegin(GL_QUADS);
+    glNormal3f(0, 0, 1); // facing forward
+    glVertex3f(0, 0.19, 0.07);
+    glVertex3f(-0.04, 0.19, 0.07);
+    glVertex3f(-0.04, 0.24, 0.07);
+    glVertex3f(0, 0.24, 0.07);
+    glEnd();
+
+    // --- Front left slope ---
+    glBegin(GL_QUADS);
+    glNormal3f(-0.707f, 0, 0.707f); // diagonal outward
+    glVertex3f(-0.04, 0.19, 0.07);
+    glVertex3f(-0.07, 0.19, 0.05);
+    glVertex3f(-0.07, 0.24, 0.05);
+    glVertex3f(-0.04, 0.24, 0.07);
+    glEnd();
+
+    // --- Left corner flat ---
+    glBegin(GL_QUADS);
+    glNormal3f(-1, 0, 0); // facing left
+    glVertex3f(-0.07, 0.19, 0.05);
+    glVertex3f(-0.09, 0.19, 0.03);
+    glVertex3f(-0.09, 0.24, 0.03);
+    glVertex3f(-0.07, 0.24, 0.05);
+    glEnd();
+
+    // --- Left side back ---
+    glBegin(GL_QUADS);
+    glNormal3f(-1, 0, 0); // facing left
+    glVertex3f(-0.09, 0.19, 0.03);
+    glVertex3f(-0.09, 0.19, -0.03);
+    glVertex3f(-0.09, 0.24, -0.03);
+    glVertex3f(-0.09, 0.24, 0.03);
+    glEnd();
+
+    // --- Back center ---
+    glBegin(GL_QUADS);
+    glNormal3f(0, 0, -1); // facing backward
+    glVertex3f(0, 0.19, -0.07);
+    glVertex3f(-0.04, 0.19, -0.07);
+    glVertex3f(-0.04, 0.24, -0.07);
+    glVertex3f(0, 0.24, -0.07);
+    glEnd();
+
+    // --- Back left slope ---
+    glBegin(GL_QUADS);
+    glNormal3f(-0.707f, 0, -0.707f); // diagonal backward-left
+    glVertex3f(-0.04, 0.19, -0.07);
+    glVertex3f(-0.07, 0.19, -0.05);
+    glVertex3f(-0.07, 0.24, -0.05);
+    glVertex3f(-0.04, 0.24, -0.07);
+    glEnd();
+
+    // --- Back left corner ---
+    glBegin(GL_QUADS);
+    glNormal3f(-1, 0, 0); // facing left
+    glVertex3f(-0.07, 0.19, -0.05);
+    glVertex3f(-0.09, 0.19, -0.03);
+    glVertex3f(-0.09, 0.24, -0.03);
+    glVertex3f(-0.07, 0.24, -0.05);
+    glEnd();
+
+    // --- Front right center ---
+    glBegin(GL_QUADS);
+    glNormal3f(0, 0, 1); // forward
+    glVertex3f(0, 0.19, 0.07);
+    glVertex3f(0.04, 0.19, 0.07);
+    glVertex3f(0.04, 0.24, 0.07);
+    glVertex3f(0, 0.24, 0.07);
+    glEnd();
+
+    // --- Front right slope ---
+    glBegin(GL_QUADS);
+    glNormal3f(0.707f, 0, 0.707f); // diagonal forward-right
+    glVertex3f(0.04, 0.19, 0.07);
+    glVertex3f(0.07, 0.19, 0.05);
+    glVertex3f(0.07, 0.24, 0.05);
+    glVertex3f(0.04, 0.24, 0.07);
+    glEnd();
+
+    // --- Right corner flat ---
+    glBegin(GL_QUADS);
+    glNormal3f(1, 0, 0); // facing right
+    glVertex3f(0.07, 0.19, 0.05);
+    glVertex3f(0.09, 0.19, 0.03);
+    glVertex3f(0.09, 0.24, 0.03);
+    glVertex3f(0.07, 0.24, 0.05);
+    glEnd();
+
+    // --- Right side back ---
+    glBegin(GL_QUADS);
+    glNormal3f(1, 0, 0); // facing right
+    glVertex3f(0.09, 0.19, 0.03);
+    glVertex3f(0.09, 0.19, -0.03);
+    glVertex3f(0.09, 0.24, -0.03);
+    glVertex3f(0.09, 0.24, 0.03);
+    glEnd();
+
+    // --- Back right center ---
+    glBegin(GL_QUADS);
+    glNormal3f(0, 0, -1); // backward
+    glVertex3f(0, 0.19, -0.07);
+    glVertex3f(0.04, 0.19, -0.07);
+    glVertex3f(0.04, 0.24, -0.07);
+    glVertex3f(0, 0.24, -0.07);
+    glEnd();
+
+    // --- Back right slope ---
+    glBegin(GL_QUADS);
+    glNormal3f(0.707f, 0, -0.707f); // backward-right diagonal
+    glVertex3f(0.04, 0.19, -0.07);
+    glVertex3f(0.07, 0.19, -0.05);
+    glVertex3f(0.07, 0.24, -0.05);
+    glVertex3f(0.04, 0.24, -0.07);
+    glEnd();
+
+    // --- Back right corner ---
+    glBegin(GL_QUADS);
+    glNormal3f(1, 0, 0); // facing right
+    glVertex3f(0.07, 0.19, -0.05);
+    glVertex3f(0.09, 0.19, -0.03);
+    glVertex3f(0.09, 0.24, -0.03);
+    glVertex3f(0.07, 0.24, -0.05);
+    glEnd();
+}
+
 void upperArm() {
+    glColor3f(0.25, 0.44, 0.21);
+
     // Shoulder
     glBegin(GL_QUAD_STRIP);
     glVertex3f(-0.16, 0.52, 0.03);
@@ -1527,6 +1834,8 @@ void upperArm() {
 }
 
 void lowerArm() {
+    glColor3f(0.13, 0.24, 0.12);
+
     //close top
     glBegin(GL_QUADS);
     glVertex3f(-0.18, 0.37, -0.08);
@@ -1595,6 +1904,8 @@ void lowerArm() {
 }
 
 void palm() {
+    glColor3f(0.90, 0.78, 0.49);
+
     //close top
     glBegin(GL_QUADS);
     glVertex3f(-0.2, 0.07, -0.04);
@@ -1676,6 +1987,8 @@ void neck() {
 
     float angleStep = 2.0f * PI / slices;
 
+    glColor3f(0.90, 0.78, 0.49);
+
     // --- Side Surface ---
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= slices; ++i) {
@@ -1729,6 +2042,8 @@ void neck() {
 }
 
 void head() {
+    glColor3f(0.90, 0.78, 0.49);
+
     //1st layer
     glBegin(GL_QUADS);
     glVertex3f(0, 0.6, 0.05);
@@ -2280,6 +2595,8 @@ void head() {
 }
 
 void hair() {
+    glColor3f(0.17, 0.12, 0.03);
+
     //layer
     glBegin(GL_TRIANGLES);
     glVertex3f(0, 0.74, 0.040);
@@ -2558,6 +2875,8 @@ void hair() {
 }
 
 void sword() {
+    glColor3f(0.6, 0.6, 0.6);
+
     glBegin(GL_POLYGON);
     glVertex3f(-0.01, 0.8, 0);
     glVertex3f(-0.005, 0.8, -0.01);
@@ -2671,6 +2990,7 @@ void sword() {
 }
 
 void thigh() {
+    glColor3f(0.25, 0.44, 0.21);
     //top cover
     glBegin(GL_POLYGON);
     glVertex3f(0, 0.19, 0.07);
@@ -2800,6 +3120,8 @@ void thigh() {
 }
 
 void calf() {
+    glColor3f(0.28, 0.22, 0.05);
+
     //top cover
     glBegin(GL_POLYGON);
     glVertex3f(-0.04, -0.32, 0.02);
@@ -2858,6 +3180,8 @@ void calf() {
 }
 
 void feet() {
+    glColor3f(0.28, 0.22, 0.05);
+
     //top cover
     glBegin(GL_QUADS);
     glVertex3f(-0.03, -0.62, 0.01);
@@ -2927,6 +3251,8 @@ void feet() {
 }
 
 void innerCloth() {
+    glColor3f(0.48, 0.42, 0.25);
+
     //layer 1
     glBegin(GL_QUAD_STRIP);
     glVertex3f(-0.01, -0.01, 0.12);
@@ -3014,6 +3340,9 @@ void innerCloth() {
 }
 
 void outerCloth() {
+
+    glColor3f(0.85, 0.81, 0.70);
+
     glBegin(GL_QUAD_STRIP);
     glVertex3f(0, -0.06, 0.15);
     glVertex3f(0, 0.19, 0.07);
@@ -3069,30 +3398,35 @@ void outerCloth() {
 }
 
 void key1() {
-
-    glEnable(GL_COLOR_MATERIAL);
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-
     glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
+    // 1. Apply camera rotation first (rotates the view)
     glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
     glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    lighting();  // light stays fixed in the world
+
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor3f(1.0f, 0.0f, 0.0f);
 
-    guide();
+    // 3. Draw the character
+    //guide();
 
-    glColor3f(1, 1, 1);
     neck();
-    body();
     head();
+    body();
+    belt();
 
+    // Right Arm
     upperArm();
     lowerArm();
     palm();
+
+    // Left Arm
     glPushMatrix();
     glScalef(-1.0f, 1.0f, 1.0f);
     upperArm();
@@ -3130,9 +3464,7 @@ void key1() {
     glPopMatrix();
 
     innerCloth();
-
     outerCloth();
-
 
     glFlush();
 }
@@ -3237,7 +3569,7 @@ void key2() {
             glTranslatef(-0.2, 0.02, 0.6);
             glRotatef(-90, 0, 1, 0);
             glRotatef(90, 0, 0, 1);
-            sword();
+            //sword();
             glPopMatrix();
 
             palm();
@@ -3303,6 +3635,7 @@ void key2() {
         }
 
         body();
+        belt();
         //innerCloth();
         //outerCloth();
 
@@ -3423,7 +3756,174 @@ void key2() {
     }
 }
 
-void key3() {}
+void key3() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+
+    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
+    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glColor3f(1, 1, 1);
+
+    //upper body
+    {
+        glPushMatrix();
+        glTranslatef(0, 0.24, 0);
+        applyAnimation(body3);
+        glTranslatef(0, -0.24, 0);
+
+        //Head
+        {
+            glPushMatrix();
+            glTranslatef(0, 0.6, -0.015);
+            //applyAnimation(head4);
+            glTranslatef(0, -0.6, 0.015);
+
+            hair();
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            hair();
+            glPopMatrix();
+            head();
+            glPopMatrix();
+            neck();
+        }
+
+        //Upper Arm (Right Arm)
+        {
+            glPushMatrix();
+            glTranslatef(-0.13, 0.52, -0.02);
+            applyAnimation(LUArm3);
+            glTranslatef(0.13, -0.52, 0.02);
+            upperArm();
+
+            //Lower Arm
+            glPushMatrix();
+            glTranslatef(-0.16, 0.36, -0.05);
+            //applyAnimation(LLArm4);
+            glTranslatef(0.16, -0.36, 0.05);
+            lowerArm();
+
+            //Palm
+            glPushMatrix();
+            glTranslatef(-0.20, 0.07, -0.02);
+            //applyAnimation(LPArm4);
+            glTranslatef(0.20, -0.07, 0.02);
+
+            palm();
+
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        //Upper Arm (Left Arm)
+        {
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            glPushMatrix();
+            glTranslatef(-0.13, 0.52, -0.02);
+            applyAnimation(RUArm3);
+            glTranslatef(0.13, -0.52, 0.02);
+            upperArm();
+
+            //Lower Arm
+            glPushMatrix();
+            glTranslatef(-0.16, 0.36, -0.05);
+            //applyAnimation(RLArm4);
+            glTranslatef(0.16, -0.36, 0.05);
+            lowerArm();
+
+            //Palm
+            glPushMatrix();
+            glTranslatef(-0.20, 0.07, -0.02);
+            //applyAnimation(RPArm4);
+            glTranslatef(0.20, -0.07, 0.02);
+            palm();
+
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        body();
+        belt();
+        //innerCloth();
+        //outerCloth();
+
+
+        glPopMatrix();
+
+    }
+
+    //lower body
+    {
+        //Upper leg (Right leg)
+        {
+            glPushMatrix();
+            glTranslatef(-0.05, 0.19, 0);
+            applyAnimation(LULeg3);
+            glTranslatef(0.05, -0.19, 0);
+            thigh();
+
+            //Lower leg
+            glPushMatrix();
+            glTranslatef(-0.07, -0.32, 0);
+            applyAnimation(LLLeg3);
+            glTranslatef(0.07, 0.32, 0);
+            calf();
+
+            //Feet
+            glPushMatrix();
+            glTranslatef(-0.05, -0.62, 0);
+            applyAnimation(LFLeg3);
+            glTranslatef(0.05, 0.62, 0);
+            feet();
+
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        //Upper leg (Left leg)
+        {
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+
+            //Upper leg
+            glPushMatrix();
+            glTranslatef(-0.05, 0.19, 0);
+            applyAnimation(RULeg3);
+            glTranslatef(0.05, -0.19, 0);
+            thigh();
+
+            //Lower leg
+            glPushMatrix();
+            glTranslatef(-0.07, -0.32, 0);
+            applyAnimation(RLLeg3);
+            glTranslatef(0.07, 0.32, 0);
+            calf();
+
+            //Feet
+            glPushMatrix();
+            glTranslatef(-0.05, -0.62, 0);
+            applyAnimation(RFLeg3);
+            glTranslatef(0.05, 0.62, 0);
+            feet();
+
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+
+    }
+
+}
 
 void key4() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -3432,6 +3932,7 @@ void key4() {
     glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
     glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glColor3f(1, 1, 1);
 
@@ -3523,8 +4024,9 @@ void key4() {
         }
 
         body();
-        innerCloth();
-        outerCloth();
+        belt();
+        //innerCloth();
+        //outerCloth();
 
 
         glPopMatrix();
@@ -3600,6 +4102,179 @@ void key5() {
 
 }
 
+void key6() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+
+    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
+    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glColor3f(1, 1, 1);
+
+    //upper body
+    {
+        glPushMatrix();
+        glTranslatef(0, 0.24, 0);
+        applyAnimation(body6);
+        glTranslatef(0, -0.24, 0);
+
+        //Head
+        {
+            glPushMatrix();
+            glTranslatef(0, 0.6, -0.015);
+            applyAnimation(head6);
+            glTranslatef(0, -0.6, 0.015);
+
+            hair();
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            hair();
+            glPopMatrix();
+            head();
+            glPopMatrix();
+            neck();
+        }
+
+        //Upper Arm (Right Arm)
+        {
+            glPushMatrix();
+            glTranslatef(-0.13, 0.52, -0.02);
+            applyAnimation(LUArm6);
+            glTranslatef(0.13, -0.52, 0.02);
+            upperArm();
+
+            //Lower Arm
+            glPushMatrix();
+            glTranslatef(-0.16, 0.36, -0.05);
+            applyAnimation(LLArm6);
+            glTranslatef(0.16, -0.36, 0.05);
+            lowerArm();
+
+            //Palm
+            glPushMatrix();
+            glTranslatef(-0.20, 0.07, -0.02);
+            applyAnimation(LPArm6);
+            glTranslatef(0.20, -0.07, 0.02);
+
+            glPushMatrix();
+            glTranslatef(-0.2, 0.02, 0.6);
+            glRotatef(-90, 0, 1, 0);
+            glRotatef(90, 0, 0, 1);
+            sword();
+            glPopMatrix();
+            palm();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        //Upper Arm (Left Arm)
+        {
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            glPushMatrix();
+            glTranslatef(-0.13, 0.52, -0.02);
+            applyAnimation(RUArm6);
+            glTranslatef(0.13, -0.52, 0.02);
+            upperArm();
+
+            //Lower Arm
+            glPushMatrix();
+            glTranslatef(-0.16, 0.36, -0.05);
+            applyAnimation(RLArm6);
+            glTranslatef(0.16, -0.36, 0.05);
+            lowerArm();
+
+            //Palm
+            glPushMatrix();
+            glTranslatef(-0.20, 0.07, -0.02);
+            applyAnimation(RPArm6);
+            glTranslatef(0.20, -0.07, 0.02);
+            palm();
+
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        body();
+        belt();
+        //innerCloth();
+        //outerCloth();
+
+
+        glPopMatrix();
+
+    }
+
+    //lower body
+    {
+        //Upper leg (Right leg)
+        {
+            glPushMatrix();
+            glTranslatef(-0.05, 0.19, 0);
+            applyAnimation(LULeg6);
+            glTranslatef(0.05, -0.19, 0);
+            thigh();
+
+            //Lower leg
+            glPushMatrix();
+            glTranslatef(-0.07, -0.32, 0);
+            applyAnimation(LLLeg6);
+            glTranslatef(0.07, 0.32, 0);
+            calf();
+
+            //Feet
+            glPushMatrix();
+            glTranslatef(-0.05, -0.62, 0);
+            applyAnimation(LFLeg6);
+            glTranslatef(0.05, 0.62, 0);
+            feet();
+
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        //Upper leg (Left leg)
+        {
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+
+            //Upper leg
+            glPushMatrix();
+            glTranslatef(-0.05, 0.19, 0);
+            applyAnimation(RULeg6);
+            glTranslatef(0.05, -0.19, 0);
+            thigh();
+
+            //Lower leg
+            glPushMatrix();
+            glTranslatef(-0.07, -0.32, 0);
+            applyAnimation(RLLeg6);
+            glTranslatef(0.07, 0.32, 0);
+            calf();
+
+            //Feet
+            glPushMatrix();
+            glTranslatef(-0.05, -0.62, 0);
+            applyAnimation(RFLeg6);
+            glTranslatef(0.05, 0.62, 0);
+            feet();
+
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+
+    }
+}
+
 void display()
 {
     switch (qNo) {
@@ -3619,7 +4294,7 @@ void display()
         key5();
         break;
     default:
-        key1();
+        key6();
         break;
     }
 }
