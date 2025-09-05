@@ -19,3 +19,6 @@ x86/
 *.tmp
 *.log
 Thumbs.db
+
+*.idb
+*.tlog/
