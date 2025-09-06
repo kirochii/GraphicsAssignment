@@ -60,6 +60,7 @@ float RotationSpeed = 10; //set degree for each key press
 
 //Key 2: Rotation
 float speed2 = 1;
+float length2 = 1;
 float headX = 0, headY = 0, headZ = 0;
 float LUArmX = 0, LUArmY = 0, LUArmZ = 0;
 float LLArmX = 0, LLArmY = 0, LLArmZ = 0;
@@ -217,7 +218,6 @@ BodyPart RULeg4(RULeg4Phases, sizeof(RULeg4Phases) / sizeof(RULeg4Phases[0]));
 BodyPart RLLeg4(RLLeg4Phases, sizeof(RLLeg4Phases) / sizeof(RLLeg4Phases[0]));
 BodyPart RFLeg4(RFLeg4Phases, sizeof(RFLeg4Phases) / sizeof(RFLeg4Phases[0]));
 
-
 void printRotations() {
     std::ostringstream oss;
 
@@ -299,6 +299,14 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
                     speed2 += 0.5;
             break;
 
+        case VK_UP:
+            if (qNo == 2 && length2 > 0.5)
+                length2 -= 0.1;
+            break;
+        case VK_DOWN:
+            if (qNo == 2 && length2 < 1.4)
+                length2 += 0.1;
+            break;
         if (qNo == 2) {
             //Head
         case 'Q':
@@ -3289,8 +3297,17 @@ void key2() {
         }
 
         body();
-        //innerCloth();
-        //outerCloth();
+
+        glPushMatrix();
+        glTranslatef(0, 0.19, 0);
+        glScalef(1, length2, 1);
+        glTranslatef(0, -0.19, 0);
+        innerCloth();
+        outerCloth();
+        glPopMatrix();
+
+
+
 
         glPopMatrix();
 
