@@ -521,6 +521,12 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         PostQuitMessage(0);
         break;
 
+    case WM_SYSKEYDOWN:
+        if (wParam == VK_MENU) {  // Alt key
+            resetCamera();
+        }
+        break;
+        
     case WM_KEYDOWN:
         switch (wParam) {
             // Enhanced Camera Controls
@@ -580,10 +586,6 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             camera.isPerspective = !camera.isPerspective;
             break;
             
-            // Reset Camera
-        case VK_MENU:  // Alt key - Reset everything to default
-            resetCamera();
-            break;
             
   
 
@@ -628,67 +630,67 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         case VK_OEM_7:  // ''' key - Increase sword rotation speed
             if (qNo == 5) {
                 swordDefenseSpeed += 30.0f;
-                if (swordDefenseSpeed > 300.0f) swordDefenseSpeed = 300.0f;  // Max speed: 300.0
+                if (swordDefenseSpeed > 300.0f) swordDefenseSpeed = 300.0f;  
             }
             break;
       
-        case VK_OEM_2:  // / key - Increase sword state/rotating count
+        case VK_OEM_2:  // / key - increase num sword
             if (qNo == 5) {
                 if (swordState < 2) {
-                    swordState++;  // 0->1->2 progression
+                    swordState++; 
                 } else {
-                    // When in state 2, increase rotating sword count
+              
                     if (rotatingSwordCount < 5) rotatingSwordCount++;
                 }
             }
             break;
-        case VK_OEM_5:  // \ key - Decrease sword state/rotating count
+        case VK_OEM_5:  // \ key - decrease num sword
             if (qNo == 5) {
                 if (swordState == 2 && rotatingSwordCount > 2) {
-                    rotatingSwordCount--;  // Decrease rotating sword count (but keep minimum 2)
+                    rotatingSwordCount--;  
                 } else if (swordState > 0) {
-                    swordState--;  // Decrease sword state (2->1->0)
+                    swordState--; 
                 }
             }
             break;
 
             //Toggle keys
         case VK_SUBTRACT:
-        case VK_OEM_MINUS:  // - key
+        case VK_OEM_MINUS:  
             if (qNo == 2)
-                opposite = !opposite;  // Toggle clockwise/counter-clockwise
+                opposite = !opposite; 
             if (qNo == 4) 
                 if (speed2 > 0.5)
                         speed2 -= 0.5;
             break;
-        case VK_OEM_PLUS:  // = key
+        case VK_OEM_PLUS: 
             if (qNo == 2)
-                toggleRight = !toggleRight;  // Toggle left/right limbs
+                toggleRight = !toggleRight;
             if (qNo == 4)
                     speed2 += 0.5;
             break;
         case '[':
             if (qNo == 5) {
                 weaponSize -= 0.1f;
-                if (weaponSize < 0.1f) weaponSize = 0.1f;  // Min size: 0.1x
+                if (weaponSize < 0.1f) weaponSize = 0.1f; 
             }
             break;
         case ']':
             if (qNo == 5) {
                 weaponSize += 0.1f;
-                if (weaponSize > 2.0f) weaponSize = 2.0f;  // Max size: 2.0x
+                if (weaponSize > 2.0f) weaponSize = 2.0f;
             }
             break;
         case ',':
             if (qNo == 5) {
                 swordDefenseSpeed += 10.0f;
-                if (swordDefenseSpeed > 200.0f) swordDefenseSpeed = 200.0f;  // Max speed: 200
+                if (swordDefenseSpeed > 200.0f) swordDefenseSpeed = 200.0f; 
             }
             break;
         case '.':
             if (qNo == 5) {
                 swordDefenseSpeed -= 10.0f;
-                if (swordDefenseSpeed < 10.0f) swordDefenseSpeed = 10.0f;  // Min speed: 10
+                if (swordDefenseSpeed < 10.0f) swordDefenseSpeed = 10.0f;
             }
             break;
 
@@ -4064,21 +4066,18 @@ void key5() {
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    // Setup camera projection and view
     setupProjection();
     setupView();
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glColor3f(1, 1, 1);
 
-    // Always show animated character for all sword states
     if (true) {
-        // Draw the FULL character like Key 4 (attack mode)
+        
     //upper body
     {
         glPushMatrix();
         glTranslatef(0, 0.24, 0);
         
-        // Apply body rotation from phases
         applyAnimation(body5);
         
         glTranslatef(0, -0.24, 0);
@@ -4087,8 +4086,6 @@ void key5() {
         {
             glPushMatrix();
             glTranslatef(0, 0.6, -0.015);
-            
-            // Apply head rotation from phases
             applyAnimation(head5);
             
             glTranslatef(0, -0.6, 0.015);
@@ -4107,18 +4104,14 @@ void key5() {
         {
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            
-            // Apply right upper arm rotation from phases
+ 
             applyAnimation(RUArm5);
             
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
-
-            //Lower Arm
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
-            
-            // Apply right lower arm rotation from phases
+
             applyAnimation(RLArm5);
             
             glTranslatef(0.16, -0.36, 0.05);
@@ -4127,20 +4120,15 @@ void key5() {
             //Palm
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            
-            // Apply right palm rotation from phases
             applyAnimation(RPArm5);
             
             glTranslatef(0.20, -0.07, 0.02);
-
-            // Draw sword in right hand for Key 5 (all states)
             if (swordState >= 0) {
                 glPushMatrix();
                 glTranslatef(-0.2, 0.02, 0.6);
                 glRotatef(-90, 0, 1, 0);
                 glRotatef(90, 0, 0, 1);
-                
-                // Apply weapon size scaling
+               
                 glScalef(weaponSize, weaponSize, weaponSize);
                 
                 sword();
@@ -4158,8 +4146,7 @@ void key5() {
             glScalef(-1.0f, 1.0f, 1.0f);
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            
-            // Apply left upper arm rotation from phases
+   
             applyAnimation(LUArm5);
             
             glTranslatef(0.13, -0.52, 0.02);
@@ -4168,8 +4155,6 @@ void key5() {
             //Lower Arm
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
-            
-            // Apply left lower arm rotation from phases
             applyAnimation(LLArm5);
             
             glTranslatef(0.16, -0.36, 0.05);
@@ -4178,8 +4163,6 @@ void key5() {
             //Palm
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            
-            // Apply left palm rotation from phases
             applyAnimation(LPArm5);
             
             glTranslatef(0.20, -0.07, 0.02);
@@ -4190,8 +4173,7 @@ void key5() {
                 glTranslatef(-0.2, 0.02, 0.6);
                 glRotatef(-90, 0, 1, 0);
                 glRotatef(90, 0, 0, 1);
-                
-                // Apply weapon size scaling
+               
                 glScalef(weaponSize, weaponSize, weaponSize);
                 
                 sword();
@@ -4216,8 +4198,6 @@ void key5() {
         {
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
-            
-            // Apply right upper leg rotation from phases
             applyAnimation(RULeg5);
             
             glTranslatef(0.05, -0.19, 0);
@@ -4226,8 +4206,6 @@ void key5() {
             //Lower leg
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
-            
-            // Apply right lower leg rotation from phases
             applyAnimation(RLLeg5);
             
             glTranslatef(0.07, 0.32, 0);
@@ -4236,8 +4214,6 @@ void key5() {
             //Feet
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
-            
-            // Apply right foot rotation from phases
             applyAnimation(RFLeg5);
             
             glTranslatef(0.05, 0.62, 0);
@@ -4251,12 +4227,8 @@ void key5() {
         {
             glPushMatrix();
             glScalef(-1.0f, 1.0f, 1.0f);
-
-            //Upper leg
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
-            
-            // Apply left upper leg rotation from phases
             applyAnimation(LULeg5);
             
             glTranslatef(0.05, -0.19, 0);
@@ -4265,8 +4237,6 @@ void key5() {
             //Lower leg
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
-            
-            // Apply left lower leg rotation from phases
             applyAnimation(LLLeg5);
             
             glTranslatef(0.07, 0.32, 0);
@@ -4275,8 +4245,6 @@ void key5() {
             //Feet
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
-            
-            // Apply left foot rotation from phases
             applyAnimation(LFLeg5);
             
             glTranslatef(0.05, 0.62, 0);
@@ -4288,7 +4256,6 @@ void key5() {
         }
     }
     } else {
-        // Default character drawing for state 0 (no animation)
         guide();
         glColor3f(1, 1, 1);
         neck();
@@ -4297,7 +4264,7 @@ void key5() {
         upperArm();
         lowerArm();
         
-        // Draw sword in right hand for state 0 (default)
+
         if (swordState == 0) {
             glPushMatrix();
             glTranslatef(0.2, -0.07, 0.02);
@@ -4315,7 +4282,7 @@ void key5() {
         feet();
     }
 
-    // Draw rotating swords around character for state 2
+
     if (swordState == 2) {
         glColor3f(1.0f, 0.0f, 0.0f);  // Red color for rotating swords
         
@@ -4334,7 +4301,7 @@ void key5() {
             float z = sin(angle * PI / 180.0f) * swordRadius;
             
             glTranslatef(x, swordHeight, z);
-            glRotatef(angle, 0, 1, 0);  // Face outward from center
+            glRotatef(angle, 0, 1, 0);  
             
             // Apply weapon size scaling
             glScalef(weaponSize, weaponSize, weaponSize);
