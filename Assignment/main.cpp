@@ -46,6 +46,7 @@ struct BodyPart {
         : phases(p), numPhases(n) {
         getAllParts().push_back(this);
     }
+
 };
 
 float cameraYaw = 0.0f;    // left/right rotation (around Y-axis)
@@ -216,23 +217,107 @@ BodyPart RULeg4(RULeg4Phases, sizeof(RULeg4Phases) / sizeof(RULeg4Phases[0]));
 BodyPart RLLeg4(RLLeg4Phases, sizeof(RLLeg4Phases) / sizeof(RLLeg4Phases[0]));
 BodyPart RFLeg4(RFLeg4Phases, sizeof(RFLeg4Phases) / sizeof(RFLeg4Phases[0]));
 
-//Key 5: Sword Defense System
-float swordDefenseAngle = 0.0f;        // Current rotation angle for swords
-float swordDefenseSpeed = 90.0f;       // Degrees per second rotation speed
-            int numSwords = 2;                     // Number of swords to display (default: 2)
-            float swordRadius = 0.8f;              // Radius of sword circle around character
-            float swordHeight = 0.3f;              // Height offset for swords
-            float weaponSize = 1.0f;               // Size multiplier for weapons (default: 1.0)
-bool swordDefenseActive = true;        // Default: swords are active when Key 5 is pressed
+//Key 5: defense position + sword defense
+Phase head5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, 0, 0, 0},      // First defense position - neutral head
+    {2, 0, 20, 5},       // Second defense position
+};
+Phase LUArm5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, -25, 0, 15},   // First defense position - left hand positioned for two-handed grip
+    {2, -30, 0, -30},    // Second defense position
+};
+Phase LLArm5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, -15, 0, 10},    // First defense position - left forearm positioned for two-handed grip
+    {2, 0, 0, -20},      // Second defense position
+};
+Phase LPArm5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, -20, 0, 5},     // First defense position - left palm positioned to grip same sword
+    {2, 0, 0, 0},        // Second defense position
+};
+Phase RUArm5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, -20, 0, 10},    // First defense position - right hand positioned for two-handed grip
+    {2, -10, 0, -5},     // Second defense position
+};
+Phase RLArm5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, -15, 0, 5},     // First defense position - right forearm positioned for two-handed grip
+    {2, 0, 0, 0},        // Second defense position
+};
+Phase RPArm5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, 0, 0, 0},      // First defense position
+    {2, 0, 0, 0},        // Second defense position
+};
+Phase body5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, 0, 0, 0},      // First defense position - neutral body for two-handed grip
+    {2, 10, -10, -5},    // Second defense position
+};
+Phase LULeg5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, -15, 0, -10},  // First defense position - stable left leg
+    {2, -40, -30, -15},  // Second defense position
+};
+Phase LLLeg5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, 0, 0, 0},      // First defense position - straight left lower leg
+    {2, 30, 0, 0},       // Second defense position
+};
+Phase LFLeg5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, 0, 0, 0},      // First defense position
+    {2, 0, 0, 0},        // Second defense position
+};
+Phase RULeg5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, 10, 0, -5},    // First defense position - stable right leg
+    {2, 25, 40, -25},    // Second defense position
+};
+Phase RLLeg5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, 0, 0, 0},      // First defense position - straight right lower leg
+    {2, 0, 0, 0},        // Second defense position
+};
+Phase RFLeg5Phases[] = {
+    {0, 0, 0, 0},        // Start from default position
+    {1.5, 0, 0, 0},      // First defense position
+    {2, 0, 0, 0},        // Second defense position
+};
 
-// Key 5 Defense Animation - Simple time-based movement
+BodyPart head5(head5Phases, sizeof(head5Phases) / sizeof(head5Phases[0]));
+BodyPart LUArm5(LUArm5Phases, sizeof(LUArm5Phases) / sizeof(LUArm5Phases[0]));
+BodyPart LLArm5(LLArm5Phases, sizeof(LLArm5Phases) / sizeof(LLArm5Phases[0]));
+BodyPart LPArm5(LPArm5Phases, sizeof(LPArm5Phases) / sizeof(LPArm5Phases[0]));
+BodyPart RUArm5(RUArm5Phases, sizeof(RUArm5Phases) / sizeof(RUArm5Phases[0]));
+BodyPart RLArm5(RLArm5Phases, sizeof(RLArm5Phases) / sizeof(RLArm5Phases[0]));
+BodyPart RPArm5(RPArm5Phases, sizeof(RPArm5Phases) / sizeof(RPArm5Phases[0]));
+BodyPart body5(body5Phases, sizeof(body5Phases) / sizeof(body5Phases[0]));
+BodyPart LULeg5(LULeg5Phases, sizeof(LULeg5Phases) / sizeof(LULeg5Phases[0]));
+BodyPart LLLeg5(LLLeg5Phases, sizeof(LLLeg5Phases) / sizeof(LLLeg5Phases[0]));
+BodyPart LFLeg5(LFLeg5Phases, sizeof(LFLeg5Phases) / sizeof(LFLeg5Phases[0]));
+BodyPart RULeg5(RULeg5Phases, sizeof(RULeg5Phases) / sizeof(RULeg5Phases[0]));
+BodyPart RLLeg5(RLLeg5Phases, sizeof(RLLeg5Phases) / sizeof(RLLeg5Phases[0]));
+BodyPart RFLeg5(RFLeg5Phases, sizeof(RFLeg5Phases) / sizeof(RFLeg5Phases[0]));
+
+float swordDefenseAngle = 0.0f;
+float swordDefenseSpeed = 90.0f;
+int numSwords = 2;
+float swordRadius = 0.8f;
+float swordHeight = 0.3f;
+float weaponSize = 1.0f;
+bool swordDefenseActive = true;
+
 float key5Time = 0.0f;
-    float key5AnimationSpeed = 0.9f;  // Slower animation for more realistic movement  // Speed of the animation cycle
+float key5AnimationSpeed = 0.9f;
 
-// Sword state control variables
-int swordState = 0;  // 0: right hand only, 1: both hands, 2: sword rotation
-bool swordDirection = true;  // true: clockwise, false: counter-clockwise
-int rotatingSwordCount = 2;  // Number of rotating swords around character (max 5)
+int swordState = 0;  // 0=default, 1=both hands holding sword, 2=sword rotation only
+int rotatingSwordCount = 2;
+
 void printRotations() {
     std::ostringstream oss;
 
@@ -254,6 +339,7 @@ void printRotations() {
     std::string message = oss.str();
     MessageBox(NULL, message.c_str(), "Body Coordinates", MB_OK);
 }
+
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -332,7 +418,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         case VK_UP:
             if (qNo == 5) {
                 if (swordState < 2) {
-                    swordState++;  // First increase sword state (0->1->2)
+                    swordState++;  // 0->1->2 progression
                 } else {
                     // When in state 2, increase rotating sword count
                     if (rotatingSwordCount < 5) rotatingSwordCount++;
@@ -362,6 +448,30 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
                 toggleRight = !toggleRight;
             if (qNo == 4)
                     speed2 += 0.5;
+            break;
+        case '[':
+            if (qNo == 5) {
+                weaponSize -= 0.1f;
+                if (weaponSize < 0.1f) weaponSize = 0.1f;  // Min size: 0.1x
+            }
+            break;
+        case ']':
+            if (qNo == 5) {
+                weaponSize += 0.1f;
+                if (weaponSize > 2.0f) weaponSize = 2.0f;  // Max size: 2.0x
+            }
+            break;
+        case ',':
+            if (qNo == 5) {
+                swordDefenseSpeed += 10.0f;
+                if (swordDefenseSpeed > 200.0f) swordDefenseSpeed = 200.0f;  // Max speed: 200
+            }
+            break;
+        case '.':
+            if (qNo == 5) {
+                swordDefenseSpeed -= 10.0f;
+                if (swordDefenseSpeed < 10.0f) swordDefenseSpeed = 10.0f;  // Min speed: 10
+            }
             break;
 
         if (qNo == 2) {
@@ -3652,9 +3762,50 @@ void key4() {
 void key5() {
     // Update animation time
     static auto lastTime = std::chrono::high_resolution_clock::now();
+    static int lastQNo = -1;
     auto currentTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = currentTime - lastTime;
     lastTime = currentTime;
+    
+    // Reset all Key 5 body parts when switching to Key 5
+    if (lastQNo != 5) {
+        head5.currentPhase = 0;
+        LUArm5.currentPhase = 0;
+        LLArm5.currentPhase = 0;
+        LPArm5.currentPhase = 0;
+        RUArm5.currentPhase = 0;
+        RLArm5.currentPhase = 0;
+        RPArm5.currentPhase = 0;
+        body5.currentPhase = 0;
+        LULeg5.currentPhase = 0;
+        LLLeg5.currentPhase = 0;
+        LFLeg5.currentPhase = 0;
+        RULeg5.currentPhase = 0;
+        RLLeg5.currentPhase = 0;
+        RFLeg5.currentPhase = 0;
+        
+        startPhase(head5);
+        startPhase(LUArm5);
+        startPhase(LLArm5);
+        startPhase(LPArm5);
+        startPhase(RUArm5);
+        startPhase(RLArm5);
+        startPhase(RPArm5);
+        startPhase(body5);
+        startPhase(LULeg5);
+        startPhase(LLLeg5);
+        startPhase(LFLeg5);
+        startPhase(RULeg5);
+        startPhase(RLLeg5);
+        startPhase(RFLeg5);
+        
+        // Start with default sword state (only right hand holding sword)
+        swordState = 0;
+        rotatingSwordCount = 2;
+        
+        key5Time = 0.0f;
+        lastQNo = 5;
+    }
     
     key5Time += elapsed.count();
     
@@ -3666,15 +3817,16 @@ void key5() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glColor3f(1, 1, 1);
 
-    // Draw the FULL character like Key 4 (attack mode)
+    // Always show animated character for all sword states
+    if (true) {
+        // Draw the FULL character like Key 4 (attack mode)
     //upper body
     {
         glPushMatrix();
         glTranslatef(0, 0.24, 0);
         
-        // Simple body defense animation
-        float bodyLean = sin(key5Time * key5AnimationSpeed) * 2.0f;
-        glRotatef(bodyLean, 1, 0, 0);
+        // Apply body rotation from phases
+        applyAnimation(body5);
         
         glTranslatef(0, -0.24, 0);
 
@@ -3683,9 +3835,8 @@ void key5() {
             glPushMatrix();
             glTranslatef(0, 0.6, -0.015);
             
-            // Simple head defense animation
-            float headNod = sin(key5Time * key5AnimationSpeed) * 2.0f;
-            glRotatef(headNod, 0, 1, 0);
+            // Apply head rotation from phases
+            applyAnimation(head5);
             
             glTranslatef(0, -0.6, 0.015);
 
@@ -3704,9 +3855,8 @@ void key5() {
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
             
-            // Calculate right arm movement
-            float rightArmMove = sin(key5Time * key5AnimationSpeed) * 15.0f;
-            glRotatef(rightArmMove, 1, 0, 0);  // X-axis rotation (forward/back)
+            // Apply right upper arm rotation from phases
+            applyAnimation(RUArm5);
             
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
@@ -3714,16 +3864,24 @@ void key5() {
             //Lower Arm
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
+            
+            // Apply right lower arm rotation from phases
+            applyAnimation(RLArm5);
+            
             glTranslatef(0.16, -0.36, 0.05);
             lowerArm();
 
             //Palm
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
+            
+            // Apply right palm rotation from phases
+            applyAnimation(RPArm5);
+            
             glTranslatef(0.20, -0.07, 0.02);
 
-            // Draw sword based on state
-            if (swordState >= 0) {  // State 0, 1, 2: right hand sword always
+            // Draw sword in right hand for Key 5 (all states)
+            if (swordState >= 0) {
                 glPushMatrix();
                 glTranslatef(-0.2, 0.02, 0.6);
                 glRotatef(-90, 0, 1, 0);
@@ -3748,9 +3906,8 @@ void key5() {
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
             
-            // Calculate left arm movement (opposite to right arm)
-            float leftArmMove = sin(key5Time * key5AnimationSpeed + PI) * 15.0f;
-            glRotatef(leftArmMove, 1, 0, 0);  // X-axis rotation (forward/back)
+            // Apply left upper arm rotation from phases
+            applyAnimation(LUArm5);
             
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
@@ -3758,15 +3915,23 @@ void key5() {
             //Lower Arm
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
+            
+            // Apply left lower arm rotation from phases
+            applyAnimation(LLArm5);
+            
             glTranslatef(0.16, -0.36, 0.05);
             lowerArm();
 
             //Palm
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
+            
+            // Apply left palm rotation from phases
+            applyAnimation(LPArm5);
+            
             glTranslatef(0.20, -0.07, 0.02);
 
-            // Add sword to left hand (for states 1 and 2)
+            // Draw sword in left hand for Key 5 (states 1 and 2)
             if (swordState >= 1) {
                 glPushMatrix();
                 glTranslatef(-0.2, 0.02, 0.6);
@@ -3799,9 +3964,8 @@ void key5() {
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
             
-            // Simple right leg defense animation - forward/backward only
-            float rightLegMove = sin(key5Time * key5AnimationSpeed) * 10.0f;
-            glRotatef(rightLegMove, 1, 0, 0);  // X-axis rotation (forward/back)
+            // Apply right upper leg rotation from phases
+            applyAnimation(RULeg5);
             
             glTranslatef(0.05, -0.19, 0);
             thigh();
@@ -3809,12 +3973,20 @@ void key5() {
             //Lower leg
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
+            
+            // Apply right lower leg rotation from phases
+            applyAnimation(RLLeg5);
+            
             glTranslatef(0.07, 0.32, 0);
             calf();
 
             //Feet
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
+            
+            // Apply right foot rotation from phases
+            applyAnimation(RFLeg5);
+            
             glTranslatef(0.05, 0.62, 0);
             feet();
             glPopMatrix();
@@ -3831,9 +4003,8 @@ void key5() {
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
             
-            // Simple left leg defense animation - opposite to right leg
-            float leftLegMove = -sin(key5Time * key5AnimationSpeed) * 10.0f;
-            glRotatef(leftLegMove, 1, 0, 0);  // X-axis rotation (forward/back)
+            // Apply left upper leg rotation from phases
+            applyAnimation(LULeg5);
             
             glTranslatef(0.05, -0.19, 0);
             thigh();
@@ -3841,12 +4012,20 @@ void key5() {
             //Lower leg
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
+            
+            // Apply left lower leg rotation from phases
+            applyAnimation(LLLeg5);
+            
             glTranslatef(0.07, 0.32, 0);
             calf();
 
             //Feet
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
+            
+            // Apply left foot rotation from phases
+            applyAnimation(LFLeg5);
+            
             glTranslatef(0.05, 0.62, 0);
             feet();
             glPopMatrix();
@@ -3854,6 +4033,33 @@ void key5() {
             glPopMatrix();
             glPopMatrix();
         }
+    }
+    } else {
+        // Default character drawing for state 0 (no animation)
+        guide();
+        glColor3f(1, 1, 1);
+        neck();
+        body();
+        head();
+        upperArm();
+        lowerArm();
+        
+        // Draw sword in right hand for state 0 (default)
+        if (swordState == 0) {
+            glPushMatrix();
+            glTranslatef(0.2, -0.07, 0.02);
+            glTranslatef(-0.2, 0.02, 0.6);
+            glRotatef(-90, 0, 1, 0);
+            glRotatef(90, 0, 0, 1);
+            glScalef(weaponSize, weaponSize, weaponSize);
+            sword();
+            glPopMatrix();
+        }
+        
+        palm();
+        thigh();
+        calf();
+        feet();
     }
 
     // Draw rotating swords around character for state 2
@@ -3866,9 +4072,8 @@ void key5() {
             // Calculate angle for this sword
             float angle = (360.0f / rotatingSwordCount) * i;
             
-            // Add rotation based on time and direction
+            // Add rotation based on time
             float rotationAngle = key5Time * swordDefenseSpeed;
-            if (!swordDirection) rotationAngle = -rotationAngle;
             angle += rotationAngle;
             
             // Position sword in circle around character
@@ -3885,6 +4090,7 @@ void key5() {
             glPopMatrix();
         }
     }
+
 
     glFlush();
 }
