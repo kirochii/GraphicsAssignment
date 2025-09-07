@@ -49,9 +49,45 @@ struct BodyPart {
 
 };
 
+// Camera System Variables
+// Camera System
+struct Camera {
+    float posX = 0.0f, posY = 0.0f, posZ = 3.0f;  // Camera position (closer to character)
+    float targetX = 0.0f, targetY = 0.0f, targetZ = 0.0f;  // Look at target
+    float upX = 0.0f, upY = 1.0f, upZ = 0.0f;  // Up vector
+    
+    // Projection settings
+    bool isPerspective = true;  // true for perspective, false for orthographic
+    float fov = 45.0f;  // Field of view for perspective
+    float nearPlane = 0.1f;
+    float farPlane = 1000.0f;
+    
+    // Orthographic settings
+    float orthoLeft = -5.0f;   // Smaller bounds = bigger character
+    float orthoRight = 5.0f;
+    float orthoBottom = -5.0f;
+    float orthoTop = 5.0f;
+    
+    // Movement and rotation
+    float moveSpeed = 0.5f;
+    float rotationSpeed = 2.0f;
+    float zoomSpeed = 0.1f;
+    
+    // Zoom limits
+    float minZoom = 0.5f;
+    float maxZoom = 50.0f;
+    float currentZoom = 2.0f;  // Smaller zoom = bigger character
+    
+    // Mouse controls
+    bool mouseDown = false;
+    int lastMouseX = 0, lastMouseY = 0;
+};
+Camera camera;
+
 float cameraYaw = 0.0f;    // left/right rotation (around Y-axis)
 float cameraPitch = 0.0f;  // up/down rotation (around X-axis)
 float rotationSpeed = 5.0f; // degrees per key press
+
 
 int qNo = 2;
 bool opposite = false; //toggle clockwise & counter clockwise rotations
@@ -217,77 +253,78 @@ BodyPart RULeg4(RULeg4Phases, sizeof(RULeg4Phases) / sizeof(RULeg4Phases[0]));
 BodyPart RLLeg4(RLLeg4Phases, sizeof(RLLeg4Phases) / sizeof(RLLeg4Phases[0]));
 BodyPart RFLeg4(RFLeg4Phases, sizeof(RFLeg4Phases) / sizeof(RFLeg4Phases[0]));
 
-//Key 5: defense position + sword defense
+//Key 5
 Phase head5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, 0, 0, 0},      // First defense position - neutral head
-    {2, 0, 20, 5},       // Second defense position
+    {0, 0, 0, 0},
+    {1.5, 0, 0, 0},
+    {2, 0, 20, 5},
 };
 Phase LUArm5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, -25, 0, 15},   // First defense position - left hand positioned for two-handed grip
-    {2, -30, 0, -30},    // Second defense position
+    {0, 0, 0, 0},
+    {1.5, -25, 0, 15},
+    {2, -30, 0, -30},
 };
 Phase LLArm5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, -15, 0, 10},    // First defense position - left forearm positioned for two-handed grip
-    {2, 0, 0, -20},      // Second defense position
+    {0, 0, 0, 0},
+    {1.5, -15, 0, 10},
+    {2, 0, 0, -20},
 };
 Phase LPArm5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, -20, 0, 5},     // First defense position - left palm positioned to grip same sword
-    {2, 0, 0, 0},        // Second defense position
+    {0, 0, 0, 0},
+    {1.5, -20, 0, 5},
+    {2, 0, 0, 0},
 };
 Phase RUArm5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, -20, 0, 10},    // First defense position - right hand positioned for two-handed grip
-    {2, -10, 0, -5},     // Second defense position
+    {0, 0, 0, 0},
+    {1.5, -20, 0, 10},
+    {2, -10, 0, -5},
 };
 Phase RLArm5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, -15, 0, 5},     // First defense position - right forearm positioned for two-handed grip
-    {2, 0, 0, 0},        // Second defense position
+    {0, 0, 0, 0},
+    {1.5, -15, 0, 5},
+    {2, 0, 0, 0},
 };
 Phase RPArm5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, 0, 0, 0},      // First defense position
-    {2, 0, 0, 0},        // Second defense position
+    {0, 0, 0, 0},
+    {1.5, 0, 0, 0},
+    {2, 0, 0, 0},
 };
 Phase body5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, 0, 0, 0},      // First defense position - neutral body for two-handed grip
-    {2, 10, -10, -5},    // Second defense position
+    {0, 0, 0, 0},
+    {1.5, 0, 0, 0},
+    {2, 10, -10, -5},
 };
 Phase LULeg5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, -15, 0, -10},  // First defense position - stable left leg
-    {2, -40, -30, -15},  // Second defense position
+    {0, 0, 0, 0},
+    {1.5, -15, 0, -10},
+    {2, -40, -30, -15},
 };
 Phase LLLeg5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, 0, 0, 0},      // First defense position - straight left lower leg
-    {2, 30, 0, 0},       // Second defense position
+    {0, 0, 0, 0},
+    {1.5, 0, 0, 0},
+    {2, 30, 0, 0},
 };
 Phase LFLeg5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, 0, 0, 0},      // First defense position
-    {2, 0, 0, 0},        // Second defense position
+    {0, 0, 0, 0},
+    {1.5, 0, 0, 0},
+    {2, 0, 0, 0},
 };
 Phase RULeg5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, 10, 0, -5},    // First defense position - stable right leg
-    {2, 25, 40, -25},    // Second defense position
+    {0, 0, 0, 0},
+    {1.5, 10, 0, -5},
+    {2, 25, 40, -25},
 };
 Phase RLLeg5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, 0, 0, 0},      // First defense position - straight right lower leg
-    {2, 0, 0, 0},        // Second defense position
+    {0, 0, 0, 0},
+    {1.5, 0, 0, 0},
+    {2, 0, 0, 0},
 };
 Phase RFLeg5Phases[] = {
-    {0, 0, 0, 0},        // Start from default position
-    {1.5, 0, 0, 0},      // First defense position
-    {2, 0, 0, 0},        // Second defense position
+    {0, 0, 0, 0},
+    {1.5, 0, 0, 0},
+    {2, 0, 0, 0},
 };
+
 
 BodyPart head5(head5Phases, sizeof(head5Phases) / sizeof(head5Phases[0]));
 BodyPart LUArm5(LUArm5Phases, sizeof(LUArm5Phases) / sizeof(LUArm5Phases[0]));
@@ -306,6 +343,7 @@ BodyPart RFLeg5(RFLeg5Phases, sizeof(RFLeg5Phases) / sizeof(RFLeg5Phases[0]));
 
 float swordDefenseAngle = 0.0f;
 float swordDefenseSpeed = 90.0f;
+float swordRotationSpeed = 90.0f;
 int numSwords = 2;
 float swordRadius = 0.8f;
 float swordHeight = 0.3f;
@@ -317,6 +355,140 @@ float key5AnimationSpeed = 0.9f;
 
 int swordState = 0;  // 0=default, 1=both hands holding sword, 2=sword rotation only
 int rotatingSwordCount = 2;
+
+// Camera System Functions
+void setupProjection() {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    if (camera.isPerspective) {
+        // Perspective projection using gluPerspective
+        gluPerspective(camera.fov, 1.0f, camera.nearPlane, camera.farPlane);
+    } else {
+        // Orthographic projection using glOrtho
+        float left = camera.orthoLeft * camera.currentZoom;
+        float right = camera.orthoRight * camera.currentZoom;
+        float bottom = camera.orthoBottom * camera.currentZoom;
+        float top = camera.orthoTop * camera.currentZoom;
+        glOrtho(left, right, bottom, top, camera.nearPlane, camera.farPlane);
+    }
+    
+    glMatrixMode(GL_MODELVIEW);
+}
+
+void setupView() {
+    glLoadIdentity();
+    gluLookAt(camera.posX, camera.posY, camera.posZ,
+              camera.targetX, camera.targetY, camera.targetZ,
+              camera.upX, camera.upY, camera.upZ);
+}
+
+void updateCamera() {
+    // Update camera position based on current zoom
+    float distance = sqrt((camera.posX - camera.targetX) * (camera.posX - camera.targetX) +
+                         (camera.posY - camera.targetY) * (camera.posY - camera.targetY) +
+                         (camera.posZ - camera.targetZ) * (camera.posZ - camera.targetZ));
+    
+    if (distance > 0) {
+        float ratio = camera.currentZoom / distance;
+        camera.posX = camera.targetX + (camera.posX - camera.targetX) * ratio;
+        camera.posY = camera.targetY + (camera.posY - camera.targetY) * ratio;
+        camera.posZ = camera.targetZ + (camera.posZ - camera.targetZ) * ratio;
+    }
+}
+
+void rotateCamera(float deltaYaw, float deltaPitch) {
+    // Convert to radians
+    float yawRad = deltaYaw * PI / 180.0f;
+    float pitchRad = deltaPitch * PI / 180.0f;
+    
+    // Calculate camera direction vector
+    float dirX = camera.posX - camera.targetX;
+    float dirY = camera.posY - camera.targetY;
+    float dirZ = camera.posZ - camera.targetZ;
+    
+    // Rotate around Y axis (yaw)
+    float cosYaw = cos(yawRad);
+    float sinYaw = sin(yawRad);
+    float newDirX = dirX * cosYaw + dirZ * sinYaw;
+    float newDirZ = -dirX * sinYaw + dirZ * cosYaw;
+    dirX = newDirX;
+    dirZ = newDirZ;
+    
+    // Rotate around X axis (pitch) - limit pitch to avoid gimbal lock
+    float cosPitch = cos(pitchRad);
+    float sinPitch = sin(pitchRad);
+    float newDirY = dirY * cosPitch - dirZ * sinPitch;
+    newDirZ = dirY * sinPitch + dirZ * cosPitch;
+    dirY = newDirY;
+    dirZ = newDirZ;
+    
+    // Update camera position
+    camera.posX = camera.targetX + dirX;
+    camera.posY = camera.targetY + dirY;
+    camera.posZ = camera.targetZ + dirZ;
+}
+
+void moveCamera(float deltaX, float deltaY, float deltaZ) {
+    camera.posX += deltaX * camera.moveSpeed;
+    camera.posY += deltaY * camera.moveSpeed;
+    camera.posZ += deltaZ * camera.moveSpeed;
+    
+    camera.targetX += deltaX * camera.moveSpeed;
+    camera.targetY += deltaY * camera.moveSpeed;
+    camera.targetZ += deltaZ * camera.moveSpeed;
+}
+
+void zoomCamera(float delta) {
+    camera.currentZoom += delta * camera.zoomSpeed;
+    
+    // Apply zoom limits
+    if (camera.currentZoom < camera.minZoom) {
+        camera.currentZoom = camera.minZoom;
+    } else if (camera.currentZoom > camera.maxZoom) {
+        camera.currentZoom = camera.maxZoom;
+    }
+    
+    updateCamera();
+}
+
+void resetCamera() {
+    // Reset camera
+    camera.posX = 0.0f;
+    camera.posY = 0.0f;
+    camera.posZ = 3.0f;  // Closer to character
+    camera.targetX = 0.0f;
+    camera.targetY = 0.0f;
+    camera.targetZ = 0.0f;
+    camera.currentZoom = 2.0f;  // Bigger character by default
+    camera.isPerspective = true;
+    cameraYaw = 0.0f;
+    cameraPitch = 0.0f;
+    
+    // Reset all character animation variables to default
+    headX = 0; headY = 0; headZ = 0;
+    LUArmX = 0; LUArmY = 0; LUArmZ = 0;
+    LLArmX = 0; LLArmY = 0; LLArmZ = 0;
+    LPArmX = 0; LPArmY = 0; LPArmZ = 0;
+    RUArmX = 0; RUArmY = 0; RUArmZ = 0;
+    RLArmX = 0; RLArmY = 0; RLArmZ = 0;
+    RPArmX = 0; RPArmY = 0; RPArmZ = 0;
+    bodyX = 0; bodyY = 0; bodyZ = 0;
+    LULegX = 0; LULegY = 0; LULegZ = 0;
+    LLLegX = 0; LLLegY = 0; LLLegZ = 0;
+    LFLegX = 0; LFLegY = 0; LFLegZ = 0;
+    RULegX = 0; RULegY = 0; RULegZ = 0;
+    RLLegX = 0; RLLegY = 0; RLLegZ = 0;
+    RFLegX = 0; RFLegY = 0; RFLegZ = 0;
+    
+    // Reset toggle states
+    opposite = false;
+    toggleRight = false;
+    
+    // Reset mode to default
+    qNo = 2;
+}
+
 
 void printRotations() {
     std::ostringstream oss;
@@ -351,19 +523,69 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
     case WM_KEYDOWN:
         switch (wParam) {
-            //Camera keys
+            // Enhanced Camera Controls
         case 'W':
+            // Rotate camera pitch up
             cameraPitch -= rotationSpeed;
+            rotateCamera(0, -rotationSpeed);
             break;
         case 'S':
+            // Rotate camera pitch down
             cameraPitch += rotationSpeed;
+            rotateCamera(0, rotationSpeed);
             break;
         case 'A':
-            cameraYaw -= rotationSpeed;
+            cameraYaw += rotationSpeed;
+            rotateCamera(rotationSpeed, 0);
             break;
         case 'D':
-            cameraYaw += rotationSpeed;
+            cameraYaw -= rotationSpeed;
+            rotateCamera(-rotationSpeed, 0);
             break;
+            
+            // Pitch controls (up/down rotation)
+        case VK_F1:
+            cameraPitch -= rotationSpeed;
+            rotateCamera(0, -rotationSpeed);
+            break;
+        case VK_F2:
+            cameraPitch += rotationSpeed;
+            rotateCamera(0, rotationSpeed);
+            break;
+            
+            // Camera Movement
+        case VK_UP:
+            moveCamera(0, camera.moveSpeed, 0);
+            break;
+        case VK_DOWN:
+            moveCamera(0, -camera.moveSpeed, 0);
+            break;
+        case VK_LEFT:
+            moveCamera(-camera.moveSpeed, 0, 0);
+            break;
+        case VK_RIGHT:
+            moveCamera(camera.moveSpeed, 0, 0);
+            break;
+        case VK_PRIOR:  // Page Up
+            moveCamera(0, 0, camera.moveSpeed);
+            break;
+        case VK_NEXT:   // Page Down
+            moveCamera(0, 0, -camera.moveSpeed);
+            break;
+            
+            // Zoom Controls (now only mouse wheel)
+            
+            // Projection Toggle
+        case VK_OEM_3:  // ` key - Toggle projection
+            camera.isPerspective = !camera.isPerspective;
+            break;
+            
+            // Reset Camera
+        case VK_MENU:  // Alt key - Reset everything to default
+            resetCamera();
+            break;
+            
+  
 
             //Question controls
         case '1':
@@ -388,13 +610,13 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         case VK_OEM_4:  // '[' key - Decrease sword size
             if (qNo == 5) {
                 weaponSize -= 0.2f;
-                if (weaponSize < 0.5f) weaponSize = 0.5f;  // Min size: 0.5x
+                if (weaponSize < 0.5f) weaponSize = 0.5f; 
             }
             break;
         case VK_OEM_6:  // ']' key - Increase sword size
             if (qNo == 5) {
                 weaponSize += 0.2f;
-                if (weaponSize > 3.0f) weaponSize = 3.0f;  // Max size: 3.0x
+                if (weaponSize > 3.0f) weaponSize = 3.0f; 
             }
             break;
         case VK_OEM_1:  // ';' key - Decrease sword defense speed
@@ -403,19 +625,14 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
                 if (swordDefenseSpeed < 30.0f) swordDefenseSpeed = 30.0f;
             }
             break;
-        case VK_OEM_7:  // ''' key - Increase weapon size
+        case VK_OEM_7:  // ''' key - Increase sword rotation speed
             if (qNo == 5) {
-                weaponSize += 0.2f;
-                if (weaponSize > 2.0f) weaponSize = 2.0f;  // Max size: 2.0x
+                swordDefenseSpeed += 30.0f;
+                if (swordDefenseSpeed > 300.0f) swordDefenseSpeed = 300.0f;  // Max speed: 300.0
             }
             break;
-        case VK_OEM_3:  // '`' key - Decrease weapon size
-            if (qNo == 5) {
-                weaponSize -= 0.2f;
-                if (weaponSize < 0.5f) weaponSize = 0.5f;  // Min size: 0.5x
-            }
-            break;
-        case VK_UP:
+      
+        case VK_OEM_2:  // / key - Increase sword state/rotating count
             if (qNo == 5) {
                 if (swordState < 2) {
                     swordState++;  // 0->1->2 progression
@@ -425,7 +642,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
                 }
             }
             break;
-        case VK_DOWN:
+        case VK_OEM_5:  // \ key - Decrease sword state/rotating count
             if (qNo == 5) {
                 if (swordState == 2 && rotatingSwordCount > 2) {
                     rotatingSwordCount--;  // Decrease rotating sword count (but keep minimum 2)
@@ -436,16 +653,17 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             break;
 
             //Toggle keys
-        case VK_OEM_MINUS:
+        case VK_SUBTRACT:
+        case VK_OEM_MINUS:  // - key
             if (qNo == 2)
-                opposite = !opposite;
+                opposite = !opposite;  // Toggle clockwise/counter-clockwise
             if (qNo == 4) 
                 if (speed2 > 0.5)
                         speed2 -= 0.5;
             break;
-        case VK_OEM_PLUS:
+        case VK_OEM_PLUS:  // = key
             if (qNo == 2)
-                toggleRight = !toggleRight;
+                toggleRight = !toggleRight;  // Toggle left/right limbs
             if (qNo == 4)
                     speed2 += 0.5;
             break;
@@ -488,7 +706,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             else
                 headY -= rotationSpeed;
             break;
-        case 'R':
+        case '9':
             if (!opposite)
                 headZ += rotationSpeed;
             else
@@ -761,7 +979,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             }
             break;
 
-        case VK_OEM_COMMA:
+        case VK_OEM_COMMA:  // < key
             if (!toggleRight) {
                 if (!opposite)
                     LFLegY += rotationSpeed;
@@ -776,7 +994,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             }
             break;
 
-        case VK_OEM_PERIOD:
+        case VK_OEM_PERIOD:  // > key
             if (!toggleRight) {
                 if (!opposite)
                     LFLegZ += rotationSpeed;
@@ -796,7 +1014,42 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 
         break;
-    default:
+        
+    case WM_MOUSEMOVE:
+        if (camera.mouseDown) {
+            int mouseX = LOWORD(lParam);
+            int mouseY = HIWORD(lParam);
+            
+            int deltaX = mouseX - camera.lastMouseX;
+            int deltaY = mouseY - camera.lastMouseY;
+            
+            // Rotate camera based on mouse movement
+            rotateCamera(deltaX * 0.5f, deltaY * 0.5f);
+            
+            camera.lastMouseX = mouseX;
+            camera.lastMouseY = mouseY;
+        }
+        break;
+        
+    case WM_LBUTTONDOWN:
+        camera.mouseDown = true;
+        camera.lastMouseX = LOWORD(lParam);
+        camera.lastMouseY = HIWORD(lParam);
+        break;
+        
+    case WM_LBUTTONUP:
+        camera.mouseDown = false;
+        break;
+        
+    case WM_MOUSEWHEEL:
+        {
+            int wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+            float zoomDelta = wheelDelta > 0 ? -1.0f : 1.0f;
+            zoomCamera(zoomDelta);
+        }
+        break;
+        
+        default:
         break;
     }
 
@@ -3236,12 +3489,12 @@ void outerCloth() {
 }
 
 void key1() {
-    //glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-
-    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
-    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    
+    // Setup camera projection and view
+    setupProjection();
+    setupView();
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor3f(1.0f, 0.0f, 0.0f);
@@ -3305,9 +3558,9 @@ void key2() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    glLoadIdentity();
-    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
-    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    // Setup camera projection and view
+    setupProjection();
+    setupView();
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor3f(1, 1, 1);
@@ -3590,10 +3843,10 @@ void key3(){}
 
 void key4() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-
-    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
-    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    
+    // Setup camera projection and view
+    setupProjection();
+    setupView();
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glColor3f(1, 1, 1);
@@ -3810,10 +4063,10 @@ void key5() {
     key5Time += elapsed.count();
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-
-    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
-    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    
+    // Setup camera projection and view
+    setupProjection();
+    setupView();
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glColor3f(1, 1, 1);
 
