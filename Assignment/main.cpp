@@ -47,7 +47,43 @@ struct BodyPart {
         : phases(p), numPhases(n) {
         getAllParts().push_back(this);
     }
+
 };
+
+// Camera System Variables
+// Camera System
+struct Camera {
+    float posX = 0.0f, posY = 0.0f, posZ = 3.0f;  // Camera position (closer to character)
+    float targetX = 0.0f, targetY = 0.0f, targetZ = 0.0f;  // Look at target
+    float upX = 0.0f, upY = 1.0f, upZ = 0.0f;  // Up vector
+    
+    // Projection settings
+    bool isPerspective = true;  // true for perspective, false for orthographic
+    float fov = 45.0f;  // Field of view for perspective
+    float nearPlane = 0.1f;
+    float farPlane = 1000.0f;
+    
+    // Orthographic settings
+    float orthoLeft = -5.0f;   // Smaller bounds = bigger character
+    float orthoRight = 5.0f;
+    float orthoBottom = -5.0f;
+    float orthoTop = 5.0f;
+    
+    // Movement and rotation
+    float moveSpeed = 0.5f;
+    float rotationSpeed = 2.0f;
+    float zoomSpeed = 0.1f;
+    
+    // Zoom limits
+    float minZoom = 0.5f;
+    float maxZoom = 50.0f;
+    float currentZoom = 2.0f;  // Smaller zoom = bigger character
+    
+    // Mouse controls
+    bool mouseDown = false;
+    int lastMouseX = 0, lastMouseY = 0;
+};
+Camera camera;
 
 float cameraYaw = 0.0f;    // left/right rotation (around Y-axis)
 float cameraPitch = 0.0f;  // up/down rotation (around X-axis)
@@ -240,6 +276,403 @@ void printRotations() {
     MessageBox(NULL, message.c_str(), "Body Coordinates", MB_OK);
 }
 
+int qNo = 2;
+bool opposite = false; //toggle clockwise & counter clockwise rotations
+bool toggleRight = false; //toggle left and right limbs
+float RotationSpeed = 10; //set degree for each key press
+
+//Key 2: Rotation
+float speed2 = 1;
+float headX = 0, headY = 0, headZ = 0;
+float LUArmX = 0, LUArmY = 0, LUArmZ = 0;
+float LLArmX = 0, LLArmY = 0, LLArmZ = 0;
+float LPArmX = 0, LPArmY = 0, LPArmZ = 0;
+float RUArmX = 0, RUArmY = 0, RUArmZ = 0;
+float RLArmX = 0, RLArmY = 0, RLArmZ = 0;
+float RPArmX = 0, RPArmY = 0, RPArmZ = 0;
+float bodyX = 0, bodyY = 0, bodyZ = 0;
+float LULegX = 0, LULegY = 0, LULegZ = 0;
+float LLLegX = 0, LLLegY = 0, LLLegZ = 0;
+float LFLegX = 0, LFLegY = 0, LFLegZ = 0;
+float RULegX = 0, RULegY = 0, RULegZ = 0;
+float RLLegX = 0, RLLegY = 0, RLLegZ = 0;
+float RFLegX = 0, RFLegY = 0, RFLegZ = 0;
+
+//Key 4: Rotation
+Phase head4Phases[] = {
+    {0, 10, 0, 0},
+    {0.5, 10, 0, 0},
+    {1, -15, 40, 25},
+    {1, -20, 40, 35},
+    {0.25, -45, -15, 0},
+    {0.5, 5, -5, 0},
+    {1, -5, -5, 0},
+};
+Phase LUArm4Phases[] = {
+    {0, -45, -5, -25},
+    {0.5, -45, -5, -25},
+    {1, -45, -75, -50},
+    {1, -45, -75, -50},
+    {0.25, -35, -50, -80},
+    {0.5, 160, -65, -115},
+    {1, 160, -65, -115},
+};
+Phase LLArm4Phases[] = {
+    {0, -85, -25, 25},
+    {0.5, -85, -25, 25},
+    {1, 30, -90, 35},
+    {1, 30, -90, 35},
+    {0.25, 40, -95, 15},
+    {0.5, 25, -225, 35},
+    {1, 25, -225, 35},
+};
+Phase LPArm4Phases[] = {
+    {0, -55, 25, 5},
+    {0.5, -55, 25, 5},
+    {1, 65, 5, -10},
+    {1, 65, 5, -10},
+    {0.25, 50, -25, -10},
+    {0.5, 0, -45, -10},
+    {1, 10, -45, -10},
+};
+Phase RUArm4Phases[] = {
+    {0, -90, 0, 40},
+    {0.5, -90, 0, 40},
+    {1, -50, 35, 20},
+    {1, -50, 35, 20},
+    {0.25, -30, -20, -25},
+    {0.5, -65, -20, 10},
+    {1, -65, -20, 10},
+};
+Phase RLArm4Phases[] = {
+    {0, -20, 40, 5},
+    {0.5, -20, 40, 5},
+    {1, -10, 20, 55},
+    {1, -10, 20, 55},
+    {0.25, 5, 60, 0},
+    {0.5, 10, 60, 5},
+    {1, 10, 60, 5},
+};
+Phase RPArm4Phases[] = {
+    {0, -35, 10, 0},
+    {0.5, -35, 10, 0},
+    {1, 30, -5, 30},
+    {1, 30, -5, 30},
+    {0.25, 5, -25, 30},
+    {0.5, -15, -25, 30},
+    {1, 0, -25, 55},
+};
+Phase body4Phases[] = {
+    {0, -5, 0, 0},
+    {0.5, -5, 0, 0},
+    {1, 25, -105, -5},
+    {1, 30, -100, -5},
+    {0.25, 65, -20, 0},
+    {0.5, 65, -10, 0},
+    {1, 65, -10, 0},
+};
+Phase LULeg4Phases[] = {
+    {0, -5, 0, -5},
+    {0.5, -5, 0, -5},
+    {1, -35, -10, -25},
+    {1, -40, -10, -25},
+    {0.25, -25, -15, -20},
+    {0.5, -60, -15, -20},
+    {1, -55, -15, -20},
+};
+Phase LLLeg4Phases[] = {
+    {0, 10, 0, 0},
+    {0.5, 10, 0, 0},
+    {1, 50, 5, 5},
+    {1, 55, 5, 5},
+    {0.25, 115, 5, 5},
+    {0.5, 120, 5, -30},
+    {1, 120, 5, -30},
+};
+Phase LFLeg4Phases[] = {
+    {0, -5, 0, 0},
+    {0.5, -5, 0, 0},
+    {1, -10, -15, 0},
+    {1, -10, -15, 0},
+    {0.25, -10, -15, 0},
+    {0.5, -60, -15, 0},
+    {1, -65, -15, 0},
+};
+Phase RULeg4Phases[] = {
+    {0, -5, 0, -5},
+    {0.5, -5, 0, -5},
+    {1, 15, 15, -15},
+    {1, 20, 15, -15},
+    {0.25, 5, 15, -5},
+    {0.5, 55, -10, -10},
+    {1, 60, -10, -10},
+};
+Phase RLLeg4Phases[] = {
+    {0, 10, 0, 0},
+    {0.5, 10, 0, 0},
+    {1, 35, 5, -15},
+    {1, 40, 5, -15},
+    {0.25, 40, 5, -15},
+    {0.5, 5, 5, -15},
+    {1, 0, 5, -15},
+};
+Phase RFLeg4Phases[] = {
+    {0, -5, 0, 0},
+    {0.5, -5, 0, 0},
+    {1, -25, 5, 10},
+    {1, -25, 5, 10},
+    {0.25, -25, 5, 10},
+    {0.5, -5, 5, 10},
+    {1, -15, 5, 10},
+};
+BodyPart head4(head4Phases, sizeof(head4Phases) / sizeof(head4Phases[0]));
+BodyPart LUArm4(LUArm4Phases, sizeof(LUArm4Phases) / sizeof(LUArm4Phases[0]));
+BodyPart LLArm4(LLArm4Phases, sizeof(LLArm4Phases) / sizeof(LLArm4Phases[0]));
+BodyPart LPArm4(LPArm4Phases, sizeof(LPArm4Phases) / sizeof(LPArm4Phases[0]));
+BodyPart RUArm4(RUArm4Phases, sizeof(RUArm4Phases) / sizeof(RUArm4Phases[0]));
+BodyPart RLArm4(RLArm4Phases, sizeof(RLArm4Phases) / sizeof(RLArm4Phases[0]));
+BodyPart RPArm4(RPArm4Phases, sizeof(RPArm4Phases) / sizeof(RPArm4Phases[0]));
+BodyPart body4(body4Phases, sizeof(body4Phases) / sizeof(body4Phases[0]));
+BodyPart LULeg4(LULeg4Phases, sizeof(LULeg4Phases) / sizeof(LULeg4Phases[0]));
+BodyPart LLLeg4(LLLeg4Phases, sizeof(LLLeg4Phases) / sizeof(LLLeg4Phases[0]));
+BodyPart LFLeg4(LFLeg4Phases, sizeof(LFLeg4Phases) / sizeof(LFLeg4Phases[0]));
+BodyPart RULeg4(RULeg4Phases, sizeof(RULeg4Phases) / sizeof(RULeg4Phases[0]));
+BodyPart RLLeg4(RLLeg4Phases, sizeof(RLLeg4Phases) / sizeof(RLLeg4Phases[0]));
+BodyPart RFLeg4(RFLeg4Phases, sizeof(RFLeg4Phases) / sizeof(RFLeg4Phases[0]));
+
+//Key 5
+Phase head5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, 20, 5},
+};
+Phase LUArm5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, -25, 0, 15},
+    {1, -30, 0, -30},
+};
+Phase LLArm5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, -15, 0, 10},
+    {1, 0, 0, -20},
+};
+Phase LPArm5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, -20, 0, 5},
+    {1, 0, 0, 0},
+};
+Phase RUArm5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, -20, 0, 10},
+    {1, -10, 0, -5},
+};
+Phase RLArm5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, -15, 0, 5},
+    {1, 0, 0, 0},
+};
+Phase RPArm5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, 0, 0},
+};
+Phase body5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 10, -10, -5},
+};
+Phase LULeg5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, -15, 0, -10},
+    {1, -40, -30, -15},
+};
+Phase LLLeg5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 30, 0, 0},
+};
+Phase LFLeg5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, 0, 0},
+};
+Phase RULeg5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, 10, 0, -5},
+    {1, 25, 40, -25},
+};
+Phase RLLeg5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, 0, 0},
+};
+Phase RFLeg5Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, 0, 0},
+};
+BodyPart head5(head5Phases, sizeof(head5Phases) / sizeof(head5Phases[0]));
+BodyPart LUArm5(LUArm5Phases, sizeof(LUArm5Phases) / sizeof(LUArm5Phases[0]));
+BodyPart LLArm5(LLArm5Phases, sizeof(LLArm5Phases) / sizeof(LLArm5Phases[0]));
+BodyPart LPArm5(LPArm5Phases, sizeof(LPArm5Phases) / sizeof(LPArm5Phases[0]));
+BodyPart RUArm5(RUArm5Phases, sizeof(RUArm5Phases) / sizeof(RUArm5Phases[0]));
+BodyPart RLArm5(RLArm5Phases, sizeof(RLArm5Phases) / sizeof(RLArm5Phases[0]));
+BodyPart RPArm5(RPArm5Phases, sizeof(RPArm5Phases) / sizeof(RPArm5Phases[0]));
+BodyPart body5(body5Phases, sizeof(body5Phases) / sizeof(body5Phases[0]));
+BodyPart LULeg5(LULeg5Phases, sizeof(LULeg5Phases) / sizeof(LULeg5Phases[0]));
+BodyPart LLLeg5(LLLeg5Phases, sizeof(LLLeg5Phases) / sizeof(LLLeg5Phases[0]));
+BodyPart LFLeg5(LFLeg5Phases, sizeof(LFLeg5Phases) / sizeof(LFLeg5Phases[0]));
+BodyPart RULeg5(RULeg5Phases, sizeof(RULeg5Phases) / sizeof(RULeg5Phases[0]));
+BodyPart RLLeg5(RLLeg5Phases, sizeof(RLLeg5Phases) / sizeof(RLLeg5Phases[0]));
+BodyPart RFLeg5(RFLeg5Phases, sizeof(RFLeg5Phases) / sizeof(RFLeg5Phases[0]));
+
+float swordDefenseAngle = 0.0f;
+float swordDefenseSpeed = 90.0f;
+float swordRotationSpeed = 90.0f;
+int numSwords = 2;
+float swordRadius = 0.8f;
+float swordHeight = 0.3f;
+float weaponSize = 1.0f;
+bool swordDefenseActive = true;
+
+float key5Time = 0.0f;
+float key5AnimationSpeed = 0.9f;
+int swordState = 0;  // 0=default, 1=both hands holding sword, 2=sword rotation only
+int rotatingSwordCount = 2;
+
+// Camera System Functions
+void setupProjection() {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    if (camera.isPerspective) {
+        // Perspective projection using gluPerspective
+        gluPerspective(camera.fov, 1.0f, camera.nearPlane, camera.farPlane);
+    } else {
+        // Orthographic projection using glOrtho
+        float left = camera.orthoLeft * camera.currentZoom;
+        float right = camera.orthoRight * camera.currentZoom;
+        float bottom = camera.orthoBottom * camera.currentZoom;
+        float top = camera.orthoTop * camera.currentZoom;
+        glOrtho(left, right, bottom, top, camera.nearPlane, camera.farPlane);
+    }
+    
+    glMatrixMode(GL_MODELVIEW);
+}
+
+void setupView() {
+    glLoadIdentity();
+    gluLookAt(camera.posX, camera.posY, camera.posZ,
+              camera.targetX, camera.targetY, camera.targetZ,
+              camera.upX, camera.upY, camera.upZ);
+}
+
+void updateCamera() {
+    // Update camera position based on current zoom
+    float distance = sqrt((camera.posX - camera.targetX) * (camera.posX - camera.targetX) +
+                         (camera.posY - camera.targetY) * (camera.posY - camera.targetY) +
+                         (camera.posZ - camera.targetZ) * (camera.posZ - camera.targetZ));
+    
+    if (distance > 0) {
+        float ratio = camera.currentZoom / distance;
+        camera.posX = camera.targetX + (camera.posX - camera.targetX) * ratio;
+        camera.posY = camera.targetY + (camera.posY - camera.targetY) * ratio;
+        camera.posZ = camera.targetZ + (camera.posZ - camera.targetZ) * ratio;
+    }
+}
+
+void rotateCamera(float deltaYaw, float deltaPitch) {
+    // Convert to radians
+    float yawRad = deltaYaw * PI / 180.0f;
+    float pitchRad = deltaPitch * PI / 180.0f;
+    
+    // Calculate camera direction vector
+    float dirX = camera.posX - camera.targetX;
+    float dirY = camera.posY - camera.targetY;
+    float dirZ = camera.posZ - camera.targetZ;
+    
+    // Rotate around Y axis (yaw)
+    float cosYaw = cos(yawRad);
+    float sinYaw = sin(yawRad);
+    float newDirX = dirX * cosYaw + dirZ * sinYaw;
+    float newDirZ = -dirX * sinYaw + dirZ * cosYaw;
+    dirX = newDirX;
+    dirZ = newDirZ;
+    
+    // Rotate around X axis (pitch) - limit pitch to avoid gimbal lock
+    float cosPitch = cos(pitchRad);
+    float sinPitch = sin(pitchRad);
+    float newDirY = dirY * cosPitch - dirZ * sinPitch;
+    newDirZ = dirY * sinPitch + dirZ * cosPitch;
+    dirY = newDirY;
+    dirZ = newDirZ;
+    
+    // Update camera position
+    camera.posX = camera.targetX + dirX;
+    camera.posY = camera.targetY + dirY;
+    camera.posZ = camera.targetZ + dirZ;
+}
+
+void moveCamera(float deltaX, float deltaY, float deltaZ) {
+    camera.posX += deltaX * camera.moveSpeed;
+    camera.posY += deltaY * camera.moveSpeed;
+    camera.posZ += deltaZ * camera.moveSpeed;
+    
+    camera.targetX += deltaX * camera.moveSpeed;
+    camera.targetY += deltaY * camera.moveSpeed;
+    camera.targetZ += deltaZ * camera.moveSpeed;
+}
+
+void zoomCamera(float delta) {
+    camera.currentZoom += delta * camera.zoomSpeed;
+    
+    // Apply zoom limits
+    if (camera.currentZoom < camera.minZoom) {
+        camera.currentZoom = camera.minZoom;
+    } else if (camera.currentZoom > camera.maxZoom) {
+        camera.currentZoom = camera.maxZoom;
+    }
+    
+    updateCamera();
+}
+
+void resetCamera() {
+    // Reset camera
+    camera.posX = 0.0f;
+    camera.posY = 0.0f;
+    camera.posZ = 3.0f;  // Closer to character
+    camera.targetX = 0.0f;
+    camera.targetY = 0.0f;
+    camera.targetZ = 0.0f;
+    camera.currentZoom = 2.0f;  // Bigger character by default
+    camera.isPerspective = true;
+    cameraYaw = 0.0f;
+    cameraPitch = 0.0f;
+    
+    // Reset all character animation variables to default
+    headX = 0; headY = 0; headZ = 0;
+    LUArmX = 0; LUArmY = 0; LUArmZ = 0;
+    LLArmX = 0; LLArmY = 0; LLArmZ = 0;
+    LPArmX = 0; LPArmY = 0; LPArmZ = 0;
+    RUArmX = 0; RUArmY = 0; RUArmZ = 0;
+    RLArmX = 0; RLArmY = 0; RLArmZ = 0;
+    RPArmX = 0; RPArmY = 0; RPArmZ = 0;
+    bodyX = 0; bodyY = 0; bodyZ = 0;
+    LULegX = 0; LULegY = 0; LULegZ = 0;
+    LLLegX = 0; LLLegY = 0; LLLegZ = 0;
+    LFLegX = 0; LFLegY = 0; LFLegZ = 0;
+    RULegX = 0; RULegY = 0; RULegZ = 0;
+    RLLegX = 0; RLLegY = 0; RLLegZ = 0;
+    RFLegX = 0; RFLegY = 0; RFLegZ = 0;
+    
+    // Reset toggle states
+    opposite = false;
+    toggleRight = false;
+    
+    // Reset mode to default
+    qNo = 2;
+}
+
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
@@ -248,21 +681,33 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         PostQuitMessage(0);
         break;
 
+    case WM_SYSKEYDOWN:
+        if (wParam == VK_MENU) {  // Alt key
+            resetCamera();
+        }
+        break;
+        
     case WM_KEYDOWN:
         switch (wParam) {
-            //Camera keys
+        // Camera Movement
         case 'W':
-            cameraPitch -= rotationSpeed;
+            moveCamera(0, camera.moveSpeed, 0);
             break;
         case 'S':
-            cameraPitch += rotationSpeed;
+            moveCamera(0, -camera.moveSpeed, 0);
             break;
         case 'A':
-            cameraYaw -= rotationSpeed;
+            moveCamera(-camera.moveSpeed, 0, 0);
             break;
         case 'D':
-            cameraYaw += rotationSpeed;
+            moveCamera(camera.moveSpeed, 0, 0);
             break;
+        case VK_OEM_3:  // ` key - Toggle projection
+            camera.isPerspective = !camera.isPerspective;
+            break;
+            
+            
+  
 
             //Question controls
         case '1':
@@ -280,23 +725,88 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         case '5':
             qNo = 5;
             break;
-            
-        case VK_SPACE:
-            printRotations();
+        case VK_OEM_4:  // '[' key - Decrease sword size
+            if (qNo == 5) {
+                weaponSize -= 0.2f;
+                if (weaponSize < 0.5f) weaponSize = 0.5f; 
+            }
             break;
+        case VK_OEM_6:  // ']' key - Increase sword size
+            if (qNo == 5) {
+                weaponSize += 0.2f;
+                if (weaponSize > 3.0f) weaponSize = 3.0f; 
+            }
+            break;
+        case VK_OEM_1:  // ';' key - Decrease sword defense speed
+            if (qNo == 5) {
+                swordDefenseSpeed -= 30.0f;
+                if (swordDefenseSpeed < 30.0f) swordDefenseSpeed = 30.0f;
+            }
+            break;
+        case VK_OEM_7:  // ''' key - Increase sword rotation speed
+            if (qNo == 5) {
+                swordDefenseSpeed += 30.0f;
+                if (swordDefenseSpeed > 300.0f) swordDefenseSpeed = 300.0f;  
+            }
+            break;
+      
+        case VK_OEM_2:  // / key - increase num sword
+            if (qNo == 5) {
+                if (swordState < 2) {
+                    swordState++; 
+                } else {
+              
+                    if (rotatingSwordCount < 5) rotatingSwordCount++;
+                }
+            }
+            break;
+        case VK_OEM_5:  // \ key - decrease num sword
+            if (qNo == 5) {
+                if (swordState == 2 && rotatingSwordCount > 2) {
+                    rotatingSwordCount--;  
+                } else if (swordState > 0) {
+                    swordState--; 
+                }
+            }
+            break;
+
             //Toggle keys
-        case VK_OEM_MINUS:
+        case VK_OEM_MINUS:  
             if (qNo == 2)
-                opposite = !opposite;
+                opposite = !opposite; 
             if (qNo == 4) 
                 if (speed2 > 0.5)
                         speed2 -= 0.5;
             break;
-        case VK_OEM_PLUS:
+        case VK_OEM_PLUS: 
             if (qNo == 2)
                 toggleRight = !toggleRight;
             if (qNo == 4)
                     speed2 += 0.5;
+            break;
+        case '[':
+            if (qNo == 5) {
+                weaponSize -= 0.1f;
+                if (weaponSize < 0.1f) weaponSize = 0.1f; 
+            }
+            break;
+        case ']':
+            if (qNo == 5) {
+                weaponSize += 0.1f;
+                if (weaponSize > 2.0f) weaponSize = 2.0f;
+            }
+            break;
+        case ',':
+            if (qNo == 5) {
+                swordDefenseSpeed += 10.0f;
+                if (swordDefenseSpeed > 200.0f) swordDefenseSpeed = 200.0f; 
+            }
+            break;
+        case '.':
+            if (qNo == 5) {
+                swordDefenseSpeed -= 10.0f;
+                if (swordDefenseSpeed < 10.0f) swordDefenseSpeed = 10.0f;
+            }
             break;
 
         case VK_UP:
@@ -321,7 +831,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             else
                 headY -= rotationSpeed;
             break;
-        case 'R':
+        case '9':
             if (!opposite)
                 headZ += rotationSpeed;
             else
@@ -594,7 +1104,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             }
             break;
 
-        case VK_OEM_COMMA:
+        case VK_OEM_COMMA:  // < key
             if (!toggleRight) {
                 if (!opposite)
                     LFLegY += rotationSpeed;
@@ -609,7 +1119,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             }
             break;
 
-        case VK_OEM_PERIOD:
+        case VK_OEM_PERIOD:  // > key
             if (!toggleRight) {
                 if (!opposite)
                     LFLegZ += rotationSpeed;
@@ -625,9 +1135,43 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             break;
             }
         }
-
         break;
-    default:
+        
+    case WM_MOUSEMOVE:
+        if (camera.mouseDown) {
+            int mouseX = LOWORD(lParam);
+            int mouseY = HIWORD(lParam);
+            
+            int deltaX = mouseX - camera.lastMouseX;
+            int deltaY = mouseY - camera.lastMouseY;
+            
+            // Rotate camera based on mouse movement
+            rotateCamera(deltaX * 0.5f, deltaY * 0.5f);
+            
+            camera.lastMouseX = mouseX;
+            camera.lastMouseY = mouseY;
+        }
+        break;
+        
+    case WM_LBUTTONDOWN:
+        camera.mouseDown = true;
+        camera.lastMouseX = LOWORD(lParam);
+        camera.lastMouseY = HIWORD(lParam);
+        break;
+        
+    case WM_LBUTTONUP:
+        camera.mouseDown = false;
+        break;
+        
+    case WM_MOUSEWHEEL:
+        {
+            int wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+            float zoomDelta = wheelDelta > 0 ? -1.0f : 1.0f;
+            zoomCamera(zoomDelta);
+        }
+        break;
+        
+        default:
         break;
     }
 
@@ -3067,12 +3611,12 @@ void outerCloth() {
 }
 
 void key1() {
-    //glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-
-    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
-    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    
+    // Setup camera projection and view
+    setupProjection();
+    setupView();
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor3f(1.0f, 0.0f, 0.0f);
@@ -3136,9 +3680,9 @@ void key2() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    glLoadIdentity();
-    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
-    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    // Setup camera projection and view
+    setupProjection();
+    setupView();
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor3f(1, 1, 1);
@@ -3430,10 +3974,10 @@ void key3(){}
 
 void key4() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-
-    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
-    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
+    
+    // Setup camera projection and view
+    setupProjection();
+    setupView();
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glColor3f(1, 1, 1);
@@ -3600,7 +4144,309 @@ void key4() {
 }
 
 void key5() {
+    // Update animation time
+    static auto lastTime = std::chrono::high_resolution_clock::now();
+    static int lastQNo = -1;
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = currentTime - lastTime;
+    lastTime = currentTime;
+    
+    // Reset all Key 5 body parts when switching to Key 5
+    if (lastQNo != 5) {
+        head5.currentPhase = 0;
+        LUArm5.currentPhase = 0;
+        LLArm5.currentPhase = 0;
+        LPArm5.currentPhase = 0;
+        RUArm5.currentPhase = 0;
+        RLArm5.currentPhase = 0;
+        RPArm5.currentPhase = 0;
+        body5.currentPhase = 0;
+        LULeg5.currentPhase = 0;
+        LLLeg5.currentPhase = 0;
+        LFLeg5.currentPhase = 0;
+        RULeg5.currentPhase = 0;
+        RLLeg5.currentPhase = 0;
+        RFLeg5.currentPhase = 0;
+        
+        startPhase(head5);
+        startPhase(LUArm5);
+        startPhase(LLArm5);
+        startPhase(LPArm5);
+        startPhase(RUArm5);
+        startPhase(RLArm5);
+        startPhase(RPArm5);
+        startPhase(body5);
+        startPhase(LULeg5);
+        startPhase(LLLeg5);
+        startPhase(LFLeg5);
+        startPhase(RULeg5);
+        startPhase(RLLeg5);
+        startPhase(RFLeg5);
+        
+        // Start with default sword state (only right hand holding sword)
+        swordState = 0;
+        rotatingSwordCount = 2;
+        
+        key5Time = 0.0f;
+        lastQNo = 5;
+    }
+    
+    key5Time += elapsed.count();
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    setupProjection();
+    setupView();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glColor3f(1, 1, 1);
 
+    if (true) {
+        
+    //upper body
+    {
+        glPushMatrix();
+        glTranslatef(0, 0.24, 0);
+        
+        applyAnimation(body5);
+        
+        glTranslatef(0, -0.24, 0);
+
+        //Head
+        {
+            glPushMatrix();
+            glTranslatef(0, 0.6, -0.015);
+            applyAnimation(head5);
+            
+            glTranslatef(0, -0.6, 0.015);
+
+            hair();
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            hair();
+            glPopMatrix();
+            head();
+            glPopMatrix();
+            neck();
+        }
+
+        //Upper Arm (Right Arm)
+        {
+            glPushMatrix();
+            glTranslatef(-0.13, 0.52, -0.02);
+ 
+            applyAnimation(RUArm5);
+            
+            glTranslatef(0.13, -0.52, 0.02);
+            upperArm();
+            glPushMatrix();
+            glTranslatef(-0.16, 0.36, -0.05);
+
+            applyAnimation(RLArm5);
+            
+            glTranslatef(0.16, -0.36, 0.05);
+            lowerArm();
+
+            //Palm
+            glPushMatrix();
+            glTranslatef(-0.20, 0.07, -0.02);
+            applyAnimation(RPArm5);
+            glTranslatef(0.20, -0.07, 0.02);
+
+            if (swordState >= 0) {
+                glPushMatrix();
+                glTranslatef(-0.21, 0.02, 0.02);
+                glScalef(weaponSize, weaponSize, weaponSize);
+                glTranslatef(0.21, -0.02, -0.02);
+
+                glTranslatef(-0.2, 0.02, 0.6);
+                glRotatef(-90, 0, 1, 0);
+                glRotatef(90, 0, 0, 1);
+                sword();
+                glPopMatrix();
+            }
+
+
+            palm();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        //Upper Arm (Left Arm)
+        {
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            glPushMatrix();
+            glTranslatef(-0.13, 0.52, -0.02);
+   
+            applyAnimation(LUArm5);
+            
+            glTranslatef(0.13, -0.52, 0.02);
+            upperArm();
+
+            //Lower Arm
+            glPushMatrix();
+            glTranslatef(-0.16, 0.36, -0.05);
+            applyAnimation(LLArm5);
+            
+            glTranslatef(0.16, -0.36, 0.05);
+            lowerArm();
+
+            //Palm
+            glPushMatrix();
+            glTranslatef(-0.20, 0.07, -0.02);
+            applyAnimation(LPArm5);
+            
+            glTranslatef(0.20, -0.07, 0.02);
+
+            // Draw sword in left hand for Key 5 (states 1 and 2)
+            if (swordState >= 1) {
+                glPushMatrix();
+                glTranslatef(-0.21, 0.02, 0.02);
+                glScalef(weaponSize, weaponSize, weaponSize);
+                glTranslatef(0.21, -0.02, -0.02);
+
+                glTranslatef(-0.2, 0.02, 0.6);
+
+                glRotatef(-90, 0, 1, 0);
+                glRotatef(90, 0, 0, 1);
+                sword();
+                glPopMatrix();
+            }
+            palm();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        body();
+        innerCloth();
+        outerCloth();
+        glPopMatrix();
+    }
+
+    //lower body
+    {
+        //Upper leg (Right leg)
+        {
+            glPushMatrix();
+            glTranslatef(-0.05, 0.19, 0);
+            applyAnimation(RULeg5);
+            
+            glTranslatef(0.05, -0.19, 0);
+            thigh();
+
+            //Lower leg
+            glPushMatrix();
+            glTranslatef(-0.07, -0.32, 0);
+            applyAnimation(RLLeg5);
+            
+            glTranslatef(0.07, 0.32, 0);
+            calf();
+
+            //Feet
+            glPushMatrix();
+            glTranslatef(-0.05, -0.62, 0);
+            applyAnimation(RFLeg5);
+            
+            glTranslatef(0.05, 0.62, 0);
+            feet();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        //Upper leg (Left leg)
+        {
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            glPushMatrix();
+            glTranslatef(-0.05, 0.19, 0);
+            applyAnimation(LULeg5);
+            
+            glTranslatef(0.05, -0.19, 0);
+            thigh();
+
+            //Lower leg
+            glPushMatrix();
+            glTranslatef(-0.07, -0.32, 0);
+            applyAnimation(LLLeg5);
+            
+            glTranslatef(0.07, 0.32, 0);
+            calf();
+
+            //Feet
+            glPushMatrix();
+            glTranslatef(-0.05, -0.62, 0);
+            applyAnimation(LFLeg5);
+            
+            glTranslatef(0.05, 0.62, 0);
+            feet();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+    }
+    } else {
+        guide();
+        glColor3f(1, 1, 1);
+        neck();
+        body();
+        head();
+        upperArm();
+        lowerArm();
+        
+
+        if (swordState == 0) {
+            glPushMatrix();
+            glTranslatef(0.2, -0.07, 0.02);
+            glTranslatef(-0.2, 0.02, 0.6);
+            glRotatef(-90, 0, 1, 0);
+            glRotatef(90, 0, 0, 1);
+            glScalef(weaponSize, weaponSize, weaponSize);
+            sword();
+            glPopMatrix();
+        }
+        
+        palm();
+        thigh();
+        calf();
+        feet();
+    }
+
+
+    if (swordState == 2) {
+        glColor3f(1.0f, 0.0f, 0.0f);  // Red color for rotating swords
+        
+        for (int i = 0; i < rotatingSwordCount; i++) {
+            glPushMatrix();
+            
+            // Calculate angle for this sword
+            float angle = (360.0f / rotatingSwordCount) * i;
+            
+            // Add rotation based on time
+            float rotationAngle = key5Time * swordDefenseSpeed;
+            angle += rotationAngle;
+            
+            // Position sword in circle around character
+            float x = cos(angle * PI / 180.0f) * swordRadius;
+            float z = sin(angle * PI / 180.0f) * swordRadius;
+            
+            glTranslatef(x, swordHeight, z);
+            glRotatef(angle, 0, 1, 0);  
+            
+            // Apply weapon size scaling
+            glScalef(weaponSize, weaponSize, weaponSize);
+            
+            sword();
+            glPopMatrix();
+        }
+    }
+
+
+    glFlush();
 }
 
 void display()
@@ -3681,11 +4527,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
         }
 
         display();
-
-        if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-            printRotations();
-            Sleep(200);
-        }
 
         SwapBuffers(hdc);
     }
