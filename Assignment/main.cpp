@@ -256,76 +256,74 @@ BodyPart RFLeg4(RFLeg4Phases, sizeof(RFLeg4Phases) / sizeof(RFLeg4Phases[0]));
 //Key 5
 Phase head5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, 0, 0, 0},
-    {2, 0, 20, 5},
+    {0.5, 0, 0, 0},
+    {1, 0, 20, 5},
 };
 Phase LUArm5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, -25, 0, 15},
-    {2, -30, 0, -30},
+    {0.5, -25, 0, 15},
+    {1, -30, 0, -30},
 };
 Phase LLArm5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, -15, 0, 10},
-    {2, 0, 0, -20},
+    {0.5, -15, 0, 10},
+    {1, 0, 0, -20},
 };
 Phase LPArm5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, -20, 0, 5},
-    {2, 0, 0, 0},
+    {0.5, -20, 0, 5},
+    {1, 0, 0, 0},
 };
 Phase RUArm5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, -20, 0, 10},
-    {2, -10, 0, -5},
+    {0.5, -20, 0, 10},
+    {1, -10, 0, -5},
 };
 Phase RLArm5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, -15, 0, 5},
-    {2, 0, 0, 0},
+    {0.5, -15, 0, 5},
+    {1, 0, 0, 0},
 };
 Phase RPArm5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, 0, 0, 0},
-    {2, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, 0, 0},
 };
 Phase body5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, 0, 0, 0},
-    {2, 10, -10, -5},
+    {0.5, 0, 0, 0},
+    {1, 10, -10, -5},
 };
 Phase LULeg5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, -15, 0, -10},
-    {2, -40, -30, -15},
+    {0.5, -15, 0, -10},
+    {1, -40, -30, -15},
 };
 Phase LLLeg5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, 0, 0, 0},
-    {2, 30, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 30, 0, 0},
 };
 Phase LFLeg5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, 0, 0, 0},
-    {2, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, 0, 0},
 };
 Phase RULeg5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, 10, 0, -5},
-    {2, 25, 40, -25},
+    {0.5, 10, 0, -5},
+    {1, 25, 40, -25},
 };
 Phase RLLeg5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, 0, 0, 0},
-    {2, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, 0, 0},
 };
 Phase RFLeg5Phases[] = {
     {0, 0, 0, 0},
-    {1.5, 0, 0, 0},
-    {2, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, 0, 0},
 };
-
-
 BodyPart head5(head5Phases, sizeof(head5Phases) / sizeof(head5Phases[0]));
 BodyPart LUArm5(LUArm5Phases, sizeof(LUArm5Phases) / sizeof(LUArm5Phases[0]));
 BodyPart LLArm5(LLArm5Phases, sizeof(LLArm5Phases) / sizeof(LLArm5Phases[0]));
@@ -352,7 +350,6 @@ bool swordDefenseActive = true;
 
 float key5Time = 0.0f;
 float key5AnimationSpeed = 0.9f;
-
 int swordState = 0;  // 0=default, 1=both hands holding sword, 2=sword rotation only
 int rotatingSwordCount = 2;
 
@@ -489,30 +486,6 @@ void resetCamera() {
     qNo = 2;
 }
 
-
-void printRotations() {
-    std::ostringstream oss;
-
-    oss << "Head: (" << headX << ", " << headY << ", " << headZ << ")\n";
-    oss << "Left Upper Arm: (" << LUArmX << ", " << LUArmY << ", " << LUArmZ << ")\n";
-    oss << "Left Lower Arm: (" << LLArmX << ", " << LLArmY << ", " << LLArmZ << ")\n";
-    oss << "Left Palm: (" << LPArmX << ", " << LPArmY << ", " << LPArmZ << ")\n";
-    oss << "Right Upper Arm: (" << RUArmX << ", " << RUArmY << ", " << RUArmZ << ")\n";
-    oss << "Right Lower Arm: (" << RLArmX << ", " << RLArmY << ", " << RLArmZ << ")\n";
-    oss << "Right Palm: (" << RPArmX << ", " << RPArmY << ", " << RPArmZ << ")\n";
-    oss << "Body: (" << bodyX << ", " << bodyY << ", " << bodyZ << ")\n";
-    oss << "Left Upper Leg: (" << LULegX << ", " << LULegY << ", " << LULegZ << ")\n";
-    oss << "Left Lower Leg: (" << LLLegX << ", " << LLLegY << ", " << LLLegZ << ")\n";
-    oss << "Left Foot: (" << LFLegX << ", " << LFLegY << ", " << LFLegZ << ")\n";
-    oss << "Right Upper Leg: (" << RULegX << ", " << RULegY << ", " << RULegZ << ")\n";
-    oss << "Right Lower Leg: (" << RLLegX << ", " << RLLegY << ", " << RLLegZ << ")\n";
-    oss << "Right Foot: (" << RFLegX << ", " << RFLegY << ", " << RFLegZ << ")\n";
-
-    std::string message = oss.str();
-    MessageBox(NULL, message.c_str(), "Body Coordinates", MB_OK);
-}
-
-
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
@@ -529,59 +502,19 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         
     case WM_KEYDOWN:
         switch (wParam) {
-            // Enhanced Camera Controls
+        // Camera Movement
         case 'W':
-            // Rotate camera pitch up
-            cameraPitch -= rotationSpeed;
-            rotateCamera(0, -rotationSpeed);
-            break;
-        case 'S':
-            // Rotate camera pitch down
-            cameraPitch += rotationSpeed;
-            rotateCamera(0, rotationSpeed);
-            break;
-        case 'A':
-            cameraYaw += rotationSpeed;
-            rotateCamera(rotationSpeed, 0);
-            break;
-        case 'D':
-            cameraYaw -= rotationSpeed;
-            rotateCamera(-rotationSpeed, 0);
-            break;
-            
-            // Pitch controls (up/down rotation)
-        case VK_F1:
-            cameraPitch -= rotationSpeed;
-            rotateCamera(0, -rotationSpeed);
-            break;
-        case VK_F2:
-            cameraPitch += rotationSpeed;
-            rotateCamera(0, rotationSpeed);
-            break;
-            
-            // Camera Movement
-        case VK_UP:
             moveCamera(0, camera.moveSpeed, 0);
             break;
-        case VK_DOWN:
+        case 'S':
             moveCamera(0, -camera.moveSpeed, 0);
             break;
-        case VK_LEFT:
+        case 'A':
             moveCamera(-camera.moveSpeed, 0, 0);
             break;
-        case VK_RIGHT:
+        case 'D':
             moveCamera(camera.moveSpeed, 0, 0);
             break;
-        case VK_PRIOR:  // Page Up
-            moveCamera(0, 0, camera.moveSpeed);
-            break;
-        case VK_NEXT:   // Page Down
-            moveCamera(0, 0, -camera.moveSpeed);
-            break;
-            
-            // Zoom Controls (now only mouse wheel)
-            
-            // Projection Toggle
         case VK_OEM_3:  // ` key - Toggle projection
             camera.isPerspective = !camera.isPerspective;
             break;
@@ -604,10 +537,6 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             break;
         case '5':
             qNo = 5;
-            break;
-            
-        case VK_SPACE:
-            printRotations();
             break;
         case VK_OEM_4:  // '[' key - Decrease sword size
             if (qNo == 5) {
@@ -655,7 +584,6 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             break;
 
             //Toggle keys
-        case VK_SUBTRACT:
         case VK_OEM_MINUS:  
             if (qNo == 2)
                 opposite = !opposite; 
@@ -1012,9 +940,6 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             break;
             }
         }
-
-
-
         break;
         
     case WM_MOUSEMOVE:
@@ -4121,19 +4046,22 @@ void key5() {
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
             applyAnimation(RPArm5);
-            
             glTranslatef(0.20, -0.07, 0.02);
+
             if (swordState >= 0) {
                 glPushMatrix();
+                glTranslatef(-0.21, 0.02, 0.02);
+                glScalef(weaponSize, weaponSize, weaponSize);
+                glTranslatef(0.21, -0.02, -0.02);
+
                 glTranslatef(-0.2, 0.02, 0.6);
                 glRotatef(-90, 0, 1, 0);
                 glRotatef(90, 0, 0, 1);
-               
-                glScalef(weaponSize, weaponSize, weaponSize);
-                
                 sword();
                 glPopMatrix();
             }
+
+
             palm();
             glPopMatrix();
             glPopMatrix();
@@ -4170,12 +4098,14 @@ void key5() {
             // Draw sword in left hand for Key 5 (states 1 and 2)
             if (swordState >= 1) {
                 glPushMatrix();
+                glTranslatef(-0.21, 0.02, 0.02);
+                glScalef(weaponSize, weaponSize, weaponSize);
+                glTranslatef(0.21, -0.02, -0.02);
+
                 glTranslatef(-0.2, 0.02, 0.6);
+
                 glRotatef(-90, 0, 1, 0);
                 glRotatef(90, 0, 0, 1);
-               
-                glScalef(weaponSize, weaponSize, weaponSize);
-                
                 sword();
                 glPopMatrix();
             }
@@ -4393,11 +4323,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
         }
 
         display();
-
-        if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-            printRotations();
-            Sleep(200);
-        }
 
         SwapBuffers(hdc);
     }
