@@ -89,200 +89,14 @@ float cameraYaw = 0.0f;    // left/right rotation (around Y-axis)
 float cameraPitch = 0.0f;  // up/down rotation (around X-axis)
 float rotationSpeed = 5.0f; // degrees per key press
 
-int qNo = 2;
+int qNo = 1;
 bool opposite = false; //toggle clockwise & counter clockwise rotations
 bool toggleRight = false; //toggle left and right limbs
 float RotationSpeed = 10; //set degree for each key press
 
 //Key 2: Rotation
 float speed2 = 1;
-float headX = 0, headY = 0, headZ = 0;
-float LUArmX = 0, LUArmY = 0, LUArmZ = 0;
-float LLArmX = 0, LLArmY = 0, LLArmZ = 0;
-float LPArmX = 0, LPArmY = 0, LPArmZ = 0;
-float RUArmX = 0, RUArmY = 0, RUArmZ = 0;
-float RLArmX = 0, RLArmY = 0, RLArmZ = 0;
-float RPArmX = 0, RPArmY = 0, RPArmZ = 0;
-float bodyX = 0, bodyY = 0, bodyZ = 0;
-float LULegX = 0, LULegY = 0, LULegZ = 0;
-float LLLegX = 0, LLLegY = 0, LLLegZ = 0;
-float LFLegX = 0, LFLegY = 0, LFLegZ = 0;
-float RULegX = 0, RULegY = 0, RULegZ = 0;
-float RLLegX = 0, RLLegY = 0, RLLegZ = 0;
-float RFLegX = 0, RFLegY = 0, RFLegZ = 0;
-
-//Key 4: Rotation
-Phase head4Phases[] = {
-    {0, 10, 0, 0},
-    {0.5, 10, 0, 0},
-    {1, -15, 40, 25},
-    {1, -20, 40, 35},
-    {0.25, -45, -15, 0},
-    {0.5, 5, -5, 0},
-    {1, -5, -5, 0},
-};
-Phase LUArm4Phases[] = {
-    {0, -45, -5, -25},
-    {0.5, -45, -5, -25},
-    {1, -45, -75, -50},
-    {1, -45, -75, -50},
-    {0.25, -35, -50, -80},
-    {0.5, 160, -65, -115},
-    {1, 160, -65, -115},
-};
-Phase LLArm4Phases[] = {
-    {0, -85, -25, 25},
-    {0.5, -85, -25, 25},
-    {1, 30, -90, 35},
-    {1, 30, -90, 35},
-    {0.25, 40, -95, 15},
-    {0.5, 25, -225, 35},
-    {1, 25, -225, 35},
-};
-Phase LPArm4Phases[] = {
-    {0, -55, 25, 5},
-    {0.5, -55, 25, 5},
-    {1, 65, 5, -10},
-    {1, 65, 5, -10},
-    {0.25, 50, -25, -10},
-    {0.5, 0, -45, -10},
-    {1, 10, -45, -10},
-};
-Phase RUArm4Phases[] = {
-    {0, -90, 0, 40},
-    {0.5, -90, 0, 40},
-    {1, -50, 35, 20},
-    {1, -50, 35, 20},
-    {0.25, -30, -20, -25},
-    {0.5, -65, -20, 10},
-    {1, -65, -20, 10},
-};
-Phase RLArm4Phases[] = {
-    {0, -20, 40, 5},
-    {0.5, -20, 40, 5},
-    {1, -10, 20, 55},
-    {1, -10, 20, 55},
-    {0.25, 5, 60, 0},
-    {0.5, 10, 60, 5},
-    {1, 10, 60, 5},
-};
-Phase RPArm4Phases[] = {
-    {0, -35, 10, 0},
-    {0.5, -35, 10, 0},
-    {1, 30, -5, 30},
-    {1, 30, -5, 30},
-    {0.25, 5, -25, 30},
-    {0.5, -15, -25, 30},
-    {1, 0, -25, 55},
-};
-Phase body4Phases[] = {
-    {0, -5, 0, 0},
-    {0.5, -5, 0, 0},
-    {1, 25, -105, -5},
-    {1, 30, -100, -5},
-    {0.25, 65, -20, 0},
-    {0.5, 65, -10, 0},
-    {1, 65, -10, 0},
-};
-Phase LULeg4Phases[] = {
-    {0, -5, 0, -5},
-    {0.5, -5, 0, -5},
-    {1, -35, -10, -25},
-    {1, -40, -10, -25},
-    {0.25, -25, -15, -20},
-    {0.5, -60, -15, -20},
-    {1, -55, -15, -20},
-};
-Phase LLLeg4Phases[] = {
-    {0, 10, 0, 0},
-    {0.5, 10, 0, 0},
-    {1, 50, 5, 5},
-    {1, 55, 5, 5},
-    {0.25, 115, 5, 5},
-    {0.5, 120, 5, -30},
-    {1, 120, 5, -30},
-};
-Phase LFLeg4Phases[] = {
-    {0, -5, 0, 0},
-    {0.5, -5, 0, 0},
-    {1, -10, -15, 0},
-    {1, -10, -15, 0},
-    {0.25, -10, -15, 0},
-    {0.5, -60, -15, 0},
-    {1, -65, -15, 0},
-};
-Phase RULeg4Phases[] = {
-    {0, -5, 0, -5},
-    {0.5, -5, 0, -5},
-    {1, 15, 15, -15},
-    {1, 20, 15, -15},
-    {0.25, 5, 15, -5},
-    {0.5, 55, -10, -10},
-    {1, 60, -10, -10},
-};
-Phase RLLeg4Phases[] = {
-    {0, 10, 0, 0},
-    {0.5, 10, 0, 0},
-    {1, 35, 5, -15},
-    {1, 40, 5, -15},
-    {0.25, 40, 5, -15},
-    {0.5, 5, 5, -15},
-    {1, 0, 5, -15},
-};
-Phase RFLeg4Phases[] = {
-    {0, -5, 0, 0},
-    {0.5, -5, 0, 0},
-    {1, -25, 5, 10},
-    {1, -25, 5, 10},
-    {0.25, -25, 5, 10},
-    {0.5, -5, 5, 10},
-    {1, -15, 5, 10},
-};
-BodyPart head4(head4Phases, sizeof(head4Phases) / sizeof(head4Phases[0]));
-BodyPart LUArm4(LUArm4Phases, sizeof(LUArm4Phases) / sizeof(LUArm4Phases[0]));
-BodyPart LLArm4(LLArm4Phases, sizeof(LLArm4Phases) / sizeof(LLArm4Phases[0]));
-BodyPart LPArm4(LPArm4Phases, sizeof(LPArm4Phases) / sizeof(LPArm4Phases[0]));
-BodyPart RUArm4(RUArm4Phases, sizeof(RUArm4Phases) / sizeof(RUArm4Phases[0]));
-BodyPart RLArm4(RLArm4Phases, sizeof(RLArm4Phases) / sizeof(RLArm4Phases[0]));
-BodyPart RPArm4(RPArm4Phases, sizeof(RPArm4Phases) / sizeof(RPArm4Phases[0]));
-BodyPart body4(body4Phases, sizeof(body4Phases) / sizeof(body4Phases[0]));
-BodyPart LULeg4(LULeg4Phases, sizeof(LULeg4Phases) / sizeof(LULeg4Phases[0]));
-BodyPart LLLeg4(LLLeg4Phases, sizeof(LLLeg4Phases) / sizeof(LLLeg4Phases[0]));
-BodyPart LFLeg4(LFLeg4Phases, sizeof(LFLeg4Phases) / sizeof(LFLeg4Phases[0]));
-BodyPart RULeg4(RULeg4Phases, sizeof(RULeg4Phases) / sizeof(RULeg4Phases[0]));
-BodyPart RLLeg4(RLLeg4Phases, sizeof(RLLeg4Phases) / sizeof(RLLeg4Phases[0]));
-BodyPart RFLeg4(RFLeg4Phases, sizeof(RFLeg4Phases) / sizeof(RFLeg4Phases[0]));
-
-
-void printRotations() {
-    std::ostringstream oss;
-
-    oss << "Head: (" << headX << ", " << headY << ", " << headZ << ")\n";
-    oss << "Left Upper Arm: (" << LUArmX << ", " << LUArmY << ", " << LUArmZ << ")\n";
-    oss << "Left Lower Arm: (" << LLArmX << ", " << LLArmY << ", " << LLArmZ << ")\n";
-    oss << "Left Palm: (" << LPArmX << ", " << LPArmY << ", " << LPArmZ << ")\n";
-    oss << "Right Upper Arm: (" << RUArmX << ", " << RUArmY << ", " << RUArmZ << ")\n";
-    oss << "Right Lower Arm: (" << RLArmX << ", " << RLArmY << ", " << RLArmZ << ")\n";
-    oss << "Right Palm: (" << RPArmX << ", " << RPArmY << ", " << RPArmZ << ")\n";
-    oss << "Body: (" << bodyX << ", " << bodyY << ", " << bodyZ << ")\n";
-    oss << "Left Upper Leg: (" << LULegX << ", " << LULegY << ", " << LULegZ << ")\n";
-    oss << "Left Lower Leg: (" << LLLegX << ", " << LLLegY << ", " << LLLegZ << ")\n";
-    oss << "Left Foot: (" << LFLegX << ", " << LFLegY << ", " << LFLegZ << ")\n";
-    oss << "Right Upper Leg: (" << RULegX << ", " << RULegY << ", " << RULegZ << ")\n";
-    oss << "Right Lower Leg: (" << RLLegX << ", " << RLLegY << ", " << RLLegZ << ")\n";
-    oss << "Right Foot: (" << RFLegX << ", " << RFLegY << ", " << RFLegZ << ")\n";
-
-    std::string message = oss.str();
-    MessageBox(NULL, message.c_str(), "Body Coordinates", MB_OK);
-}
-
-int qNo = 2;
-bool opposite = false; //toggle clockwise & counter clockwise rotations
-bool toggleRight = false; //toggle left and right limbs
-float RotationSpeed = 10; //set degree for each key press
-
-//Key 2: Rotation
-float speed2 = 1;
+float length2 = 1;
 float headX = 0, headY = 0, headZ = 0;
 float LUArmX = 0, LUArmY = 0, LUArmZ = 0;
 float LLArmX = 0, LLArmY = 0, LLArmZ = 0;
@@ -670,7 +484,7 @@ void resetCamera() {
     toggleRight = false;
     
     // Reset mode to default
-    qNo = 2;
+    qNo = 1;
 }
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -809,6 +623,14 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             }
             break;
 
+        case VK_UP:
+            if (qNo == 2 && length2 > 0.5)
+                length2 -= 0.1;
+            break;
+        case VK_DOWN:
+            if (qNo == 2 && length2 < 1.4)
+                length2 += 0.1;
+            break;
         if (qNo == 2) {
             //Head
         case 'Q':
@@ -3833,8 +3655,17 @@ void key2() {
         }
 
         body();
-        //innerCloth();
-        //outerCloth();
+
+        glPushMatrix();
+        glTranslatef(0, 0.19, 0);
+        glScalef(1, length2, 1);
+        glTranslatef(0, -0.19, 0);
+        innerCloth();
+        outerCloth();
+        glPopMatrix();
+
+
+
 
         glPopMatrix();
 
