@@ -52,7 +52,7 @@ struct BodyPart {
     }
 };
 
-// Camera System Variables
+
 // Camera System
 struct Camera {
     float posX = 0.0f, posY = 0.0f, posZ = 3.0f;  // Camera position (closer to character)
@@ -74,12 +74,12 @@ struct Camera {
     // Movement and rotation
     float moveSpeed = 0.5f;
     float rotationSpeed = 2.0f;
-    float zoomSpeed = 0.1f;
+    float zoomSpeed = 0.5f;
 
     // Zoom limits
     float minZoom = 0.5f;
     float maxZoom = 50.0f;
-    float currentZoom = 2.0f;  // Smaller zoom = bigger character
+    float currentZoom = 1.0f;  // Normal size by default
 
     // Mouse controls
     bool mouseDown = false;
@@ -680,10 +680,9 @@ float swordHeight = 0.3f;
 float weaponSize = 1.0f;
 bool swordDefenseActive = true;
 
-float key5Time = 0.0f;
-float key5AnimationSpeed = 0.9f;
 int swordState = 0;  // 0=default, 1=both hands holding sword, 2=sword rotation only
 int rotatingSwordCount = 2;
+float swordRotationAngle = 0.0f;  // Current rotation angle for animated swords
 
 // Camera System Functions
 void setupProjection() {
@@ -691,8 +690,11 @@ void setupProjection() {
     glLoadIdentity();
 
     if (camera.isPerspective) {
-        // Perspective projection using gluPerspective
-        gluPerspective(camera.fov, 1.0f, camera.nearPlane, camera.farPlane);
+        // Perspective projection using gluPerspective with zoom
+        float zoomedFov = camera.fov / camera.currentZoom;
+        if (zoomedFov < 1.0f) zoomedFov = 1.0f;  // Prevent too small FOV
+        if (zoomedFov > 179.0f) zoomedFov = 179.0f;  // Prevent too large FOV
+        gluPerspective(zoomedFov, 1.0f, camera.nearPlane, camera.farPlane);
     }
     else {
         // Orthographic projection using glOrtho
@@ -787,11 +789,11 @@ void resetCamera() {
     // Reset camera
     camera.posX = 0.0f;
     camera.posY = 0.0f;
-    camera.posZ = 3.0f;  // Closer to character
+    camera.posZ = 3.0f;  // Normal distance from character
     camera.targetX = 0.0f;
     camera.targetY = 0.0f;
     camera.targetZ = 0.0f;
-    camera.currentZoom = 2.0f;  // Bigger character by default
+    camera.currentZoom = 1.0f;
     camera.isPerspective = true;
     cameraYaw = 0.0f;
     cameraPitch = 0.0f;
@@ -1310,7 +1312,12 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
                 int deltaY = mouseY - camera.lastMouseY;
 
                 // Rotate camera based on mouse movement
-                rotateCamera(deltaX * 0.5f, deltaY * 0.5f);
+                cameraYaw += deltaX * 0.2f;
+                cameraPitch += deltaY * 0.2f;
+
+                // Limit pitch to avoid gimbal lock
+                if (cameraPitch > 89.0f) cameraPitch = 89.0f;
+                if (cameraPitch < -89.0f) cameraPitch = -89.0f;
 
                 camera.lastMouseX = mouseX;
                 camera.lastMouseY = mouseY;
@@ -1321,20 +1328,26 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             camera.mouseDown = true;
             camera.lastMouseX = LOWORD(lParam);
             camera.lastMouseY = HIWORD(lParam);
+            SetCapture(hWnd);  // Capture mouse to track movement outside window
             break;
 
         case WM_LBUTTONUP:
             camera.mouseDown = false;
+            ReleaseCapture();  // Release mouse capture
+            break;
+
+        case WM_CAPTURECHANGED:
+            camera.mouseDown = false;  // Stop mouse tracking if capture is lost
             break;
 
 
         case WM_MOUSEWHEEL:
-            {
-                int wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
-                float zoomDelta = wheelDelta > 0 ? -1.0f : 1.0f;
-                zoomCamera(zoomDelta);
-            }
-            break;
+        {
+            int wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+            float zoomDelta = wheelDelta > 0 ? -0.5f : 0.5f;  // Increased sensitivity
+            zoomCamera(zoomDelta);
+        }
+        break;
 
         case VK_F1:
             bodyTexIndex = (bodyTexIndex + 1) % NUM_BODY_TEX;
@@ -2067,7 +2080,7 @@ void body() {
 void belt() {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, leatherTex);
-    glColor3f(0.6f, 0.6f, 0.6f); 
+    glColor3f(0.6f, 0.6f, 0.6f);
 
     float texScale = 1.0f;
 
@@ -3987,10 +4000,15 @@ void outerCloth() {
 }
 
 void key1() {
+
+
     // Enable depth testing and clear buffers
     glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
+    setupProjection();
+    setupView();
 
     // Camera rotation
     glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
@@ -4068,8 +4086,10 @@ void key2() {
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-
     glLoadIdentity();
+
+    setupProjection();
+    setupView();
     glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
     glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -4281,7 +4301,12 @@ void key2() {
 void key3() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
     glLoadIdentity();
+
+    setupProjection();
+    setupView();
 
     glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
     glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
@@ -4289,6 +4314,9 @@ void key3() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glColor3f(1, 1, 1);
+
+    setupProjection();
+    setupView();
 
     init();
 
@@ -4446,14 +4474,21 @@ void key3() {
 }
 
 void key4() {
+
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
+    setupProjection();
+    setupView();
 
     glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
     glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glColor3f(1, 1, 1);
+
+
 
     // Upper body
     {
@@ -4620,57 +4655,14 @@ void key4() {
 }
 
 void key5() {
-    // Update animation time
-    static auto lastTime = std::chrono::high_resolution_clock::now();
-    static int lastQNo = -1;
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = currentTime - lastTime;
-    lastTime = currentTime;
 
-    // Reset all Key 5 body parts when switching to Key 5
-    if (lastQNo != 5) {
-        head5.currentPhase = 0;
-        LUArm5.currentPhase = 0;
-        LLArm5.currentPhase = 0;
-        LPArm5.currentPhase = 0;
-        RUArm5.currentPhase = 0;
-        RLArm5.currentPhase = 0;
-        RPArm5.currentPhase = 0;
-        body5.currentPhase = 0;
-        LULeg5.currentPhase = 0;
-        LLLeg5.currentPhase = 0;
-        LFLeg5.currentPhase = 0;
-        RULeg5.currentPhase = 0;
-        RLLeg5.currentPhase = 0;
-        RFLeg5.currentPhase = 0;
-
-        startPhase(head5);
-        startPhase(LUArm5);
-        startPhase(LLArm5);
-        startPhase(LPArm5);
-        startPhase(RUArm5);
-        startPhase(RLArm5);
-        startPhase(RPArm5);
-        startPhase(body5);
-        startPhase(LULeg5);
-        startPhase(LLLeg5);
-        startPhase(LFLeg5);
-        startPhase(RULeg5);
-        startPhase(RLLeg5);
-        startPhase(RFLeg5);
-
-        swordState = 0;
-        rotatingSwordCount = 2;
-
-        key5Time = 0.0f;
-        lastQNo = 5;
-    }
-
-    key5Time += elapsed.count();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
     setupProjection();
     setupView();
+    glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
+    glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glColor3f(1, 1, 1);
 
@@ -4867,11 +4859,16 @@ void key5() {
     // sword rotation (defense state)
     if (swordState == 2) {
         glColor3f(1.0f, 0.0f, 0.0f); // Red swords
+
+        // Update rotation angle for animation
+        swordRotationAngle += swordRotationSpeed * 0.016f; // Assuming ~60fps
+        if (swordRotationAngle >= 360.0f) {
+            swordRotationAngle -= 360.0f;
+        }
+
         for (int i = 0; i < rotatingSwordCount; i++) {
             glPushMatrix();
-            float angle = (360.0f / rotatingSwordCount) * i;
-            float rotationAngle = key5Time * swordDefenseSpeed;
-            angle += rotationAngle;
+            float angle = (360.0f / rotatingSwordCount) * i + swordRotationAngle;
 
             float x = cos(angle * PI / 180.0f) * swordRadius;
             float z = sin(angle * PI / 180.0f) * swordRadius;
@@ -4889,8 +4886,13 @@ void key5() {
 }
 
 void key6() {
+
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
+    setupProjection();
+    setupView();
 
     glRotatef(cameraPitch, 1.0f, 0.0f, 0.0f);
     glRotatef(cameraYaw, 0.0f, 1.0f, 0.0f);
@@ -5134,6 +5136,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
         }
 
         SwapBuffers(hdc);
+        Sleep(16); // ~60fps for smoother animation
     }
 
     UnregisterClass(WINDOW_TITLE, wc.hInstance);
