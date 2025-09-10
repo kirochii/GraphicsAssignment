@@ -861,18 +861,42 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             //Camera keys
         case 'W':
             cameraPitch -= rotationSpeed;
+            rotateCamera(0, -rotationSpeed);
             break;
         case 'S':
             cameraPitch += rotationSpeed;
+            rotateCamera(0, rotationSpeed);
             break;
         case 'A':
             cameraYaw -= rotationSpeed;
+            rotateCamera(rotationSpeed, 0);
             break;
         case 'D':
             cameraYaw += rotationSpeed;
+            rotateCamera(-rotationSpeed, 0);
             break;
         case VK_OEM_3:  // ` key - Toggle projection
             camera.isPerspective = !camera.isPerspective;
+            break;
+
+            // Camera Movement
+        case VK_UP:
+            moveCamera(0, camera.moveSpeed, 0);
+            break;
+        case VK_DOWN:
+            moveCamera(0, -camera.moveSpeed, 0);
+            break;
+        case VK_LEFT:
+            moveCamera(-camera.moveSpeed, 0, 0);
+            break;
+        case VK_RIGHT:
+            moveCamera(camera.moveSpeed, 0, 0);
+            break;
+        case VK_PRIOR:  // Page Up
+            moveCamera(0, 0, camera.moveSpeed);
+            break;
+        case VK_NEXT:   // Page Down
+            moveCamera(0, 0, -camera.moveSpeed);
             break;
 
             //Question controls
@@ -1305,11 +1329,11 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 
         case WM_MOUSEWHEEL:
-        {
-            int wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
-            float zoomDelta = wheelDelta > 0 ? -1.0f : 1.0f;
-            zoomCamera(zoomDelta);
-        }
+            {
+                int wheelDelta = GET_WHEEL_DELTA_WPARAM(wParam);
+                float zoomDelta = wheelDelta > 0 ? -1.0f : 1.0f;
+                zoomCamera(zoomDelta);
+            }
             break;
 
         case VK_F1:
@@ -4297,7 +4321,7 @@ void key3() {
         {
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            //applyAnimation(LUArm3);
+            applyAnimation(LUArm3);
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
 
@@ -4309,13 +4333,19 @@ void key3() {
 
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            //applyAnimation(LFLeg3);
+            applyAnimation(LPArm3);
             glTranslatef(0.20, -0.07, 0.02);
             glDisable(GL_TEXTURE_2D);
             palm();
             glEnable(GL_TEXTURE_2D);
-            glPopMatrix();
 
+            glPushMatrix();
+            glTranslatef(-0.2, 0.02, 0.6);
+            glRotatef(-90, 0, 1, 0);
+            glRotatef(90, 0, 0, 1);
+            sword();
+            glPopMatrix();
+            glPopMatrix();
             glPopMatrix();
             glPopMatrix();
         }
@@ -4326,6 +4356,7 @@ void key3() {
             glScalef(-1.0f, 1.0f, 1.0f);
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
+            glEnable(GL_TEXTURE_2D);
             applyAnimation(RUArm3);
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
