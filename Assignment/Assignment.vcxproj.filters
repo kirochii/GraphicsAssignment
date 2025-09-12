@@ -19,4 +19,42 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="blade.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="body1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="body2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="body3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="body4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="cloth1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="cloth2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="hair1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="leather.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="wrap.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="stone.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="blade1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
