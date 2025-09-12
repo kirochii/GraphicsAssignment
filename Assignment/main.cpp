@@ -559,6 +559,15 @@ Phase RFLeg4Phases[] = {
     {0.5, -5, 5, 10},
     {1, -15, 5, 10},
 };
+Phase Translate4Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, -0.11, 0},
+    {1, 0, -0.14, 0},
+    {0.25, 0, 0, 0},
+    {0.5, 0, -0.39, 0},
+    {1, 0, -0.39, 0},
+};
 BodyPart head4(head4Phases, sizeof(head4Phases) / sizeof(head4Phases[0]));
 BodyPart LUArm4(LUArm4Phases, sizeof(LUArm4Phases) / sizeof(LUArm4Phases[0]));
 BodyPart LLArm4(LLArm4Phases, sizeof(LLArm4Phases) / sizeof(LLArm4Phases[0]));
@@ -573,6 +582,7 @@ BodyPart LFLeg4(LFLeg4Phases, sizeof(LFLeg4Phases) / sizeof(LFLeg4Phases[0]));
 BodyPart RULeg4(RULeg4Phases, sizeof(RULeg4Phases) / sizeof(RULeg4Phases[0]));
 BodyPart RLLeg4(RLLeg4Phases, sizeof(RLLeg4Phases) / sizeof(RLLeg4Phases[0]));
 BodyPart RFLeg4(RFLeg4Phases, sizeof(RFLeg4Phases) / sizeof(RFLeg4Phases[0]));
+BodyPart Translate4(Translate4Phases, sizeof(Translate4Phases) / sizeof(Translate4Phases[0]));
 
 //Key 5
 float key5Time = 0.0f;
@@ -808,7 +818,6 @@ void resetCamera() {
     qNo = 1;
 }
 
-// Latest stable
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
@@ -1411,6 +1420,39 @@ void applyAnimation(BodyPart& part, float speedMultiplier = 1.0f) {
     }
 }
 
+void applyAnimationTranslation(BodyPart& part, float speedMultiplier = 1.0f) {
+    double now = getTime();
+    double elapsed = now - part.phaseStartTime;
+    double t;
+    Phase& p = part.phases[part.currentPhase];
+
+    t = (elapsed * speedMultiplier) / p.duration;
+
+    if (t > 1.0) t = 1.0;
+    float curX = part.startValX + (part.endValX - part.startValX) * (float)t;
+    float curY = part.startValY + (part.endValY - part.startValY) * (float)t;
+    float curZ = part.startValZ + (part.endValZ - part.startValZ) * (float)t;
+
+    // Apply interpolated transforms
+    glTranslatef(curX, 0, 0);
+    glTranslatef(0, curY, 0);
+    glTranslatef(0, 0, curZ);
+
+    if (t >= 1.0) {
+        part.rotX = part.endValX;
+        part.rotY = part.endValY;
+        part.rotZ = part.endValZ;
+
+        part.currentPhase++;
+
+        if (part.currentPhase >= part.numPhases) {
+            part.currentPhase = 0; // loop
+            part.rotX = part.rotY = part.rotZ = 0;
+        }
+        startPhase(part);
+    }
+}
+
 void startAnimation() {
     for (BodyPart* part : BodyPart::getAllParts()) {
         part->currentPhase = 0;
@@ -1459,6 +1501,16 @@ void lighting() {
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
 }
 */
+
+void drawFloor() {
+    glColor3f(1,0,0);
+    glBegin(GL_QUADS);
+    glVertex3f(1, -0.68, 1);
+    glVertex3f(-1, -0.68, 1);
+    glVertex3f(-1, -0.68, -1);
+    glVertex3f(1, -0.68, -1);
+    glEnd();
+}
 
 void belt() {
     GLuint textureArr[1];
@@ -4595,6 +4647,10 @@ void key3() {
 }
 
 void key4() {
+
+    glPushMatrix();
+    applyAnimationTranslation(Translate4, speed2);
+
     //upper body
     {
         glPushMatrix();
@@ -4754,6 +4810,9 @@ void key4() {
 
 
     }
+
+    glPopMatrix();
+
 }
 
 void key5() {
@@ -5035,6 +5094,8 @@ void display()
     // Setup camera projection and view
     setupProjection();
     setupView();
+
+    drawFloor();
 
     if (!wireframeOn) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
