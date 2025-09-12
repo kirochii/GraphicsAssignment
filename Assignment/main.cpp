@@ -5,9 +5,13 @@
 #include <math.h>
 #include <chrono>
 #include <vector>
+#include <mmsystem.h>
+#include <iostream>
+#include <thread>
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment(lib, "glu32.lib")
+#pragma comment(lib, "winmm.lib")
 
 #define WINDOW_TITLE "Graphics Assignment"
 #define PI 3.14159265359
@@ -670,7 +674,6 @@ BodyPart RLLeg5(RLLeg5Phases, sizeof(RLLeg5Phases) / sizeof(RLLeg5Phases[0]));
 BodyPart RFLeg5(RFLeg5Phases, sizeof(RFLeg5Phases) / sizeof(RFLeg5Phases[0]));
 
 // Camera System Functions
-// Latest stable
 void setupProjection() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -690,12 +693,14 @@ void setupProjection() {
 
     glMatrixMode(GL_MODELVIEW);
 }
+
 void setupView() {
     glLoadIdentity();
     gluLookAt(camera.posX, camera.posY, camera.posZ,
         camera.targetX, camera.targetY, camera.targetZ,
         camera.upX, camera.upY, camera.upZ);
 }
+
 void updateCamera() {
     // Update camera position based on current zoom
     float distance = sqrt((camera.posX - camera.targetX) * (camera.posX - camera.targetX) +
@@ -709,6 +714,7 @@ void updateCamera() {
         camera.posZ = camera.targetZ + (camera.posZ - camera.targetZ) * ratio;
     }
 }
+
 void rotateCamera(float deltaYaw, float deltaPitch) {
     // Convert to radians
     float yawRad = deltaYaw * PI / 180.0f;
@@ -740,6 +746,7 @@ void rotateCamera(float deltaYaw, float deltaPitch) {
     camera.posY = camera.targetY + dirY;
     camera.posZ = camera.targetZ + dirZ;
 }
+
 void moveCamera(float deltaX, float deltaY, float deltaZ) {
     camera.posX += deltaX * camera.moveSpeed;
     camera.posY += deltaY * camera.moveSpeed;
@@ -749,6 +756,7 @@ void moveCamera(float deltaX, float deltaY, float deltaZ) {
     camera.targetY += deltaY * camera.moveSpeed;
     camera.targetZ += deltaZ * camera.moveSpeed;
 }
+
 void zoomCamera(float delta) {
     camera.currentZoom += delta * camera.zoomSpeed;
 
@@ -762,6 +770,7 @@ void zoomCamera(float delta) {
 
     updateCamera();
 }
+
 void resetCamera() {
     // Reset camera
     camera.posX = 0.0f;
@@ -856,9 +865,6 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             wireframeOn = !wireframeOn;
             break;
 
-
-
-
             //Question controls
         case '1':
             qNo = 1;
@@ -934,7 +940,8 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             if (qNo == 2)
                 toggleRight = !toggleRight;
             if (qNo == 4)
-                speed2 += 0.5;
+                if (speed2 < 2.5)
+                    speed2 += 0.5;
             break;
         case VK_UP:
             if (qNo == 2 && length2 > 0.5)
@@ -1367,7 +1374,6 @@ void startPhase(BodyPart& part) {
     part.phaseStartTime = getTime();
 }
 
-//need to adjust key 4 speed up down
 void applyAnimation(BodyPart& part, float speedMultiplier = 1.0f) {
     double now = getTime();
     double elapsed = now - part.phaseStartTime;
@@ -1392,6 +1398,11 @@ void applyAnimation(BodyPart& part, float speedMultiplier = 1.0f) {
         part.rotZ = part.endValZ;
 
         part.currentPhase++;
+
+        if (part.currentPhase == 6 && qNo == 4) {
+            PlaySound(TEXT("smash.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        }
+
         if (part.currentPhase >= part.numPhases) {
             part.currentPhase = 0; // loop
             part.rotX = part.rotY = part.rotZ = 0;
@@ -4588,14 +4599,14 @@ void key4() {
     {
         glPushMatrix();
         glTranslatef(0, 0.24, 0);
-        applyAnimation(body4);
+        applyAnimation(body4, speed2);
         glTranslatef(0, -0.24, 0);
 
         //Head
         {
             glPushMatrix();
             glTranslatef(0, 0.6, -0.015);
-            applyAnimation(head4);
+            applyAnimation(head4, speed2);
             glTranslatef(0, -0.6, 0.015);
 
             hair();
@@ -4612,21 +4623,21 @@ void key4() {
         {
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            applyAnimation(LUArm4);
+            applyAnimation(LUArm4, speed2);
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
 
             //Lower Arm
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
-            applyAnimation(LLArm4);
+            applyAnimation(LLArm4, speed2);
             glTranslatef(0.16, -0.36, 0.05);
             lowerArm();
 
             //Palm
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            applyAnimation(LPArm4);
+            applyAnimation(LPArm4, speed2);
             glTranslatef(0.20, -0.07, 0.02);
 
             glPushMatrix();
@@ -4647,21 +4658,21 @@ void key4() {
             glScalef(-1.0f, 1.0f, 1.0f);
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            applyAnimation(RUArm4);
+            applyAnimation(RUArm4, speed2);
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
 
             //Lower Arm
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
-            applyAnimation(RLArm4);
+            applyAnimation(RLArm4, speed2);
             glTranslatef(0.16, -0.36, 0.05);
             lowerArm();
 
             //Palm
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            applyAnimation(RPArm4);
+            applyAnimation(RPArm4, speed2);
             glTranslatef(0.20, -0.07, 0.02);
             palm();
 
@@ -4686,21 +4697,21 @@ void key4() {
         {
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
-            applyAnimation(LULeg4);
+            applyAnimation(LULeg4, speed2);
             glTranslatef(0.05, -0.19, 0);
             thigh();
 
             //Lower leg
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
-            applyAnimation(LLLeg4);
+            applyAnimation(LLLeg4, speed2);
             glTranslatef(0.07, 0.32, 0);
             calf();
 
             //Feet
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
-            applyAnimation(LFLeg4);
+            applyAnimation(LFLeg4, speed2);
             glTranslatef(0.05, 0.62, 0);
             feet();
 
@@ -4717,21 +4728,21 @@ void key4() {
             //Upper leg
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
-            applyAnimation(RULeg4);
+            applyAnimation(RULeg4, speed2);
             glTranslatef(0.05, -0.19, 0);
             thigh();
 
             //Lower leg
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
-            applyAnimation(RLLeg4);
+            applyAnimation(RLLeg4, speed2);
             glTranslatef(0.07, 0.32, 0);
             calf();
 
             //Feet
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
-            applyAnimation(RFLeg4);
+            applyAnimation(RFLeg4, speed2);
             glTranslatef(0.05, 0.62, 0);
             feet();
 

@@ -143,6 +143,9 @@
     <Image Include="stone.bmp" />
     <Image Include="wrap.bmp" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="smash.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
