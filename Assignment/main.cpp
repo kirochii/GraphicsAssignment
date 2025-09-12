@@ -5,9 +5,13 @@
 #include <math.h>
 #include <chrono>
 #include <vector>
+#include <mmsystem.h>
+#include <iostream>
+#include <thread>
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment(lib, "glu32.lib")
+#pragma comment(lib, "winmm.lib")
 
 #define WINDOW_TITLE "Graphics Assignment"
 #define PI 3.14159265359
@@ -555,6 +559,15 @@ Phase RFLeg4Phases[] = {
     {0.5, -5, 5, 10},
     {1, -15, 5, 10},
 };
+Phase Translate4Phases[] = {
+    {0, 0, 0, 0},
+    {0.5, 0, 0, 0},
+    {1, 0, -0.11, 0},
+    {1, 0, -0.14, 0},
+    {0.25, 0, 0, 0},
+    {0.5, 0, -0.39, 0},
+    {1, 0, -0.39, 0},
+};
 BodyPart head4(head4Phases, sizeof(head4Phases) / sizeof(head4Phases[0]));
 BodyPart LUArm4(LUArm4Phases, sizeof(LUArm4Phases) / sizeof(LUArm4Phases[0]));
 BodyPart LLArm4(LLArm4Phases, sizeof(LLArm4Phases) / sizeof(LLArm4Phases[0]));
@@ -569,6 +582,7 @@ BodyPart LFLeg4(LFLeg4Phases, sizeof(LFLeg4Phases) / sizeof(LFLeg4Phases[0]));
 BodyPart RULeg4(RULeg4Phases, sizeof(RULeg4Phases) / sizeof(RULeg4Phases[0]));
 BodyPart RLLeg4(RLLeg4Phases, sizeof(RLLeg4Phases) / sizeof(RLLeg4Phases[0]));
 BodyPart RFLeg4(RFLeg4Phases, sizeof(RFLeg4Phases) / sizeof(RFLeg4Phases[0]));
+BodyPart Translate4(Translate4Phases, sizeof(Translate4Phases) / sizeof(Translate4Phases[0]));
 
 //Key 5
 float key5Time = 0.0f;
@@ -670,7 +684,6 @@ BodyPart RLLeg5(RLLeg5Phases, sizeof(RLLeg5Phases) / sizeof(RLLeg5Phases[0]));
 BodyPart RFLeg5(RFLeg5Phases, sizeof(RFLeg5Phases) / sizeof(RFLeg5Phases[0]));
 
 // Camera System Functions
-// Latest stable
 void setupProjection() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -690,12 +703,14 @@ void setupProjection() {
 
     glMatrixMode(GL_MODELVIEW);
 }
+
 void setupView() {
     glLoadIdentity();
     gluLookAt(camera.posX, camera.posY, camera.posZ,
         camera.targetX, camera.targetY, camera.targetZ,
         camera.upX, camera.upY, camera.upZ);
 }
+
 void updateCamera() {
     // Update camera position based on current zoom
     float distance = sqrt((camera.posX - camera.targetX) * (camera.posX - camera.targetX) +
@@ -709,6 +724,7 @@ void updateCamera() {
         camera.posZ = camera.targetZ + (camera.posZ - camera.targetZ) * ratio;
     }
 }
+
 void rotateCamera(float deltaYaw, float deltaPitch) {
     // Convert to radians
     float yawRad = deltaYaw * PI / 180.0f;
@@ -740,6 +756,7 @@ void rotateCamera(float deltaYaw, float deltaPitch) {
     camera.posY = camera.targetY + dirY;
     camera.posZ = camera.targetZ + dirZ;
 }
+
 void moveCamera(float deltaX, float deltaY, float deltaZ) {
     camera.posX += deltaX * camera.moveSpeed;
     camera.posY += deltaY * camera.moveSpeed;
@@ -749,6 +766,7 @@ void moveCamera(float deltaX, float deltaY, float deltaZ) {
     camera.targetY += deltaY * camera.moveSpeed;
     camera.targetZ += deltaZ * camera.moveSpeed;
 }
+
 void zoomCamera(float delta) {
     camera.currentZoom += delta * camera.zoomSpeed;
 
@@ -762,6 +780,7 @@ void zoomCamera(float delta) {
 
     updateCamera();
 }
+
 void resetCamera() {
     // Reset camera
     camera.posX = 0.0f;
@@ -799,7 +818,6 @@ void resetCamera() {
     qNo = 1;
 }
 
-// Latest stable
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
@@ -855,9 +873,6 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         case VK_F4:
             wireframeOn = !wireframeOn;
             break;
-
-
-
 
             //Question controls
         case '1':
@@ -934,7 +949,8 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             if (qNo == 2)
                 toggleRight = !toggleRight;
             if (qNo == 4)
-                speed2 += 0.5;
+                if (speed2 < 2.5)
+                    speed2 += 0.5;
             break;
         case VK_UP:
             if (qNo == 2 && length2 > 0.5)
@@ -1367,7 +1383,6 @@ void startPhase(BodyPart& part) {
     part.phaseStartTime = getTime();
 }
 
-//need to adjust key 4 speed up down
 void applyAnimation(BodyPart& part, float speedMultiplier = 1.0f) {
     double now = getTime();
     double elapsed = now - part.phaseStartTime;
@@ -1392,6 +1407,44 @@ void applyAnimation(BodyPart& part, float speedMultiplier = 1.0f) {
         part.rotZ = part.endValZ;
 
         part.currentPhase++;
+
+        if (part.currentPhase == 6 && qNo == 4) {
+            PlaySound(TEXT("smash.wav"), NULL, SND_FILENAME | SND_ASYNC);
+        }
+
+        if (part.currentPhase >= part.numPhases) {
+            part.currentPhase = 0; // loop
+            part.rotX = part.rotY = part.rotZ = 0;
+        }
+        startPhase(part);
+    }
+}
+
+void applyAnimationTranslation(BodyPart& part, float speedMultiplier = 1.0f) {
+    double now = getTime();
+    double elapsed = now - part.phaseStartTime;
+    double t;
+    Phase& p = part.phases[part.currentPhase];
+
+    t = (elapsed * speedMultiplier) / p.duration;
+
+    if (t > 1.0) t = 1.0;
+    float curX = part.startValX + (part.endValX - part.startValX) * (float)t;
+    float curY = part.startValY + (part.endValY - part.startValY) * (float)t;
+    float curZ = part.startValZ + (part.endValZ - part.startValZ) * (float)t;
+
+    // Apply interpolated transforms
+    glTranslatef(curX, 0, 0);
+    glTranslatef(0, curY, 0);
+    glTranslatef(0, 0, curZ);
+
+    if (t >= 1.0) {
+        part.rotX = part.endValX;
+        part.rotY = part.endValY;
+        part.rotZ = part.endValZ;
+
+        part.currentPhase++;
+
         if (part.currentPhase >= part.numPhases) {
             part.currentPhase = 0; // loop
             part.rotX = part.rotY = part.rotZ = 0;
@@ -1448,6 +1501,16 @@ void lighting() {
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
 }
 */
+
+void drawFloor() {
+    glColor3f(1,0,0);
+    glBegin(GL_QUADS);
+    glVertex3f(1, -0.68, 1);
+    glVertex3f(-1, -0.68, 1);
+    glVertex3f(-1, -0.68, -1);
+    glVertex3f(1, -0.68, -1);
+    glEnd();
+}
 
 void belt() {
     GLuint textureArr[1];
@@ -4584,18 +4647,22 @@ void key3() {
 }
 
 void key4() {
+
+    glPushMatrix();
+    applyAnimationTranslation(Translate4, speed2);
+
     //upper body
     {
         glPushMatrix();
         glTranslatef(0, 0.24, 0);
-        applyAnimation(body4);
+        applyAnimation(body4, speed2);
         glTranslatef(0, -0.24, 0);
 
         //Head
         {
             glPushMatrix();
             glTranslatef(0, 0.6, -0.015);
-            applyAnimation(head4);
+            applyAnimation(head4, speed2);
             glTranslatef(0, -0.6, 0.015);
 
             hair();
@@ -4612,21 +4679,21 @@ void key4() {
         {
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            applyAnimation(LUArm4);
+            applyAnimation(LUArm4, speed2);
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
 
             //Lower Arm
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
-            applyAnimation(LLArm4);
+            applyAnimation(LLArm4, speed2);
             glTranslatef(0.16, -0.36, 0.05);
             lowerArm();
 
             //Palm
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            applyAnimation(LPArm4);
+            applyAnimation(LPArm4, speed2);
             glTranslatef(0.20, -0.07, 0.02);
 
             glPushMatrix();
@@ -4647,21 +4714,21 @@ void key4() {
             glScalef(-1.0f, 1.0f, 1.0f);
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            applyAnimation(RUArm4);
+            applyAnimation(RUArm4, speed2);
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
 
             //Lower Arm
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
-            applyAnimation(RLArm4);
+            applyAnimation(RLArm4, speed2);
             glTranslatef(0.16, -0.36, 0.05);
             lowerArm();
 
             //Palm
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            applyAnimation(RPArm4);
+            applyAnimation(RPArm4, speed2);
             glTranslatef(0.20, -0.07, 0.02);
             palm();
 
@@ -4686,21 +4753,21 @@ void key4() {
         {
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
-            applyAnimation(LULeg4);
+            applyAnimation(LULeg4, speed2);
             glTranslatef(0.05, -0.19, 0);
             thigh();
 
             //Lower leg
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
-            applyAnimation(LLLeg4);
+            applyAnimation(LLLeg4, speed2);
             glTranslatef(0.07, 0.32, 0);
             calf();
 
             //Feet
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
-            applyAnimation(LFLeg4);
+            applyAnimation(LFLeg4, speed2);
             glTranslatef(0.05, 0.62, 0);
             feet();
 
@@ -4717,21 +4784,21 @@ void key4() {
             //Upper leg
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
-            applyAnimation(RULeg4);
+            applyAnimation(RULeg4, speed2);
             glTranslatef(0.05, -0.19, 0);
             thigh();
 
             //Lower leg
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
-            applyAnimation(RLLeg4);
+            applyAnimation(RLLeg4, speed2);
             glTranslatef(0.07, 0.32, 0);
             calf();
 
             //Feet
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
-            applyAnimation(RFLeg4);
+            applyAnimation(RFLeg4, speed2);
             glTranslatef(0.05, 0.62, 0);
             feet();
 
@@ -4743,6 +4810,9 @@ void key4() {
 
 
     }
+
+    glPopMatrix();
+
 }
 
 void key5() {
@@ -5024,6 +5094,8 @@ void display()
     // Setup camera projection and view
     setupProjection();
     setupView();
+
+    drawFloor();
 
     if (!wireframeOn) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
