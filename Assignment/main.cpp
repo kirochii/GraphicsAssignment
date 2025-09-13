@@ -99,7 +99,6 @@ float rotationSpeed = 5.0f; // degrees per key press
 BITMAP BMP;
 HBITMAP hBMP = NULL;
 bool textureOn = true;
-
 int bodyTexIndex = 0;
 int bladeTexIndex = 0;
 
@@ -586,87 +585,86 @@ BodyPart Translate4(Translate4Phases, sizeof(Translate4Phases) / sizeof(Translat
 
 //Key 5
 float key5Time = 0.0f;
-float key5AnimationSpeed = 0.9f;
-float swordDefenseAngle = 0.0f;
 float swordDefenseSpeed = 90.0f;
-float swordRotationSpeed = 90.0f;
-int numSwords = 2;
 float swordRadius = 0.8f;
 float swordHeight = 0.3f;
 float weaponSize = 1.0f;
-bool swordDefenseActive = true;
 int swordState = 0;  // 0=default, 1=both hands holding sword, 2=sword rotation only
 int rotatingSwordCount = 2;
-float swordRotationAngle = 0.0f;  // Current rotation angle for animated swords
 Phase head5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, 0, 0, 0},
-    {1, 0, 20, 5},
+    {1, 45, 0, 0},
+    {0.25, -15, 0, 0},
+    {0.25, -15, 0, 0},
 };
 Phase LUArm5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, -25, 0, 15},
-    {1, -30, 0, -30},
+    {1, -70, 5, 10},
+    {0.25, -75, -20, -70},
+    {0.25, -75, -20, -70},
 };
 Phase LLArm5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, -15, 0, 10},
-    {1, 0, 0, -20},
+    {1, -45, -5, 90},
+    {0.25, 0, 0, 20},
+    {0.25, 0, 0, 20},
 };
 Phase LPArm5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, -20, 0, 5},
     {1, 0, 0, 0},
+    {0.25, 0, 0, 0},
+    {0.25, 0, 0, 0},
 };
 Phase RUArm5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, -20, 0, 10},
-    {1, -10, 0, -5},
+    {1, -60, 5, 20},
+    {0.25, -70, 0, -60},
+    {0.25, -70, 0, -60},
 };
 Phase RLArm5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, -15, 0, 5},
-    {1, 0, 0, 0},
+    {1, -85, 10, 55},
+    {0.25, 0, 0, 25},
+    {0.25, 0, 0, 25},
 };
 Phase RPArm5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, 0, 0, 0},
     {1, 0, 0, 0},
+    {0.25, 0, 0, 0},
+    {0.25, 0, 0, 0},
 };
 Phase body5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, 0, 0, 0},
-    {1, 10, -10, -5},
+    {1, 35, 0, 0},
+    {0.25, -5, 0, 0},
+    {0.25, -10, 0, 0},
 };
 Phase LULeg5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, -15, 0, -10},
-    {1, -40, -30, -15},
+    {1, -25, 0, -5},
+    {0.25, -5, 0, -10},
+    {0.25, -5, 0, -10},
 };
 Phase LLLeg5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, 0, 0, 0},
-    {1, 30, 0, 0},
+    {1, 55, 0, 0},
+    {0.25, 10, 0, 0},
+    {0.25, 10, 0, 0},
 };
 Phase LFLeg5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, 0, 0, 0},
     {1, 0, 0, 0},
+    {0.25, 0, 0, 0},
+    {0.25, 0, 0, 0},
 };
 Phase RULeg5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, 10, 0, -5},
-    {1, 25, 40, -25},
+    {1, -30, 0, -5},
+    {0.25, -5, 0, -10},
+    {0.25, -5, 0, -10},
 };
 Phase RLLeg5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, 0, 0, 0},
-    {1, 0, 0, 0},
+    {1, 85, 0, 0},
+    {0.25, 10, 0, 0},
+    {0.25, 10, 0, 0},
 };
 Phase RFLeg5Phases[] = {
-    {0, 0, 0, 0},
-    {0.5, 0, 0, 0},
     {1, 0, 0, 0},
+    {0.25, 0, 0, 0},
+    {0.25, 0, 0, 0},
+};
+Phase Translate5Phases[] = {
+    {1, 0, -0.1, 0},
+    {0.25, 0, 0, 0},
+    {0.25, 0, 0, 0},
 };
 BodyPart head5(head5Phases, sizeof(head5Phases) / sizeof(head5Phases[0]));
 BodyPart LUArm5(LUArm5Phases, sizeof(LUArm5Phases) / sizeof(LUArm5Phases[0]));
@@ -682,6 +680,7 @@ BodyPart LFLeg5(LFLeg5Phases, sizeof(LFLeg5Phases) / sizeof(LFLeg5Phases[0]));
 BodyPart RULeg5(RULeg5Phases, sizeof(RULeg5Phases) / sizeof(RULeg5Phases[0]));
 BodyPart RLLeg5(RLLeg5Phases, sizeof(RLLeg5Phases) / sizeof(RLLeg5Phases[0]));
 BodyPart RFLeg5(RFLeg5Phases, sizeof(RFLeg5Phases) / sizeof(RFLeg5Phases[0]));
+BodyPart Translate5(Translate5Phases, sizeof(Translate5Phases) / sizeof(Translate5Phases[0]));
 
 // Camera System Functions
 void setupProjection() {
@@ -1484,7 +1483,7 @@ GLuint loadTexture(LPCSTR filename) {
 }
 
 //Lighting
-/*
+
 void lighting() {
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -1500,7 +1499,7 @@ void lighting() {
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
 }
-*/
+
 
 void drawFloor() {
     glColor3f(1,0,0);
@@ -4816,245 +4815,205 @@ void key4() {
 }
 
 void key5() {
-    // Update animation time
-    static auto lastTime = std::chrono::high_resolution_clock::now();
-    static int lastQNo = -1;
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = currentTime - lastTime;
+    static double lastTime = getTime();
+    double currentTime = getTime();
+    double elapsed = currentTime - lastTime;
     lastTime = currentTime;
 
-    // Reset all Key 5 body parts when switching to Key 5
-    if (lastQNo != 5) {
-        head5.currentPhase = 0;
-        LUArm5.currentPhase = 0;
-        LLArm5.currentPhase = 0;
-        LPArm5.currentPhase = 0;
-        RUArm5.currentPhase = 0;
-        RLArm5.currentPhase = 0;
-        RPArm5.currentPhase = 0;
-        body5.currentPhase = 0;
-        LULeg5.currentPhase = 0;
-        LLLeg5.currentPhase = 0;
-        LFLeg5.currentPhase = 0;
-        RULeg5.currentPhase = 0;
-        RLLeg5.currentPhase = 0;
-        RFLeg5.currentPhase = 0;
+    key5Time += elapsed;
 
-        startPhase(head5);
-        startPhase(LUArm5);
-        startPhase(LLArm5);
-        startPhase(LPArm5);
-        startPhase(RUArm5);
-        startPhase(RLArm5);
-        startPhase(RPArm5);
-        startPhase(body5);
-        startPhase(LULeg5);
-        startPhase(LLLeg5);
-        startPhase(LFLeg5);
-        startPhase(RULeg5);
-        startPhase(RLLeg5);
-        startPhase(RFLeg5);
+    glPushMatrix();
+    applyAnimationTranslation(Translate5);
 
-        // Start with default sword state (only right hand holding sword)
-        swordState = 0;
-        rotatingSwordCount = 2;
+    //upper body
+    {
+        glPushMatrix();
+        glTranslatef(0, 0.24, 0);
 
-        key5Time = 0.0f;
-        lastQNo = 5;
-    }
+        applyAnimation(body5);
 
-    key5Time += elapsed.count();
+        glTranslatef(0, -0.24, 0);
 
-    if (true) {
-
-        //upper body
+        //Head
         {
             glPushMatrix();
-            glTranslatef(0, 0.24, 0);
+            glTranslatef(0, 0.6, -0.015);
+            applyAnimation(head5);
 
-            applyAnimation(body5);
+            glTranslatef(0, -0.6, 0.015);
 
-            glTranslatef(0, -0.24, 0);
+            hair();
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            hair();
+            glPopMatrix();
+            head();
+            glPopMatrix();
+            neck();
+        }
 
-            //Head
-            {
+        //Upper Arm (Right Arm)
+        {
+            glPushMatrix();
+            glTranslatef(-0.13, 0.52, -0.02);
+
+            applyAnimation(RUArm5);
+
+            glTranslatef(0.13, -0.52, 0.02);
+            upperArm();
+            glPushMatrix();
+            glTranslatef(-0.16, 0.36, -0.05);
+
+            applyAnimation(RLArm5);
+
+            glTranslatef(0.16, -0.36, 0.05);
+            lowerArm();
+
+            //Palm
+            glPushMatrix();
+            glTranslatef(-0.20, 0.07, -0.02);
+            applyAnimation(RPArm5);
+            glTranslatef(0.20, -0.07, 0.02);
+
+            if (swordState >= 0) {
                 glPushMatrix();
-                glTranslatef(0, 0.6, -0.015);
-                applyAnimation(head5);
+                glTranslatef(-0.21, 0.02, 0.02);
+                glScalef(weaponSize, weaponSize, weaponSize);
+                glTranslatef(0.21, -0.02, -0.02);
 
-                glTranslatef(0, -0.6, 0.015);
-
-                hair();
-                glPushMatrix();
-                glScalef(-1.0f, 1.0f, 1.0f);
-                hair();
-                glPopMatrix();
-                head();
-                glPopMatrix();
-                neck();
-            }
-
-            //Upper Arm (Right Arm)
-            {
-                glPushMatrix();
-                glTranslatef(-0.13, 0.52, -0.02);
-
-                applyAnimation(RUArm5);
-
-                glTranslatef(0.13, -0.52, 0.02);
-                upperArm();
-                glPushMatrix();
-                glTranslatef(-0.16, 0.36, -0.05);
-
-                applyAnimation(RLArm5);
-
-                glTranslatef(0.16, -0.36, 0.05);
-                lowerArm();
-
-                //Palm
-                glPushMatrix();
-                glTranslatef(-0.20, 0.07, -0.02);
-                applyAnimation(RPArm5);
-                glTranslatef(0.20, -0.07, 0.02);
-
-                if (swordState >= 0) {
-                    glPushMatrix();
-                    glTranslatef(-0.21, 0.02, 0.02);
-                    glScalef(weaponSize, weaponSize, weaponSize);
-                    glTranslatef(0.21, -0.02, -0.02);
-
-                    glTranslatef(-0.2, 0.02, 0.6);
-                    glRotatef(-90, 0, 1, 0);
-                    glRotatef(90, 0, 0, 1);
-                    sword();
-                    glPopMatrix();
-                }
-
-
-                palm();
-                glPopMatrix();
-                glPopMatrix();
+                glTranslatef(-0.2, 0.02, 0.6);
+                glRotatef(-90, 0, 1, 0);
+                glRotatef(90, 0, 0, 1);
+                sword();
                 glPopMatrix();
             }
 
-            //Upper Arm (Left Arm)
-            {
-                glPushMatrix();
-                glScalef(-1.0f, 1.0f, 1.0f);
-                glPushMatrix();
-                glTranslatef(-0.13, 0.52, -0.02);
 
-                applyAnimation(LUArm5);
-
-                glTranslatef(0.13, -0.52, 0.02);
-                upperArm();
-
-                //Lower Arm
-                glPushMatrix();
-                glTranslatef(-0.16, 0.36, -0.05);
-                applyAnimation(LLArm5);
-
-                glTranslatef(0.16, -0.36, 0.05);
-                lowerArm();
-
-                //Palm
-                glPushMatrix();
-                glTranslatef(-0.20, 0.07, -0.02);
-                applyAnimation(LPArm5);
-
-                glTranslatef(0.20, -0.07, 0.02);
-
-                // Draw sword in left hand for Key 5 (states 1 and 2)
-                if (swordState >= 1) {
-                    glPushMatrix();
-                    glTranslatef(-0.21, 0.02, 0.02);
-                    glScalef(weaponSize, weaponSize, weaponSize);
-                    glTranslatef(0.21, -0.02, -0.02);
-
-                    glTranslatef(-0.2, 0.02, 0.6);
-
-                    glRotatef(-90, 0, 1, 0);
-                    glRotatef(90, 0, 0, 1);
-                    sword();
-                    glPopMatrix();
-                }
-                palm();
-                glPopMatrix();
-                glPopMatrix();
-                glPopMatrix();
-                glPopMatrix();
-            }
-
-            body();
-            innerCloth();
-            outerCloth();
+            palm();
+            glPopMatrix();
+            glPopMatrix();
             glPopMatrix();
         }
 
-        //lower body
+        //Upper Arm (Left Arm)
         {
-            //Upper leg (Right leg)
-            {
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            glPushMatrix();
+            glTranslatef(-0.13, 0.52, -0.02);
+
+            applyAnimation(LUArm5);
+
+            glTranslatef(0.13, -0.52, 0.02);
+            upperArm();
+
+            //Lower Arm
+            glPushMatrix();
+            glTranslatef(-0.16, 0.36, -0.05);
+            applyAnimation(LLArm5);
+
+            glTranslatef(0.16, -0.36, 0.05);
+            lowerArm();
+
+            //Palm
+            glPushMatrix();
+            glTranslatef(-0.20, 0.07, -0.02);
+            applyAnimation(LPArm5);
+
+            glTranslatef(0.20, -0.07, 0.02);
+
+            // Draw sword in left hand for Key 5 (states 1 and 2)
+            if (swordState >= 1) {
                 glPushMatrix();
-                glTranslatef(-0.05, 0.19, 0);
-                applyAnimation(RULeg5);
+                glTranslatef(-0.21, 0.02, 0.02);
+                glScalef(weaponSize, weaponSize, weaponSize);
+                glTranslatef(0.21, -0.02, -0.02);
 
-                glTranslatef(0.05, -0.19, 0);
-                thigh();
+                glTranslatef(-0.2, 0.02, 0.6);
 
-                //Lower leg
-                glPushMatrix();
-                glTranslatef(-0.07, -0.32, 0);
-                applyAnimation(RLLeg5);
-
-                glTranslatef(0.07, 0.32, 0);
-                calf();
-
-                //Feet
-                glPushMatrix();
-                glTranslatef(-0.05, -0.62, 0);
-                applyAnimation(RFLeg5);
-
-                glTranslatef(0.05, 0.62, 0);
-                feet();
-                glPopMatrix();
-                glPopMatrix();
-                glPopMatrix();
-            }
-
-            //Upper leg (Left leg)
-            {
-                glPushMatrix();
-                glScalef(-1.0f, 1.0f, 1.0f);
-                glPushMatrix();
-                glTranslatef(-0.05, 0.19, 0);
-                applyAnimation(LULeg5);
-
-                glTranslatef(0.05, -0.19, 0);
-                thigh();
-
-                //Lower leg
-                glPushMatrix();
-                glTranslatef(-0.07, -0.32, 0);
-                applyAnimation(LLLeg5);
-
-                glTranslatef(0.07, 0.32, 0);
-                calf();
-
-                //Feet
-                glPushMatrix();
-                glTranslatef(-0.05, -0.62, 0);
-                applyAnimation(LFLeg5);
-
-                glTranslatef(0.05, 0.62, 0);
-                feet();
-                glPopMatrix();
-                glPopMatrix();
-                glPopMatrix();
+                glRotatef(-90, 0, 1, 0);
+                glRotatef(90, 0, 0, 1);
+                sword();
                 glPopMatrix();
             }
+            palm();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        body();
+        innerCloth();
+        outerCloth();
+        glPopMatrix();
+    }
+
+    //lower body
+    {
+        //Upper leg (Right leg)
+        {
+            glPushMatrix();
+            glTranslatef(-0.05, 0.19, 0);
+            applyAnimation(RULeg5);
+
+            glTranslatef(0.05, -0.19, 0);
+            thigh();
+
+            //Lower leg
+            glPushMatrix();
+            glTranslatef(-0.07, -0.32, 0);
+            applyAnimation(RLLeg5);
+
+            glTranslatef(0.07, 0.32, 0);
+            calf();
+
+            //Feet
+            glPushMatrix();
+            glTranslatef(-0.05, -0.62, 0);
+            applyAnimation(RFLeg5);
+
+            glTranslatef(0.05, 0.62, 0);
+            feet();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+        }
+
+        //Upper leg (Left leg)
+        {
+            glPushMatrix();
+            glScalef(-1.0f, 1.0f, 1.0f);
+            glPushMatrix();
+            glTranslatef(-0.05, 0.19, 0);
+            applyAnimation(LULeg5);
+
+            glTranslatef(0.05, -0.19, 0);
+            thigh();
+
+            //Lower leg
+            glPushMatrix();
+            glTranslatef(-0.07, -0.32, 0);
+            applyAnimation(LLLeg5);
+
+            glTranslatef(0.07, 0.32, 0);
+            calf();
+
+            //Feet
+            glPushMatrix();
+            glTranslatef(-0.05, -0.62, 0);
+            applyAnimation(LFLeg5);
+
+            glTranslatef(0.05, 0.62, 0);
+            feet();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
+            glPopMatrix();
         }
     }
+
+    glPopMatrix();
 
     if (swordState == 2) {
         glColor3f(1.0f, 0.0f, 0.0f);  // Red color for rotating swords
