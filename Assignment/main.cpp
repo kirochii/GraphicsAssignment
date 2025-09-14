@@ -1003,7 +1003,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             else
                 headY -= rotationSpeed;
             break;
-        case '9':
+        case 'R':
             if (!opposite)
                 headZ += rotationSpeed;
             else
