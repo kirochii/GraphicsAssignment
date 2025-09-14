@@ -61,5 +61,8 @@
     <Media Include="smash.wav">
       <Filter>Resource Files</Filter>
     </Media>
+    <Media Include="explosion.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>
