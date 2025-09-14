@@ -8,6 +8,7 @@
 #include <mmsystem.h>
 #include <iostream>
 #include <thread>
+#include <array>
 
 #pragma comment (lib, "OpenGL32.lib")
 #pragma comment(lib, "glu32.lib")
@@ -101,6 +102,13 @@ HBITMAP hBMP = NULL;
 bool textureOn = true;
 int bodyTexIndex = 0;
 int bladeTexIndex = 0;
+
+//Lighting Settings
+bool lightOn = true;
+float ambientColour[3] = { 1, 1, 1 };
+float ambientPosition[3] = { 0.2, 1, -0.2 };
+float diffuseColour[3] = { 1, 0.7, 0 };
+float diffusePosition[3] = { -1, 1, 0.5 };
 
 //Key 2: Rotation
 float length2 = 1;
@@ -1482,24 +1490,25 @@ GLuint loadTexture(LPCSTR filename) {
     return texture;
 }
 
-//Lighting
-
 void lighting() {
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
+    if (lightOn) {
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+        glEnable(GL_LIGHT1);
+    }
+    else {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glDisable(GL_LIGHT1);
+    }
 
-    GLfloat lightPos[] = { 0.0f, 1.0f, 1.0f, 0.0f };
-    GLfloat lightAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-    GLfloat lightDiffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
-    GLfloat lightSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientColour);
+    glLightfv(GL_LIGHT0, GL_POSITION, ambientPosition);
+
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseColour);
+    glLightfv(GL_LIGHT1, GL_POSITION, diffusePosition);
 }
-
 
 void drawFloor() {
     glColor3f(1,0,0);
@@ -1510,6 +1519,10 @@ void drawFloor() {
     glVertex3f(1, -0.68, -1);
     glEnd();
 }
+
+//apply colour
+//glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 3>{0.0f, 0.5f, 0.0f}.data());
+//glMaterialfv(GL_FRONT, GL_DIFFUSE, std::array<GLfloat, 3>{0.0f, 0.5f, 0.0f}.data());
 
 void belt() {
     GLuint textureArr[1];
@@ -5053,6 +5066,8 @@ void display()
     // Setup camera projection and view
     setupProjection();
     setupView();
+
+    lighting();
 
     drawFloor();
 
