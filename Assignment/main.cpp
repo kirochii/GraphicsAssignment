@@ -76,9 +76,14 @@ struct Camera {
     float zoomSpeed = 0.1f;
 
     // Zoom limits
-    float minZoom = 0.5f;
-    float maxZoom = 50.0f;
+    float minZoom = 0.1f;      // Very close zoom
+    float maxZoom = 20.0f;     // Far zoom
     float currentZoom = 2.0f;  // Smaller zoom = bigger character
+    
+    // Pan limits (camera position bounds)
+    float minPanX = -10.0f, maxPanX = 10.0f;
+    float minPanY = -5.0f, maxPanY = 10.0f;
+    float minPanZ = -10.0f, maxPanZ = 10.0f;
 
     // Mouse controls
     bool mouseDown = false;
@@ -765,13 +770,41 @@ void rotateCamera(float deltaYaw, float deltaPitch) {
 }
 
 void moveCamera(float deltaX, float deltaY, float deltaZ) {
-    camera.posX += deltaX * camera.moveSpeed;
-    camera.posY += deltaY * camera.moveSpeed;
-    camera.posZ += deltaZ * camera.moveSpeed;
-
-    camera.targetX += deltaX * camera.moveSpeed;
-    camera.targetY += deltaY * camera.moveSpeed;
-    camera.targetZ += deltaZ * camera.moveSpeed;
+    // Calculate new positions
+    float newPosX = camera.posX + deltaX * camera.moveSpeed;
+    float newPosY = camera.posY + deltaY * camera.moveSpeed;
+    float newPosZ = camera.posZ + deltaZ * camera.moveSpeed;
+    
+    float newTargetX = camera.targetX + deltaX * camera.moveSpeed;
+    float newTargetY = camera.targetY + deltaY * camera.moveSpeed;
+    float newTargetZ = camera.targetZ + deltaZ * camera.moveSpeed;
+    
+    // Apply pan limits
+    if (newPosX >= camera.minPanX && newPosX <= camera.maxPanX) {
+        camera.posX = newPosX;
+        camera.targetX = newTargetX;
+    } else {
+        printf("PAN LIMIT: X-axis limit reached (%.2f)\n", 
+               newPosX < camera.minPanX ? camera.minPanX : camera.maxPanX);
+    }
+    if (newPosY >= camera.minPanY && newPosY <= camera.maxPanY) {
+        camera.posY = newPosY;
+        camera.targetY = newTargetY;
+    } else {
+        printf("PAN LIMIT: Y-axis limit reached (%.2f)\n", 
+               newPosY < camera.minPanY ? camera.minPanY : camera.maxPanY);
+    }
+    if (newPosZ >= camera.minPanZ && newPosZ <= camera.maxPanZ) {
+        camera.posZ = newPosZ;
+        camera.targetZ = newTargetZ;
+    } else {
+        printf("PAN LIMIT: Z-axis limit reached (%.2f)\n", 
+               newPosZ < camera.minPanZ ? camera.minPanZ : camera.maxPanZ);
+    }
+    
+    // Show current position
+    printf("Camera Position: X=%.2f, Y=%.2f, Z=%.2f\n", 
+           camera.posX, camera.posY, camera.posZ);
 }
 
 void zoomCamera(float delta) {
@@ -780,9 +813,15 @@ void zoomCamera(float delta) {
     // Apply zoom limits
     if (camera.currentZoom < camera.minZoom) {
         camera.currentZoom = camera.minZoom;
+        printf("ZOOM LIMIT: Min zoom reached (%.2f)\n", camera.minZoom);
     }
     else if (camera.currentZoom > camera.maxZoom) {
         camera.currentZoom = camera.maxZoom;
+        printf("ZOOM LIMIT: Max zoom reached (%.2f)\n", camera.maxZoom);
+    }
+    else {
+        printf("Current Zoom: %.2f (Min: %.2f, Max: %.2f)\n", 
+               camera.currentZoom, camera.minZoom, camera.maxZoom);
     }
 
     updateCamera();
