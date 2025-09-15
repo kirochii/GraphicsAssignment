@@ -65,25 +65,29 @@ struct Camera {
     float farPlane = 1000.0f;
 
     // Orthographic settings
-    float orthoLeft = -5.0f;   // Smaller bounds = bigger character
-    float orthoRight = 5.0f;
-    float orthoBottom = -5.0f;
-    float orthoTop = 5.0f;
+    float orthoLeft = -0.5f;   // Smaller bounds = bigger character
+    float orthoRight = 0.5f;
+    float orthoBottom = -0.5f;
+    float orthoTop = 0.5f;
 
     // Movement and rotation
     float moveSpeed = 0.5f;
     float rotationSpeed = 2.0f;
-    float zoomSpeed = 0.1f;
+    float zoomSpeed = 0.5f;
 
     // Zoom limits
-    float minZoom = 0.1f;      // Very close zoom
-    float maxZoom = 20.0f;     // Far zoom
+    float minZoom = 0.5f;      // Very close zoom
+    float maxZoom = 6.0f;     // Far zoom
     float currentZoom = 2.0f;  // Smaller zoom = bigger character
     
     // Pan limits (camera position bounds)
-    float minPanX = -10.0f, maxPanX = 10.0f;
-    float minPanY = -5.0f, maxPanY = 10.0f;
+    float minPanX = -2.0f, maxPanX = 2.0f;
+    float minPanY = 0.5f, maxPanY = 2.0f;
     float minPanZ = -10.0f, maxPanZ = 10.0f;
+
+    //Rotation limits
+    float minPitch = -5.0f;
+    float maxPitch = 80.0f;
 
     // Mouse controls
     bool mouseDown = false;
@@ -771,8 +775,13 @@ void rotateCamera(float deltaYaw, float deltaPitch) {
     float sinPitch = sin(pitchRad);
     float newDirY = dirY * cosPitch - dirZ * sinPitch;
     newDirZ = dirY * sinPitch + dirZ * cosPitch;
-    dirY = newDirY;
-    dirZ = newDirZ;
+
+    float newPitch = atan2(newDirY, sqrt(newDirX * newDirX + newDirZ * newDirZ)) * 180.0f / PI;
+
+    if (newPitch >= camera.minPitch && newPitch <= camera.maxPitch) {
+        dirY = newDirY;
+        dirZ = newDirZ;
+    }
 
     // Update camera position
     camera.posX = camera.targetX + dirX;
@@ -1716,17 +1725,16 @@ void drawSky() {
     glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
-    
     glEnd();
     
     glPopMatrix();
     
-    if (textureOn && textureArr[0] != 0) {
-        glDisable(GL_TEXTURE_2D);
+    glDisable(GL_TEXTURE_2D);
+    
+    
+    if (lightOn) {
+        glEnable(GL_LIGHTING);
     }
-    
-    
-    glEnable(GL_LIGHTING);
 }
 
 void drawFloor() {
@@ -1742,15 +1750,25 @@ void drawFloor() {
         } else {
             glColor3f(1.0f, 1.0f, 1.0f); 
         }
-    } 
+    }
+    else {
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(0.6235, 0.3686, 0.2745);
+    }
     
     glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 3>{0.6f, 0.35f, 0.3f}.data());
+
+    glPushMatrix();
+    glScalef(3.3f, 1, 3.3f);
+
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(3, -0.68, 3);
     glTexCoord2f(3.0f, 0.0f); glVertex3f(-3, -0.68, 3);
     glTexCoord2f(3.0f, 3.0f); glVertex3f(-3, -0.68, -3);
     glTexCoord2f(0.0f, 3.0f); glVertex3f(3, -0.68, -3);
     glEnd();
+
+    glPopMatrix();
     
     if (textureOn && textureArr[0] != 0) {
         glDisable(GL_TEXTURE_2D);
