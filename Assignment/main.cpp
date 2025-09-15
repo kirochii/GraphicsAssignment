@@ -1,4 +1,4 @@
-﻿
+
 #include <Windows.h>
 #include <gl/GL.h>
 #include <gl/GLU.h>
@@ -65,20 +65,29 @@ struct Camera {
     float farPlane = 1000.0f;
 
     // Orthographic settings
-    float orthoLeft = -5.0f;   // Smaller bounds = bigger character
-    float orthoRight = 5.0f;
-    float orthoBottom = -5.0f;
-    float orthoTop = 5.0f;
+    float orthoLeft = -0.5f;   // Smaller bounds = bigger character
+    float orthoRight = 0.5f;
+    float orthoBottom = -0.5f;
+    float orthoTop = 0.5f;
 
     // Movement and rotation
     float moveSpeed = 0.5f;
     float rotationSpeed = 2.0f;
-    float zoomSpeed = 0.1f;
+    float zoomSpeed = 0.5f;
 
     // Zoom limits
-    float minZoom = 0.5f;
-    float maxZoom = 50.0f;
+    float minZoom = 0.5f;      // Very close zoom
+    float maxZoom = 6.0f;     // Far zoom
     float currentZoom = 2.0f;  // Smaller zoom = bigger character
+    
+    // Pan limits (camera position bounds)
+    float minPanX = -2.0f, maxPanX = 2.0f;
+    float minPanY = 0.5f, maxPanY = 2.0f;
+    float minPanZ = -10.0f, maxPanZ = 10.0f;
+
+    //Rotation limits
+    float minPitch = -5.0f;
+    float maxPitch = 80.0f;
 
     // Mouse controls
     bool mouseDown = false;
@@ -766,8 +775,13 @@ void rotateCamera(float deltaYaw, float deltaPitch) {
     float sinPitch = sin(pitchRad);
     float newDirY = dirY * cosPitch - dirZ * sinPitch;
     newDirZ = dirY * sinPitch + dirZ * cosPitch;
-    dirY = newDirY;
-    dirZ = newDirZ;
+
+    float newPitch = atan2(newDirY, sqrt(newDirX * newDirX + newDirZ * newDirZ)) * 180.0f / PI;
+
+    if (newPitch >= camera.minPitch && newPitch <= camera.maxPitch) {
+        dirY = newDirY;
+        dirZ = newDirZ;
+    }
 
     // Update camera position
     camera.posX = camera.targetX + dirX;
@@ -776,13 +790,41 @@ void rotateCamera(float deltaYaw, float deltaPitch) {
 }
 
 void moveCamera(float deltaX, float deltaY, float deltaZ) {
-    camera.posX += deltaX * camera.moveSpeed;
-    camera.posY += deltaY * camera.moveSpeed;
-    camera.posZ += deltaZ * camera.moveSpeed;
-
-    camera.targetX += deltaX * camera.moveSpeed;
-    camera.targetY += deltaY * camera.moveSpeed;
-    camera.targetZ += deltaZ * camera.moveSpeed;
+    // Calculate new positions
+    float newPosX = camera.posX + deltaX * camera.moveSpeed;
+    float newPosY = camera.posY + deltaY * camera.moveSpeed;
+    float newPosZ = camera.posZ + deltaZ * camera.moveSpeed;
+    
+    float newTargetX = camera.targetX + deltaX * camera.moveSpeed;
+    float newTargetY = camera.targetY + deltaY * camera.moveSpeed;
+    float newTargetZ = camera.targetZ + deltaZ * camera.moveSpeed;
+    
+    // Apply pan limits
+    if (newPosX >= camera.minPanX && newPosX <= camera.maxPanX) {
+        camera.posX = newPosX;
+        camera.targetX = newTargetX;
+    } else {
+        printf("PAN LIMIT: X-axis limit reached (%.2f)\n", 
+               newPosX < camera.minPanX ? camera.minPanX : camera.maxPanX);
+    }
+    if (newPosY >= camera.minPanY && newPosY <= camera.maxPanY) {
+        camera.posY = newPosY;
+        camera.targetY = newTargetY;
+    } else {
+        printf("PAN LIMIT: Y-axis limit reached (%.2f)\n", 
+               newPosY < camera.minPanY ? camera.minPanY : camera.maxPanY);
+    }
+    if (newPosZ >= camera.minPanZ && newPosZ <= camera.maxPanZ) {
+        camera.posZ = newPosZ;
+        camera.targetZ = newTargetZ;
+    } else {
+        printf("PAN LIMIT: Z-axis limit reached (%.2f)\n", 
+               newPosZ < camera.minPanZ ? camera.minPanZ : camera.maxPanZ);
+    }
+    
+    // Show current position
+    printf("Camera Position: X=%.2f, Y=%.2f, Z=%.2f\n", 
+           camera.posX, camera.posY, camera.posZ);
 }
 
 void zoomCamera(float delta) {
@@ -791,9 +833,15 @@ void zoomCamera(float delta) {
     // Apply zoom limits
     if (camera.currentZoom < camera.minZoom) {
         camera.currentZoom = camera.minZoom;
+        printf("ZOOM LIMIT: Min zoom reached (%.2f)\n", camera.minZoom);
     }
     else if (camera.currentZoom > camera.maxZoom) {
         camera.currentZoom = camera.maxZoom;
+        printf("ZOOM LIMIT: Max zoom reached (%.2f)\n", camera.maxZoom);
+    }
+    else {
+        printf("Current Zoom: %.2f (Min: %.2f, Max: %.2f)\n", 
+               camera.currentZoom, camera.minZoom, camera.maxZoom);
     }
 
     updateCamera();
@@ -1551,7 +1599,19 @@ GLuint loadTexture(LPCSTR filename) {
     HBITMAP hBMP = (HBITMAP)LoadImage(GetModuleHandle(NULL),
         filename, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION |
         LR_LOADFROMFILE);
+    
+    // Check if the image loaded successfully
+    if (hBMP == NULL) {
+        return 0; // Return 0 to indicate failure
+    }
+    
     GetObject(hBMP, sizeof(BMP), &BMP);
+    
+    // Check if we got valid bitmap data
+    if (BMP.bmBits == NULL) {
+        DeleteObject(hBMP);
+        return 0;
+    }
 
     glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &texture);
@@ -1595,15 +1655,124 @@ void lighting() {
     glEnd();
 }
 
-void drawFloor() {
-    glColor3f(1,0,0);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 3>{1.0f, 0.0f, 0.0f}.data());
+void drawSky() {
+    GLuint textureArr[1];
+    
+    // Disable lighting for sky
+    glDisable(GL_LIGHTING);
+    
+    if (textureOn) {
+        glEnable(GL_TEXTURE_2D);
+        textureArr[0] = loadTexture("wall1.bmp");
+        
+        if (textureArr[0] == 0) {
+            glDisable(GL_TEXTURE_2D);
+            glColor3f(0.5f, 0.8f, 1.0f); 
+        } else {
+            glColor3f(1.0f, 1.0f, 1.0f); 
+        }
+    } else {
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(0.5f, 0.8f, 1.0f); // Light blue sky color when texture is off
+    }
+    
+    // Draw sky as a large cube surrounding the scene
+    glPushMatrix();
+    glTranslatef(0, 0, 0); // Center at origin
+    glScalef(10.0f, 10.0f, 10.0f); 
+    
+    // Draw cube 
     glBegin(GL_QUADS);
-    glVertex3f(1, -0.68, 1);
-    glVertex3f(-1, -0.68, 1);
-    glVertex3f(-1, -0.68, -1);
-    glVertex3f(1, -0.68, -1);
+    
+    // Front face
+    glNormal3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+    
+    // Back face
+    glNormal3f(0.0f, 0.0f, -1.0f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+    
+    // Top face
+    glNormal3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+    
+    // Bottom face
+    glNormal3f(0.0f, -1.0f, 0.0f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+    
+    // Right face
+    glNormal3f(1.0f, 0.0f, 0.0f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+    
+    // Left face
+    glNormal3f(-1.0f, 0.0f, 0.0f);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
     glEnd();
+    
+    glPopMatrix();
+    
+    glDisable(GL_TEXTURE_2D);
+    
+    
+    if (lightOn) {
+        glEnable(GL_LIGHTING);
+    }
+}
+
+void drawFloor() {
+    GLuint textureArr[1];
+    
+    if (textureOn) {
+        glEnable(GL_TEXTURE_2D);
+        textureArr[0] = loadTexture("floor.bmp");
+        
+        if (textureArr[0] == 0) {
+            glDisable(GL_TEXTURE_2D);
+            glColor3f(1, 0, 0);
+        } else {
+            glColor3f(1.0f, 1.0f, 1.0f); 
+        }
+    }
+    else {
+        glDisable(GL_TEXTURE_2D);
+        glColor3f(0.6235, 0.3686, 0.2745);
+    }
+    
+    glMaterialfv(GL_FRONT, GL_AMBIENT, std::array<GLfloat, 3>{0.6f, 0.35f, 0.3f}.data());
+
+    glPushMatrix();
+    glScalef(3.3f, 1, 3.3f);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(3, -0.68, 3);
+    glTexCoord2f(3.0f, 0.0f); glVertex3f(-3, -0.68, 3);
+    glTexCoord2f(3.0f, 3.0f); glVertex3f(-3, -0.68, -3);
+    glTexCoord2f(0.0f, 3.0f); glVertex3f(3, -0.68, -3);
+    glEnd();
+
+    glPopMatrix();
+    
+    if (textureOn && textureArr[0] != 0) {
+        glDisable(GL_TEXTURE_2D);
+    }
 }
 
 void belt() {
@@ -3996,7 +4165,7 @@ void thigh() {
 
 void calf() {
     GLuint textureArr[1];
- 
+
     if (textureOn) {
         glColor3f(1.0f, 1.0f, 1.0f);
         textureArr[0] = loadTexture("wrap.bmp");
@@ -5280,6 +5449,7 @@ void display()
 
     lighting();
 
+    drawSky();
     drawFloor();
 
     if (!wireframeOn) {
