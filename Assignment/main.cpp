@@ -130,8 +130,8 @@ float RFLegX = 0, RFLegY = 0, RFLegZ = 0;
 
 //Key 3
 //walk
-float speed3 = 1;
-float runThreshold = 5;
+float speed3 = 5;
+float runThreshold = 20;
 bool running = false;
 bool prevRunning = false;
 float walkAngle = 0.0f;
@@ -968,8 +968,8 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         case VK_OEM_MINUS:
             if (qNo == 2)
                 opposite = !opposite;
-            if (qNo == 3 && speed3 > 1 )
-                speed3 -= 1;
+            if (qNo == 3 && speed3 > 5 )
+                speed3 -= 5;
             if (qNo == 4)
                 if (speed2 > 0.5)
                     speed2 -= 0.5;
@@ -977,8 +977,8 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
         case VK_OEM_PLUS:
             if (qNo == 2)
                 toggleRight = !toggleRight;
-            if (qNo == 3)
-                speed3 += 1;
+            if (qNo == 3 && speed3 < 25)
+                speed3 += 5;
             if (qNo == 4)
                 if (speed2 < 2.5)
                     speed2 += 0.5;
@@ -1527,7 +1527,7 @@ void updateRunState() {
 }
 
 void updatePosition() {
-    float worldSize = 1.0f;
+    float worldSize = 2.0f;
 
     // step size depends on walking vs running
     float step = running ? 0.003f : 0.001f;
@@ -4707,14 +4707,14 @@ void key3() {
     {
         glPushMatrix();
         glTranslatef(0, 0.24, 0);
-        applyAnimation(running ? body6 : body3, speed3);
+        applyAnimation(running ? body6 : body3, running ? speed3 / 5 : speed3);
         glTranslatef(0, -0.24, 0);
 
         // Head
         {
             glPushMatrix();
             glTranslatef(0, 0.6, -0.015);
-            applyAnimation(running ? head6 : head3, speed3);
+            applyAnimation(running ? head6 : head3, running ? speed3 / 5 : speed3);
             glTranslatef(0, -0.6, 0.015);
 
             hair();
@@ -4737,19 +4737,19 @@ void key3() {
         {
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            applyAnimation(running ? LUArm6 : LUArm3, speed3);
+            applyAnimation(running ? LUArm6 : LUArm3, running ? speed3 / 5 : speed3);
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
 
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
-            applyAnimation(running ? LLArm6 : LLArm3, speed3);
+            applyAnimation(running ? LLArm6 : LLArm3, running ? speed3 / 5 : speed3);
             glTranslatef(0.16, -0.36, 0.05);
             lowerArm();
 
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            applyAnimation(running ? LPArm6 : LPArm3, speed3);
+            applyAnimation(running ? LPArm6 : LPArm3, running ? speed3 / 5 : speed3);
             glTranslatef(0.20, -0.07, 0.02);
             glDisable(GL_TEXTURE_2D);
             palm();
@@ -4772,19 +4772,19 @@ void key3() {
             glScalef(-1.0f, 1.0f, 1.0f);
             glPushMatrix();
             glTranslatef(-0.13, 0.52, -0.02);
-            applyAnimation(running ? RUArm6 : RUArm3, speed3);
+            applyAnimation(running ? RUArm6 : RUArm3, running ? speed3 / 5 : speed3);
             glTranslatef(0.13, -0.52, 0.02);
             upperArm();
 
             glPushMatrix();
             glTranslatef(-0.16, 0.36, -0.05);
-            applyAnimation(running ? RLArm6 : RLArm3, speed3);
+            applyAnimation(running ? RLArm6 : RLArm3, running ? speed3 / 5 : speed3);
             glTranslatef(0.16, -0.36, 0.05);
             lowerArm();
 
             glPushMatrix();
             glTranslatef(-0.20, 0.07, -0.02);
-            applyAnimation(running ? RPArm6 : RPArm3, speed3);
+            applyAnimation(running ? RPArm6 : RPArm3, running ? speed3 / 5 : speed3);
             glTranslatef(0.20, -0.07, 0.02);
             glDisable(GL_TEXTURE_2D);
             palm();
@@ -4809,19 +4809,19 @@ void key3() {
             glPushMatrix();
             glEnable(GL_TEXTURE_2D);
             glTranslatef(-0.05, 0.19, 0);
-            applyAnimation(running ? LULeg6 : LULeg3, speed3);
+            applyAnimation(running ? LULeg6 : LULeg3, running ? speed3 / 5 : speed3);
             glTranslatef(0.05, -0.19, 0);
             thigh();
 
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
-            applyAnimation(running ? LLLeg6 : LLLeg3, speed3);
+            applyAnimation(running ? LLLeg6 : LLLeg3, running ? speed3 / 5 : speed3);
             glTranslatef(0.07, 0.32, 0);
             calf();
 
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
-            applyAnimation(running ? LFLeg6 : LFLeg3, speed3);
+            applyAnimation(running ? LFLeg6 : LFLeg3, running ? speed3 / 5 : speed3);
             glTranslatef(0.05, 0.62, 0);
             feet();
 
@@ -4837,19 +4837,19 @@ void key3() {
 
             glPushMatrix();
             glTranslatef(-0.05, 0.19, 0);
-            applyAnimation(running ? RULeg6 : RULeg3, speed3);
+            applyAnimation(running ? RULeg6 : RULeg3, running ? speed3 / 5 : speed3);
             glTranslatef(0.05, -0.19, 0);
             thigh();
 
             glPushMatrix();
             glTranslatef(-0.07, -0.32, 0);
-            applyAnimation(running ? RLLeg6 : RLLeg3, speed3);
+            applyAnimation(running ? RLLeg6 : RLLeg3, running ? speed3 / 5 : speed3);
             glTranslatef(0.07, 0.32, 0);
             calf();
 
             glPushMatrix();
             glTranslatef(-0.05, -0.62, 0);
-            applyAnimation(running ? RFLeg6 : RFLeg3, speed3);
+            applyAnimation(running ? RFLeg6 : RFLeg3, running ? speed3 / 5 : speed3);
             glTranslatef(0.05, 0.62, 0);
             feet();
 
